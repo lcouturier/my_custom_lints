@@ -1,3 +1,5 @@
+// ignore_for_file: cascade_invocations
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
@@ -26,7 +28,7 @@ class AvoidPrintRule extends DartLintRule {
     // Register a callback for each method invocation in the file.
     context.registry.addMethodInvocation((MethodInvocation node) {
       // We get the static element of the method name node.
-      final Element? element = node.methodName.staticElement;
+      final element = node.methodName.staticElement;
 
       // Check if the method's element is a FunctionElement.
       if (element is! FunctionElement) return;
@@ -63,7 +65,7 @@ class UseDeveloperLogFix extends DartFix {
       // Create a ChangeBuilder to apply the quick fix.
       // The message is displayed in the quick fix menu.
       // The priority determines the order of the quick fixes in the menu.
-      final ChangeBuilder changeBuilder = reporter.createChangeBuilder(
+      final changeBuilder = reporter.createChangeBuilder(
         message: 'Use log from dart:developer instead.',
         priority: 80,
       );
@@ -79,10 +81,10 @@ class UseDeveloperLogFix extends DartFix {
         final result = builder.importLibraryElement(Uri.parse('dart:developer'));
 
         // Get the library prefix if the package is imported.
-        final String? prefix = result.prefix;
+        final prefix = result.prefix;
 
         // Get the replacement string based on the library prefix.
-        final String replacement = prefix != null ? '$prefix.log' : 'log';
+        final replacement = prefix != null ? '$prefix.log' : 'log';
 
         // Replace the print statement with log.
         builder.addSimpleReplacement(sourceRange, replacement);

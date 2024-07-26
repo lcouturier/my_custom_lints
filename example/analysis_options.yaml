@@ -1,7 +1,38 @@
 
-include: package:my_custom_lints/my_custom_lints.yaml
+
 analyzer:
-  errors:
-    # Added to avoid warnings in tests
-    unused_element: ignore
-    unused_local_variable: ignore
+  plugins:
+    - custom_lint
+
+custom_lint:
+  debug: true # enable debug mode
+  verbose: true # enable verbose mode
+  rules:
+    - prefer_iterable_any
+    - no_equal_then_else
+    - number_of_parameters:
+      max_parameters: 5
+    - boolean_prefixes:
+      prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should'
+    - cyclomatic_complexity:
+      max_complexity: 10
+    - max_nesting_level:
+      number_of_level: 3
+    - prefer_iterable_first
+    - prefer_iterable_last
+    - no_boolean_literal_compare
+    - prefer_iterable_isempty
+    - prefer_void_callback
+    - no_length_in_index_expression
+    - unused_parameter:
+      parameters: 'state, event, context'
+    - equatable_props_check
+    - add_cubit_suffix_rule
+    - avoid_filter_usage
+    - first_init_state
+    - prefer_of_over_current
+    - prefer_no_growable_list
+    - prefer_underscore_for_unused_callback_parameters
+    - remove_empty_listener
+    - avoid_dynamic_return_type
+    - copy_with_method_field_check

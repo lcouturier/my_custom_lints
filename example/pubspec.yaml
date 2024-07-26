@@ -9,8 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  equatable: ^2.0.5
 
 
 dev_dependencies:
+  custom_lint: ^0.6.1
   my_custom_lints:
     path: ../

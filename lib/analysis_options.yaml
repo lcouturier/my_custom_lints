@@ -24,12 +24,39 @@ analyzer:
 
 
 custom_lint:
+  debug: true # enable debug mode
+  verbose: true # enable verbose mode
   rules:
-    - avoid_bang_operator    
-    - avoid_widget_function    
+    - no_equal_then_else
     - prefer_returning_condition
-    - avoid_print
-    - number_of_parameters
+    - avoid_print    
+    - prefer_void_callback
+    - number_of_parameters:
+      max_parameters: 7
+    - boolean_prefix:
+      prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should'
+    - cyclomatic_complexity:
+      max_complexity: 10
+    - max_nesting_level:
+      number_of_level: 3
+    - prefer_iterable_first
+    - prefer_iterable_last
+    - no_boolean_literal_compare
+    - prefer_iterable_isempty
+    - no_length_in_index_expression
+    - unused_parameter:
+    - parameters: 'state, event'
+    - equatable_props_check
+    - add_cubit_suffix_rule
+    - avoid_filter_usage
+    - first_init_state
+    - prefer_of_over_current
+    - prefer_no_growable_list
+    - prefer_underscore_for_unused_callback_parameters
+    - remove_empty_listener
+    - avoid_dynamic_return_type
+    - copy_with_method_field_check
+
 
 
 linter:
@@ -102,7 +129,6 @@ linter:
     - library_annotations
     - library_names
     - library_private_types_in_public_api
-    - lines_longer_than_80_chars
     - literal_only_boolean_expressions
     - missing_whitespace_between_adjacent_strings
     - no_adjacent_strings_in_list

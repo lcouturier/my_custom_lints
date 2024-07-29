@@ -32,6 +32,7 @@ class Person {
   bool get isAdult => age >= 18;
   bool get isMinor => age < 18;
 
+  // ignore: boolean_prefixes
   bool get adultOrMinor => age >= 18 || age < 18;
 
   Person get incrementAge => copyWith(age: age + 1);
@@ -58,4 +59,39 @@ class Person {
     }
     return false;
   }
+}
+
+// expect_lint: boolean_prefixes
+const debugMode = true;
+
+// "at" is a valid prefix since we specified it in the analysis_options.yaml.
+const atOrigin = true;
+
+class Point {
+  final double x;
+  final double y;
+
+  const Point(this.x, this.y);
+
+  // expect_lint: boolean_prefixes
+  bool get origin => x == 0 && y == 0;
+
+  // expect_lint: boolean_prefixes
+  bool samePoint(covariant Point other) => x == other.x && y == other.y;
+}
+
+class Point3D extends Point {
+  final double z;
+
+  const Point3D(super.x, super.y, this.z);
+
+  @override
+  bool samePoint(Point3D other) => super.samePoint(other) && z == other.z;
+}
+
+bool shouldsamePoint(Point a, Point b) => a.x == b.x && a.y == b.y;
+
+extension PointExtension on Point {
+  // expect_lint: boolean_prefixes
+  bool get onXAxis => y == 0;
 }

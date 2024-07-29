@@ -1,20 +1,27 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/base_lint_rule.dart';
 
-class NumberOfParametersRule extends DartLintRule {
-  static const problem = 'number_of_parameters';
+class NumberOfParametersRule extends BaseLintRule<NumberOfParametersParameters> {
+  static const lintName = 'number_of_parameters';
 
-  const NumberOfParametersRule()
-      : super(
-          code: const LintCode(
-            name: 'number_of_parameters',
-            problemMessage: problem,
-            correctionMessage: 'Try reducing the number of parameters.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+  NumberOfParametersRule._(super.rule);
+
+  factory NumberOfParametersRule.createRule(CustomLintConfigs configs) {
+    final rule = RuleConfig(
+      configs: configs,
+      name: lintName,
+      paramsParser: NumberOfParametersParameters.fromJson,
+      problemMessage: (value) => 'The maximum allowed number of parameters is ${value.maxParameters}. '
+          'Try reducing the number of parameters.',
+    );
+
+    return NumberOfParametersRule._(rule);
+  }
 
   @override
   void run(
@@ -29,7 +36,7 @@ class NumberOfParametersRule extends DartLintRule {
         _ => 0,
       };
 
-      if (parameters > 2) {
+      if (parameters > config.parameters.maxParameters) {
         reporter.reportErrorForOffset(
           code,
           node.firstTokenAfterCommentAndMetadata.offset,
@@ -37,5 +44,17 @@ class NumberOfParametersRule extends DartLintRule {
         );
       }
     });
+  }
+}
+
+class NumberOfParametersParameters {
+  final int maxParameters;
+
+  const NumberOfParametersParameters({required this.maxParameters});
+
+  factory NumberOfParametersParameters.fromJson(Map<String, Object?> json) {
+    return NumberOfParametersParameters(
+      maxParameters: json['max_parameters'] as int? ?? 7,
+    );
   }
 }

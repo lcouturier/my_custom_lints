@@ -1,51 +1,25 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/base_lint_rule.dart';
 
-class BooleanPrefixesOptions {
-  const BooleanPrefixesOptions({
-    List<String>? validPrefixes,
-  }) : _validPrefixes = validPrefixes;
+class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
+  static const lintName = 'boolean_prefixes';
 
-  static const defaultValidPrefixes = [
-    'is',
-    'are',
-    'was',
-    'were',
-    'has',
-    'have',
-    'had',
-    'can',
-    'should',
-    'will',
-    'do',
-    'does',
-    'did',
-  ];
+  BooleanPrefixesRule._(super.rule);
 
-  final List<String>? _validPrefixes;
+  factory BooleanPrefixesRule.createRule(CustomLintConfigs configs) {
+    final rule = RuleConfig(
+      configs: configs,
+      name: lintName,
+      paramsParser: BooleanPrefixParameters.fromJson,
+      problemMessage: (value) => 'Invalid prefix. Try using one of these: $value',
+    );
 
-  List<String> get validPrefixes => [
-        ...defaultValidPrefixes,
-        ...?_validPrefixes,
-      ];
-}
-
-class BooleanPrefixes extends DartLintRule {
-  static const ruleName = 'boolean_prefixes';
-
-  const BooleanPrefixes()
-      : super(
-          code: const LintCode(
-            name: ruleName,
-            problemMessage: 'Invalid prefix on boolean variable.',
-            correctionMessage: 'Invalid prefix on boolean variable.',
-            errorSeverity: ErrorSeverity.ERROR,
-          ),
-        );
+    return BooleanPrefixesRule._(rule);
+  }
 
   @override
   void run(
@@ -88,19 +62,13 @@ class BooleanPrefixes extends DartLintRule {
           reporter.reportErrorForToken(
             code,
             node.name,
-            [
-              'Getter that returns a boolean',
-              'getter',
-            ],
+            ['Getter that returns a boolean', 'getter'],
           );
         case _:
           reporter.reportErrorForToken(
             code,
             node.name,
-            [
-              'Method that returns a boolean',
-              'method',
-            ],
+            ['Method that returns a boolean', 'method'],
           );
       }
     });
@@ -115,35 +83,34 @@ class BooleanPrefixes extends DartLintRule {
       reporter.reportErrorForToken(
         code,
         node.name,
-        [
-          'Function that returns a boolean',
-          'function',
-        ],
+        ['Function that returns a boolean', 'function'],
       );
     });
   }
 
   bool isNameValid(String name) {
-    const defaultValidPrefixes = [
-      'is',
-      'are',
-      'was',
-      'were',
-      'has',
-      'have',
-      'had',
-      'can',
-      'should',
-      'will',
-      'do',
-      'does',
-      'did',
-    ];
-
     final nameWithoutUnderscore = name.startsWith('_') ? name.substring(1) : name;
 
-    print(nameWithoutUnderscore);
-
-    return defaultValidPrefixes.any(nameWithoutUnderscore.startsWith);
+    final validPrefixes = config.parameters.prefixes;
+    return validPrefixes.any(nameWithoutUnderscore.startsWith);
   }
+}
+
+class BooleanPrefixParameters {
+  final List<String> prefixes;
+
+  static final List<String> _defaultPrefixes = ['is', 'has'];
+
+  factory BooleanPrefixParameters.fromJson(Map<String, Object?> json) {
+    final value = json['prefixes'] as String? ?? '';
+
+    return BooleanPrefixParameters(
+      prefixes: value.isEmpty ? _defaultPrefixes : value.split(',').map((e) => e.trim()).toList(),
+    );
+  }
+
+  BooleanPrefixParameters({required this.prefixes});
+
+  @override
+  String toString() => prefixes.join(', ');
 }

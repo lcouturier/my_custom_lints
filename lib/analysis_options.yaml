@@ -25,11 +25,13 @@ analyzer:
 
 custom_lint:
   rules:
-    - avoid_bang_operator    
-    - avoid_widget_function    
+    - avoid_bang_operator
+    - avoid_widget_function
     - prefer_returning_condition
     - avoid_print
-    - number_of_parameters
+    - number_of_parameters:
+      max_parameters: 5
+    - boolean_prefix
 
 
 linter:
@@ -102,7 +104,6 @@ linter:
     - library_annotations
     - library_names
     - library_private_types_in_public_api
-    - lines_longer_than_80_chars
     - literal_only_boolean_expressions
     - missing_whitespace_between_adjacent_strings
     - no_adjacent_strings_in_list

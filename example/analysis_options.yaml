@@ -1,7 +1,12 @@
 
-include: package:my_custom_lints/my_custom_lints.yaml
+
 analyzer:
-  errors:
-    # Added to avoid warnings in tests
-    unused_element: ignore
-    unused_local_variable: ignore
+  plugins:
+    - custom_lint
+
+custom_lint:
+  rules:
+    - number_of_parameters:
+      max_parameters: 3
+    - boolean_prefixes:
+      prefixes: 'is, are, was, were, has, have, had, can, should, will, do, does, did'

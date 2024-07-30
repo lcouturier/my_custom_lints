@@ -1,5 +1,4 @@
 // ignore_for_file: lines_longer_than_80_chars
-import 'dart:developer' as developer;
 
 import 'package:analyzer/error/error.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -15,9 +14,7 @@ class RuleConfig<T extends Object?> {
     RuleParameterParser<T>? paramsParser,
   })  : enabled = configs.rules[name]?.enabled ?? false,
         parameters = paramsParser?.call(configs.rules[name]?.json ?? {}) as T,
-        _problemMessageFactory = problemMessage {
-    developer.log('enabled : $enabled', name: 'RuleConfig');
-  }
+        _problemMessageFactory = problemMessage;
 
   final String name;
 

@@ -6,6 +6,7 @@ analyzer:
 
 custom_lint:
   rules:
+    - prefer_iterable_any
     - number_of_parameters:
       max_parameters: 3
     - boolean_prefixes:

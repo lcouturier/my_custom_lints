@@ -1,6 +1,7 @@
 // Extension to check if a class is an Equatable class
 
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 
 import 'package:analyzer/dart/element/type.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -8,6 +9,16 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 extension InterfaceTypeExtensions on InterfaceType {
   bool isEquatable() {
     return element.name == 'Equatable' || allSupertypes.any((type) => type.element.name == 'Equatable');
+  }
+}
+
+extension DartTypeExtensions on DartType {
+  bool isNullableList(DartType type) {
+    if (type is! InterfaceType) return false;
+
+    final isList = type.element.name == 'List';
+    final isNullable = type.nullabilitySuffix == NullabilitySuffix.question;
+    return isList && isNullable;
   }
 }
 

@@ -5,6 +5,7 @@ library my_custom_lints;
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/assists/copy_with_nullable_assist.dart';
 import 'package:my_custom_lints/src/assists/when_method_assist.dart';
+import 'package:my_custom_lints/src/common/annotations.dart';
 import 'package:my_custom_lints/src/rules/add_cubit_suffix_rule.dart';
 import 'package:my_custom_lints/src/rules/always_call_super_props_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
@@ -35,6 +36,7 @@ import 'package:my_custom_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_custom_lints/src/rules/remove_empty_listener_rule.dart';
 
 PluginBase createPlugin() => _MyCustomLint();
+const DataClass dataClass = DataClass();
 
 class _MyCustomLint extends PluginBase {
   @override

@@ -13,12 +13,14 @@ extension InterfaceTypeExtensions on InterfaceType {
 }
 
 extension DartTypeExtensions on DartType {
-  bool isNullableList(DartType type) {
-    if (type is! InterfaceType) return false;
+  bool get isNullableList {
+    final predicates = [
+      () => this is InterfaceType,
+      () => element?.name == 'List',
+      () => nullabilitySuffix == NullabilitySuffix.question,
+    ];
 
-    final isList = type.element.name == 'List';
-    final isNullable = type.nullabilitySuffix == NullabilitySuffix.question;
-    return isList && isNullable;
+    return predicates.every((e) => e());
   }
 }
 

@@ -57,6 +57,7 @@ custom_lint:
     - avoid_dynamic_return_type
     - copy_with_method_field_check
     - avoid_cached_network_image
+    - avoid_nullable_list_return_type
 
 
 

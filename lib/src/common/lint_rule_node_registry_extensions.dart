@@ -6,6 +6,14 @@ import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
+  void addGetterDeclaration(void Function(MethodDeclaration node) listener) {
+    addMethodDeclaration((MethodDeclaration node) {
+      if (node.isGetter) {
+        listener(node);
+      }
+    });
+  }
+
   void addClassCubitSuffix(void Function(ClassDeclaration node, String fileName) listener) {
     addClassDeclaration((node) {
       final fileName = node.declaredElement?.source.fullName ?? '';

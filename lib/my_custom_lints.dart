@@ -14,6 +14,7 @@ import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_dynamic_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
+import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
 import 'package:my_custom_lints/src/rules/avoid_widget_function_rule.dart';
@@ -67,6 +68,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidDynamicReturnTypeRule(),
       const CopyWithMethodFieldCheckRule(),
       const AvoidCachedNetworkImage(),
+      const AvoidNullableListReturnTypeRule(),
       PreferVoidCallbackRule.createRule(configs),
       BooleanPrefixesRule.createRule(configs),
       PreferIterableAnyRule.createRule(configs),

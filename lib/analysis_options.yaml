@@ -34,7 +34,7 @@ custom_lint:
     - number_of_parameters:
       max_parameters: 7
     - boolean_prefix:
-      prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should'
+      prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should, with'
     - cyclomatic_complexity:
       max_complexity: 10
     - max_nesting_level:
@@ -56,6 +56,7 @@ custom_lint:
     - remove_empty_listener
     - avoid_dynamic_return_type
     - copy_with_method_field_check
+    - avoid_cached_network_image
 
 
 

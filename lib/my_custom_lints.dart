@@ -10,6 +10,7 @@ import 'package:my_custom_lints/src/common/annotations.dart';
 import 'package:my_custom_lints/src/rules/add_cubit_suffix_rule.dart';
 import 'package:my_custom_lints/src/rules/always_call_super_props_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_dynamic_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
@@ -65,6 +66,7 @@ class _MyCustomLint extends PluginBase {
       const RemoveEmptyListenerRule(),
       const AvoidDynamicReturnTypeRule(),
       const CopyWithMethodFieldCheckRule(),
+      const AvoidCachedNetworkImage(),
       PreferVoidCallbackRule.createRule(configs),
       BooleanPrefixesRule.createRule(configs),
       PreferIterableAnyRule.createRule(configs),

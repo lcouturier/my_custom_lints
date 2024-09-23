@@ -11,7 +11,7 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
-class WhenMethodAssist extends DartAssist {
+class MaybeMapMethodAssist extends DartAssist {
   @override
   void run(
     CustomLintResolver resolver,
@@ -30,7 +30,7 @@ class WhenMethodAssist extends DartAssist {
       final subclasses = _findSubclasses(context, node.declaredElement?.name ?? '');
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Generate when Method',
+        message: 'Generate maybeMap Method',
         priority: 80,
       );
 
@@ -48,15 +48,13 @@ class WhenMethodAssist extends DartAssist {
   String _getAbstractSwitch(List<ClassDeclaration> subclasses) {
     final cases = subclasses.map((subclass) {
       final name = subclass.name;
-      final fields = subclass.fields;
-      final params = fields.map((f) => '${f.name}: var ${f.name}').join(', ');
-      return ' case $name($params) : return ${name.lexeme.toLowerCase()}?.call(${fields.map((f) => f.name).join(', ')}) ?? orElse();';
+      return ' case $name() : return ${name.lexeme.toLowerCase()}?.call(this as $name) ?? orElse();';
     }).join('\n');
 
     return '''
 
-  R when<R>({
-    ${subclasses.map((s) => 'required R Function(${s.fields.map((f) => f.type.getDisplayString(withNullability: true)).join(', ')})? ${s.name.lexeme.toLowerCase()}').join(',\n    ')},
+  R maybeMap<R>({
+    ${subclasses.map((s) => 'required R Function(${s.name.lexeme} value)? ${s.name.lexeme.toLowerCase()}').join(',\n    ')},
     required R Function() orElse,
   }) {
     switch (this) {
@@ -71,15 +69,13 @@ $cases
   String _getSealedSwitch(List<ClassDeclaration> subclasses) {
     final cases = subclasses.map((subclass) {
       final name = subclass.name;
-      final fields = subclass.fields;
-      final params = fields.map((f) => '${f.name}: var ${f.name}').join(', ');
-      return '      $name($params) => ${name.lexeme.toLowerCase()}?.call(${fields.map((f) => f.name).join(', ')}) ?? orElse(),';
+      return '      $name() => ${name.lexeme.toLowerCase()}?.call(this as $name) ?? orElse(),';
     }).join('\n');
 
     return '''
 
-  R when<R>({
-    ${subclasses.map((s) => 'required R Function(${s.fields.map((f) => f.type.getDisplayString(withNullability: true)).join(', ')})? ${s.name.lexeme.toLowerCase()}').join(',\n    ')},
+  R maybeMap<R>({
+    ${subclasses.map((s) => 'required R Function(${s.name.lexeme} value)? ${s.name.lexeme.toLowerCase()}').join(',\n    ')},
     required R Function() orElse,
   }) {
     return switch (this) {

@@ -49,14 +49,13 @@ class CopyWithNullableAssist extends DartAssist {
 
   bool _isValidNode(ClassDeclaration node) {
     final predicate = [
-      () => node.isEquatable,
-      () => node.isImmutable,
+      (ClassDeclaration node) => node.isEquatable,
+      (ClassDeclaration node) => node.isImmutable,
     ];
 
-    return predicate.any((p) => p());
+    return predicate.any((p) => p(node));
   }
 
-  // FIX(LACO): fix constructors parameters unnamed
   String _generateCopyWithMethod(String className, List<FieldElement> fields) {
     final fieldParams =
         fields.map((f) => '${f.type}${isNullableType(f.type) ? 'Function()?' : '?'} ${f.name}').join(', ');

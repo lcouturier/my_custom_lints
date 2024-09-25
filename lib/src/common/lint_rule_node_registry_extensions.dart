@@ -28,8 +28,8 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     void Function(ClassDeclaration node, List<ClassDeclaration> subclasses) listener,
   ) {
     addClassDeclaration((node) {
-      if (!(node.declaredElement?.isAbstract ?? false)) return;
-      if (!node.isEquatable) return;
+      final element = node.declaredElement;
+      if (element == null || !element.isAbstract || !node.isEquatable) return;
 
       final subclasses = _findSubclasses(node.declaredElement?.name ?? '');
       listener(node, subclasses);
@@ -39,10 +39,7 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
   void addClassCubitSuffix(void Function(ClassDeclaration node, String fileName) listener) {
     addClassDeclaration((node) {
       final fileName = node.declaredElement?.source.fullName ?? '';
-      final isCubit = const TypeChecker.fromName(
-        'Cubit',
-        packageName: 'bloc',
-      ).isSuperOf(node.declaredElement!);
+      final isCubit = cubitChecker.isSuperOf(node.declaredElement!);
 
       if (!isCubit) return;
       if (node.name.lexeme.endsWith('Cubit')) return;
@@ -86,10 +83,9 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
         return;
       }
 
-      const typeChecker = TypeChecker.fromName('Equatable', packageName: 'equatable');
       final classType = classElement.thisType;
 
-      if (!typeChecker.isAssignableFromType(classType)) {
+      if (!equatableChecker.isAssignableFromType(classType)) {
         return;
       }
 

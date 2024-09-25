@@ -5,13 +5,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 
 import 'package:analyzer/dart/element/type.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
-
-extension InterfaceTypeExtensions on InterfaceType {
-  bool isEquatable() {
-    return element.name == 'Equatable' || allSupertypes.any((type) => type.element.name == 'Equatable');
-  }
-}
+import 'package:my_custom_lints/src/common/utils.dart';
 
 extension DartTypeExtensions on DartType {
   bool get isNullableList {
@@ -58,15 +52,7 @@ extension ClassDeclarationExtensions on ClassDeclaration {
 
   bool get isImmutable => metadata.any((e) => e.name.name.startsWith('immutable'));
 
-  bool get isEquatable {
-    if (declaredElement == null) return false;
-
-    const typeChecker = TypeChecker.fromName('Equatable', packageName: 'equatable');
-    final classType = declaredElement!.thisType;
-    if (!typeChecker.isAssignableFromType(classType)) return false;
-
-    return true;
-  }
+  bool get isEquatable => declaredElement != null && equatableChecker.isAssignableFromType(declaredElement!.thisType);
 }
 
 extension StringExtensions on String {

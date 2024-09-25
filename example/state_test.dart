@@ -6,10 +6,6 @@ sealed class BaseState extends Equatable {
 
   @override
   List<Object?> get props => [];
-
-  bool get isLoading => this is LoadingState;
-  bool get isLoaded => this is LoadedState;
-  bool get isError => this is ErrorState;
 }
 
 class LoadingState extends BaseState {}

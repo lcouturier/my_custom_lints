@@ -9,6 +9,7 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 class MaybeWhenMethodAssist extends DartAssist {
@@ -19,15 +20,11 @@ class MaybeWhenMethodAssist extends DartAssist {
     CustomLintContext context,
     SourceRange target,
   ) {
-    context.registry.addClassDeclaration((node) {
+    context.registry.addSubclassesFromClassDeclaration((node, subclasses) {
       if (!node.sourceRange.covers(target)) return;
-      if (!(node.declaredElement?.isAbstract ?? false)) return;
-      if (!node.isEquatable) return;
 
       final whenMethod = node.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'when');
       if (whenMethod != null) return;
-
-      final subclasses = _findSubclasses(context, node.declaredElement?.name ?? '');
 
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Generate when Method',
@@ -88,23 +85,4 @@ $cases
   }
 ''';
   }
-
-  List<ClassDeclaration> _findSubclasses(CustomLintContext context, String baseClassName) {
-    final subclasses = <ClassDeclaration>[];
-    context.registry.addClassDeclaration((node) {
-      final superclass = node.extendsClause?.superclass.name2.lexeme;
-
-      if (superclass == baseClassName) {
-        subclasses.add(node);
-      }
-    });
-    return subclasses;
-  }
-}
-
-extension on ClassDeclaration {
-  List<FieldElement> get fields => declaredElement!.fields
-      .where((field) => !field.isStatic)
-      .where((field) => !field.isSynthetic)
-      .toList(growable: false);
 }

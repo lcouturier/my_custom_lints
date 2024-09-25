@@ -5,6 +5,7 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class CheckStateGetterAssist extends DartAssist {
   @override
@@ -14,12 +15,8 @@ class CheckStateGetterAssist extends DartAssist {
     CustomLintContext context,
     SourceRange target,
   ) {
-    context.registry.addClassDeclaration((node) {
+    context.registry.addSubclassesFromClassDeclaration((node, subclasses) {
       if (!node.sourceRange.covers(target)) return;
-      if (!(node.declaredElement?.isAbstract ?? false)) return;
-      if (!node.isEquatable) return;
-
-      final subclasses = _findSubclasses(context, node.declaredElement?.name ?? '');
 
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Generate getter',
@@ -52,17 +49,5 @@ class CheckStateGetterAssist extends DartAssist {
 $getters
 
 ''';
-  }
-
-  List<ClassDeclaration> _findSubclasses(CustomLintContext context, String baseClassName) {
-    final subclasses = <ClassDeclaration>[];
-    context.registry.addClassDeclaration((node) {
-      final superclass = node.extendsClause?.superclass.name2.lexeme;
-
-      if (superclass == baseClassName) {
-        subclasses.add(node);
-      }
-    });
-    return subclasses;
   }
 }

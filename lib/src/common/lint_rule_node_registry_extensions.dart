@@ -14,6 +14,28 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     });
   }
 
+  List<ClassDeclaration> _findSubclasses(String baseClassName) {
+    final subclasses = <ClassDeclaration>[];
+    addClassDeclaration((node) {
+      if (node.extendsClause?.superclass.name2.lexeme == baseClassName) {
+        subclasses.add(node);
+      }
+    });
+    return subclasses;
+  }
+
+  void addSubclassesFromClassDeclaration(
+    void Function(ClassDeclaration node, List<ClassDeclaration> subclasses) listener,
+  ) {
+    addClassDeclaration((node) {
+      if (!(node.declaredElement?.isAbstract ?? false)) return;
+      if (!node.isEquatable) return;
+
+      final subclasses = _findSubclasses(node.declaredElement?.name ?? '');
+      listener(node, subclasses);
+    });
+  }
+
   void addClassCubitSuffix(void Function(ClassDeclaration node, String fileName) listener) {
     addClassDeclaration((node) {
       final fileName = node.declaredElement?.source.fullName ?? '';

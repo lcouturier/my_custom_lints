@@ -1,6 +1,7 @@
 // Extension to check if a class is an Equatable class
 
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 
 import 'package:analyzer/dart/element/type.dart';
@@ -39,6 +40,11 @@ extension ExpressionExtensions on Expression {
 }
 
 extension ClassDeclarationExtensions on ClassDeclaration {
+  List<FieldElement> get fields => declaredElement!.fields
+      .where((field) => !field.isStatic)
+      .where((field) => !field.isSynthetic)
+      .toList(growable: false);
+
   Expression? getPropsReturnExpression() {
     for (final member in members) {
       if (member is MethodDeclaration && member.name.lexeme == 'props' && member.isGetter) {

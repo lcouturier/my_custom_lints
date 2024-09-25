@@ -24,13 +24,13 @@ class MaybeMapMethodAssist extends DartAssist {
       if (!(node.declaredElement?.isAbstract ?? false)) return;
       if (!node.isEquatable) return;
 
-      final whenMethod = node.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'when');
+      final whenMethod = node.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'map');
       if (whenMethod != null) return;
 
       final subclasses = _findSubclasses(context, node.declaredElement?.name ?? '');
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Generate maybeMap Method',
+        message: 'Generate map Method',
         priority: 80,
       );
 
@@ -53,7 +53,7 @@ class MaybeMapMethodAssist extends DartAssist {
 
     return '''
 
-  R maybeMap<R>({
+  R map<R>({
     ${subclasses.map((s) => 'required R Function(${s.name.lexeme} value)? ${s.name.lexeme.toLowerCase()}').join(',\n    ')},
     required R Function() orElse,
   }) {
@@ -74,7 +74,7 @@ $cases
 
     return '''
 
-  R maybeMap<R>({
+  R map<R>({
     ${subclasses.map((s) => 'required R Function(${s.name.lexeme} value)? ${s.name.lexeme.toLowerCase()}').join(',\n    ')},
     required R Function() orElse,
   }) {

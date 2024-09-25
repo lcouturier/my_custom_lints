@@ -30,7 +30,7 @@ class MaybeWhenMethodAssist extends DartAssist {
       final subclasses = _findSubclasses(context, node.declaredElement?.name ?? '');
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Generate maybeWhen Method',
+        message: 'Generate when Method',
         priority: 80,
       );
 
@@ -55,7 +55,7 @@ class MaybeWhenMethodAssist extends DartAssist {
 
     return '''
 
-  R maybeWhen<R>({
+  R when<R>({
     ${subclasses.map((s) => 'required R Function(${s.fields.map((f) => f.type.getDisplayString(withNullability: true)).join(', ')})? ${s.name.lexeme.toLowerCase()}').join(',\n    ')},
     required R Function() orElse,
   }) {
@@ -78,7 +78,7 @@ $cases
 
     return '''
 
-  R maybeWhen<R>({
+  R when<R>({
     ${subclasses.map((s) => 'required R Function(${s.fields.map((f) => f.type.getDisplayString(withNullability: true)).join(', ')})? ${s.name.lexeme.toLowerCase()}').join(',\n    ')},
     required R Function() orElse,
   }) {

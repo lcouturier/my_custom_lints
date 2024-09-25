@@ -3,6 +3,8 @@
 library my_custom_lints;
 
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/assists/check_state_getter_assist.dart';
+
 import 'package:my_custom_lints/src/assists/copy_with_nullable_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_map_method_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_when_method_assist.dart';
@@ -84,6 +86,7 @@ class _MyCustomLint extends PluginBase {
       CopyWithNullableAssist(),
       MaybeWhenMethodAssist(),
       MaybeMapMethodAssist(),
+      CheckStateGetterAssist()
     ];
   }
 }

@@ -1,11 +1,11 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/copy_with_utils.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
-class CopyWithNullableAssist extends DartAssist {
+class CopyWithNullableAssist extends DartAssist with CopyWithMixin {
   @override
   void run(
     CustomLintResolver resolver,
@@ -32,7 +32,7 @@ class CopyWithNullableAssist extends DartAssist {
       final fields =
           node.declaredElement!.fields.where((field) => !field.isStatic).where((field) => !field.isSynthetic).toList();
 
-      final text = _generateCopyWithMethod(node.name.lexeme, fields);
+      final text = generateCopyWithMethod(node.name.lexeme, fields);
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Add copyWith Method',
         priority: 80,
@@ -54,28 +54,5 @@ class CopyWithNullableAssist extends DartAssist {
     ];
 
     return predicate.any((p) => p(node));
-  }
-
-  String _generateCopyWithMethod(String className, List<FieldElement> fields) {
-    final fieldParams =
-        fields.map((f) => '${f.type}${isNullableType(f.type) ? 'Function()?' : '?'} ${f.name}').join(', ');
-    final fieldAssignments = fields.map((f) {
-      if (!isNullableType(f.type)) {
-        return '${f.name}: ${f.name} ?? this.${f.name},';
-      } else {
-        return '${f.name}: ${f.name} != null ? ${f.name}() : this.${f.name},';
-      }
-    }).join('\n    ');
-
-    return '\n    '
-        '''
-  $className copyWith({
-    $fieldParams
-  }) {
-    return $className(
-      $fieldAssignments
-    );
-  }
-''';
   }
 }

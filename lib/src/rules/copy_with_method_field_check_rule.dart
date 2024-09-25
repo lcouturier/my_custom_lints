@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/copy_with_utils.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 class CopyWithMethodFieldCheckRule extends DartLintRule {
@@ -39,13 +40,52 @@ class CopyWithMethodFieldCheckRule extends DartLintRule {
       final missingFields = fields.difference(parameters!);
       if (missingFields.isEmpty) return;
 
-      for (final field in missingFields) {
-        reporter.reportErrorForNode(
-          code,
-          copyWithMethod,
-          [field],
-        );
-      }
+      reporter.reportErrorForNode(code, copyWithMethod, [], [], node);
+    });
+  }
+
+  @override
+  List<Fix> getFixes() => [_CopyWithMethodFieldCheckFix()];
+}
+
+class _CopyWithMethodFieldCheckFix extends DartFix with CopyWithMixin {
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    context.registry.addClassDeclaration((_) {
+      final node = analysisError.data! as ClassDeclaration;
+
+      final copyWithMethod =
+          node.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith');
+      if (copyWithMethod == null) return;
+
+      final constructor = node.members.whereType<ConstructorDeclaration>().firstWhereOrNull((c) => c.name == null);
+      if (constructor == null) return;
+
+      final isAllNamed = constructor.parameters.parameters.every((e) => e.isNamed);
+      if (!isAllNamed) return;
+
+      final fields =
+          node.declaredElement!.fields.where((field) => !field.isStatic).where((field) => !field.isSynthetic).toList();
+
+      final text = generateCopyWithMethod(node.name.lexeme, fields);
+
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Fix copyWith Method',
+        priority: 80,
+      );
+
+      // ignore: cascade_invocations
+      changeBuilder.addDartFileEdit((builder) {
+        builder
+          ..addSimpleReplacement(copyWithMethod.sourceRange, text)
+          ..format(node.sourceRange);
+      });
     });
   }
 }

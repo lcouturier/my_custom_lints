@@ -31,9 +31,16 @@ class PersonWithImmatable {
   final int age;
 
   PersonWithImmatable({required this.firstName, required this.lastName, required this.age});
+
+  PersonWithImmatable copyWith({String? firstName, String? lastName, int? age}) {
+    return PersonWithImmatable(
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      age: age ?? this.age,
+    );
+  }
 }
 
-@immutable
 class PersonWithoutNamedParameters {
   final String firstName;
   final String lastName;

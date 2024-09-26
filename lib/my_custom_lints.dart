@@ -51,7 +51,7 @@ class _MyCustomLint extends PluginBase {
     return <LintRule>[
       NumberOfParametersRule.createRule(configs),
       const AvoidPrintRule(),
-      //const AvoidBangOperatorRule(),
+      const AvoidBangOperatorRule(),
       const AvoidWidgetFunctionRule(),
       const PreferReturningConditionRule(),
       const NoEqualThenElseRule(),
@@ -77,7 +77,7 @@ class _MyCustomLint extends PluginBase {
       BooleanPrefixesRule.createRule(configs),
       PreferIterableAnyRule.createRule(configs),
       PreferIterableIsEmptyRule.createRule(configs),
-      //CyclomaticComplexityRule.createRule(configs),
+      CyclomaticComplexityRule.createRule(configs),
       AvoidNestedIfRule.createRule(configs),
       const VerifyAutoRouteUsageRule()
     ];

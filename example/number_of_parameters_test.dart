@@ -1,3 +1,4 @@
+// ignore_for_file: unused_parameter
 import 'dart:developer';
 
 String other(String a, String b) {
@@ -19,7 +20,6 @@ class NumberOfParameters {
     log(a);
   }
 
-  @Deprecated('use numberOfParameters')
   void numberOfParametersDeprecated(String a, String b, String c, String d, String e, String f, String g) {
     /// [numberOfParameters] has 3 parameters
   }

@@ -29,10 +29,11 @@ custom_lint:
   rules:
     - no_equal_then_else
     - prefer_returning_condition
-    - avoid_print    
+    - avoid_print: false
+    - avoid_bang_operator: false 
     - prefer_void_callback
     - number_of_parameters:
-      max_parameters: 7
+      max_parameters: 5
     - boolean_prefix:
       prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should, with'
     - cyclomatic_complexity:
@@ -56,9 +57,9 @@ custom_lint:
     - remove_empty_listener
     - avoid_dynamic_return_type
     - copy_with_method_field_check
-    - avoid_cached_network_image
+    - avoid_cached_network_image: false
     - avoid_nullable_list_return_type
-    - verify_autoroute_usage
+    - verify_autoroute_usage: false
 
 
 linter:

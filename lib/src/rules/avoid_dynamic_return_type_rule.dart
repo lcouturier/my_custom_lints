@@ -90,3 +90,25 @@ class _AvoidDynamicReturnTypeFix extends DartFix {
     });
   }
 }
+
+class PreferNamedBoolParametersRule extends DartLintRule {
+  const PreferNamedBoolParametersRule()
+      : super(
+          code: const LintCode(
+            name: 'prefer_named_bool_parameters',
+            correctionMessage: 'Prefer using named parameters for bool parameters.',
+            errorSeverity: ErrorSeverity.WARNING,
+            problemMessage: '',
+          ),
+        );
+
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ErrorReporter reporter,
+    CustomLintContext context,
+  ) {}
+
+  @override
+  List<Fix> getFixes() => [_AvoidDynamicReturnTypeFix()];
+}

@@ -1,12 +1,8 @@
-import 'package:flutter/foundation.dart' show VoidCallback;
-
-typedef A = VoidCallback;
-
 typedef B = void Function();
 
 typedef C = void Function()?;
-typedef D = void Function(int index);
-typedef E = void Function({required int index});
+typedef D = Function(int index);
+typedef E = Function({required int index});
 
 typedef MyFunction = Function(); // No explicit return type
 typedef DynamicReturner = dynamic Function(int); // Explicit dynamic return type
@@ -21,9 +17,19 @@ class Person {
 
   Person({required this.name, required this.age});
 
-  getString() => 'Person(name: $name, age: $age)';
+  getString1() => 'Person(name: $name, age: $age)';
+  getString2() {
+    return 'Person(name: $name, age: $age)';
+  }
 }
 
-getValue() {
+getValue1() => '';
+
+getValue2() {
   return '';
+}
+
+printValue() {
+  // ignore: avoid_print
+  print('nothing');
 }

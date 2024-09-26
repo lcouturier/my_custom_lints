@@ -78,3 +78,13 @@ extension IterableExtensions<E> on Iterable<E> {
         : where((element) => !other.map<dynamic>(selector).contains(selector(element)));
   }
 }
+
+extension FunctionBodyExtensions on FunctionBody {
+  bool get hasReturnStatement {
+    return switch (this) {
+      final BlockFunctionBody b => b.block.statements.any((e) => e is ReturnStatement),
+      ExpressionFunctionBody _ => true,
+      _ => false,
+    };
+  }
+}

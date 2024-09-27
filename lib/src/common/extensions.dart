@@ -19,6 +19,12 @@ extension DartTypeExtensions on DartType {
   }
 }
 
+extension FormalParameterExtension on FormalParameter {
+  bool get isBool {
+    return this is SimpleFormalParameter && ((this as SimpleFormalParameter).type!.type?.isDartCoreBool ?? false);
+  }
+}
+
 extension ExpressionExtensions on Expression {
   List<String> getFieldsFromProps() {
     if (this is ListLiteral) {
@@ -77,6 +83,8 @@ extension IterableExtensions<E> on Iterable<E> {
         ? where((element) => !other.contains(element))
         : where((element) => !other.map<dynamic>(selector).contains(selector(element)));
   }
+
+  Iterable<E> separatedBy(E separator) => indexed.expand((e) => [if (e.$1 > 0) separator, e.$2]);
 }
 
 extension FunctionBodyExtensions on FunctionBody {

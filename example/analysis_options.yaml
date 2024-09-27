@@ -42,3 +42,6 @@ custom_lint:
     - avoid_nullable_list_return_type
     - verify_autoroute_usage: false
     - avoid_plus_usage
+    - prefer_named_bool_parameters:
+      ignore-single: false
+      ignore-single-boolean: false

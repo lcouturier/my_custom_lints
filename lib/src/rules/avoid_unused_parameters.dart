@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
 
 import 'package:analyzer/error/error.dart';
@@ -105,8 +103,6 @@ class UnusedParameterFix extends DartFix {
   }
 
   void update(AnalysisError analysisError, ChangeReporter reporter) {
-    log(analysisError.data.toString());
-
     final (p, parameters) = analysisError.data! as (FormalParameter, NodeList<FormalParameter>);
 
     final changeBuilder = reporter.createChangeBuilder(

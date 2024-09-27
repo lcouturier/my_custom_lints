@@ -41,3 +41,4 @@ custom_lint:
     - avoid_cached_network_image: false
     - avoid_nullable_list_return_type
     - verify_autoroute_usage: false
+    - avoid_plus_usage

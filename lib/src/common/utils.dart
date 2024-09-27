@@ -57,6 +57,7 @@ extension IterableExtensions<T> on Iterable<T> {
   }
 }
 
+const stringChecker = TypeChecker.fromUrl('dart:core#String');
 const listChecker = TypeChecker.fromUrl('dart:core#List');
 const iterableChecker = TypeChecker.fromUrl('dart:core#Iterable');
 const equatableChecker = TypeChecker.fromName('Equatable', packageName: 'equatable');

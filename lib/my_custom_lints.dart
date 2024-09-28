@@ -30,7 +30,8 @@ import 'package:my_custom_lints/src/rules/no_boolean_literal_compare_rule.dart';
 import 'package:my_custom_lints/src/rules/no_equal_then_else_rule.dart';
 import 'package:my_custom_lints/src/rules/not_length_in_index_expression_rule.dart';
 import 'package:my_custom_lints/src/rules/number_of_parameters_rule.dart';
-import 'package:my_custom_lints/src/rules/prefer_iterable_any_rule.dart';
+import 'package:my_custom_lints/src/rules/prefer_any_or_every_rule.dart';
+
 import 'package:my_custom_lints/src/rules/prefer_iterable_first_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_isempty_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_last_rule.dart';
@@ -77,13 +78,13 @@ class _MyCustomLint extends PluginBase {
       const AvoidNullableListReturnTypeRule(),
       PreferVoidCallbackRule.createRule(configs),
       BooleanPrefixesRule.createRule(configs),
-      PreferIterableAnyRule.createRule(configs),
       PreferIterableIsEmptyRule.createRule(configs),
       CyclomaticComplexityRule.createRule(configs),
       AvoidNestedIfRule.createRule(configs),
       const VerifyAutoRouteUsageRule(),
       const AvoidPlusRule(),
-      PreferNamedBoolParametersRule.createRule(configs)
+      PreferNamedBoolParametersRule.createRule(configs),
+      PreferAnyOrEveryRule.createRule(configs)
     ];
   }
 

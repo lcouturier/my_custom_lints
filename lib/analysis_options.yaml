@@ -62,6 +62,7 @@ custom_lint:
     - verify_autoroute_usage: false
     - avoid_plus_usage
     - prefer_named_bool_parameters
+    - prefer_any_or_every
 
 
 linter:

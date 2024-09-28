@@ -45,3 +45,4 @@ custom_lint:
     - prefer_named_bool_parameters:
       ignore-single: false
       ignore-single-boolean: false
+    - prefer_any_or_every

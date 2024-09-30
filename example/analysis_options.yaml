@@ -13,9 +13,14 @@ custom_lint:
     - avoid_print   
     - avoid_bang_operator: false 
     - prefer_void_callback
-    - number_of_parameters: false
+    - number_of_parameters: true
       max_parameters: 7
-    - boolean_prefix:
+    - boolean_prefixes:
+      ignore-getters: false
+      ignore-fields: true
+      ignore-parameters: false
+      ignore-methods: true
+      ignored-names: 'samePoint, adult'
       prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should, with'
     - cyclomatic_complexity: false
       max_complexity: 10

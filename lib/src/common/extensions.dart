@@ -63,6 +63,7 @@ extension ClassDeclarationExtensions on ClassDeclaration {
 }
 
 extension StringExtensions on String {
+  String removeAllSpaces() => replaceAll(' ', '');
   bool get containsOnlyUnderscores => switch (length) {
         0 => false,
         1 => this == '_',

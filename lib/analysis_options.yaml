@@ -34,7 +34,11 @@ custom_lint:
     - prefer_void_callback
     - number_of_parameters:
       max_parameters: 5
-    - boolean_prefix:
+    - boolean_prefixes:
+      ignore-getters: false
+      ignore-fields: false
+      ignore-parameters: false
+      ignore-methods: false
       prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should, with'
     - cyclomatic_complexity:
       max_complexity: 10

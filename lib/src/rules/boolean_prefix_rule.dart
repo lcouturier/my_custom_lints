@@ -1,9 +1,13 @@
 // ignore_for_file: lines_longer_than_80_chars
 
+import 'dart:developer';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
   static const lintName = 'boolean_prefixes';
@@ -15,7 +19,7 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
       configs: configs,
       name: lintName,
       paramsParser: BooleanPrefixParameters.fromJson,
-      problemMessage: (value) => 'Invalid prefix. Try using one of these: $value',
+      problemMessage: (value) => 'Invalid prefix. Try using one of these: $value.',
     );
 
     return BooleanPrefixesRule._(rule);
@@ -28,6 +32,8 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
     CustomLintContext context,
   ) {
     context.registry.addFieldDeclaration((node) {
+      if (config.parameters.ignoreFields) return;
+
       if (node.fields.type == null || !node.fields.type!.type!.isDartCoreBool) return;
       final name = node.fields.variables.first.name.lexeme;
       if (isNameValid(name)) return;
@@ -41,6 +47,24 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
         ],
       );
     });
+
+    context.registry.addGetterDeclaration((node) {
+      if (config.parameters.ignoreGetters) return;
+
+      if (node.returnType?.type == null || !(node.returnType?.type!.isDartCoreBool ?? false)) return;
+      final name = node.name.lexeme;
+      if (isNameValid(name)) return;
+
+      reporter.reportErrorForNode(
+        code,
+        node,
+        [
+          'Boolean getter',
+          'getter',
+        ],
+      );
+    });
+
     context.registry.addBooleanLiteral((node) {
       final parent = node.parent;
       if (parent is! VariableDeclaration) return;
@@ -58,10 +82,27 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
       );
     });
 
-    context.registry.addMethodDeclaration((node) {
-      final returnType = node.returnType?.type;
+    context.registry.addFormalParameter((node) {
+      if (config.parameters.ignoreParameters) return;
+
+      final returnType = node.declaredElement?.type;
       if (returnType == null || !returnType.isDartCoreBool) return;
 
+      final name = node.name?.lexeme ?? '';
+      if (isNameValid(name)) return;
+
+      reporter.reportErrorForNode(
+        code,
+        node,
+        ['Method that returns a boolean', 'method'],
+      );
+    });
+
+    context.registry.addMethodDeclaration((node) {
+      if (!config.parameters.ignoreMethods) return;
+
+      final returnType = node.returnType?.type;
+      if (returnType == null || !returnType.isDartCoreBool) return;
       if (node.isOperator) return;
 
       final element = node.declaredElement;
@@ -70,24 +111,16 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
       final name = node.name.lexeme;
       if (isNameValid(name)) return;
 
-      final parameter = node.parameters;
-      switch (parameter) {
-        case null:
-          reporter.reportErrorForToken(
-            code,
-            node.name,
-            ['Getter that returns a boolean', 'getter'],
-          );
-        case _:
-          reporter.reportErrorForToken(
-            code,
-            node.name,
-            ['Method that returns a boolean', 'method'],
-          );
-      }
+      reporter.reportErrorForToken(
+        code,
+        node.name,
+        ['Method that returns a boolean', 'method'],
+      );
     });
 
     context.registry.addFunctionDeclaration((node) {
+      if (config.parameters.ignoreMethods) return;
+
       final returnType = node.returnType?.type;
       if (returnType == null || !returnType.isDartCoreBool) return;
 
@@ -105,26 +138,52 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
   bool isNameValid(String name) {
     final nameWithoutUnderscore = name.startsWith('_') ? name.substring(1) : name;
 
+    if (config.parameters.ignoredNames.any((e) => e == nameWithoutUnderscore)) return true;
+
     final validPrefixes = config.parameters.prefixes;
     return validPrefixes.any(nameWithoutUnderscore.startsWith);
   }
 }
 
 class BooleanPrefixParameters {
+  final bool ignoreMethods;
+  final bool ignoreFields;
+  final bool ignoreParameters;
+  final bool ignoreGetters;
+  final List<String> ignoredNames;
   final List<String> prefixes;
 
-  static final List<String> _defaultPrefixes = ['is', 'has'];
+  static final List<String> _defaultPrefixes = ['is', 'has', 'should'];
 
   factory BooleanPrefixParameters.fromJson(Map<String, Object?> map) {
-    final value = map['prefixes'] as String? ?? '';
+    final prefixes = map['prefixes'] as String? ?? '';
+    final ignoredNames = map['ignored-names'] as String? ?? '';
+
+    log(prefixes);
+    log(ignoredNames);
 
     return BooleanPrefixParameters(
-      prefixes: value.isEmpty ? _defaultPrefixes : value.split(',').map((e) => e.trim()).toList(),
+      ignoreMethods: map['ignore-methods'] as bool? ?? false,
+      ignoreFields: map['ignore-fields'] as bool? ?? false,
+      ignoreParameters: map['ignore-parameters'] as bool? ?? false,
+      ignoreGetters: map['ignore-getters'] as bool? ?? false,
+      ignoredNames: ignoredNames.isEmpty ? [] : ignoredNames.removeAllSpaces().split(',').map((e) => e.trim()).toList(),
+      prefixes:
+          prefixes.isEmpty ? _defaultPrefixes : prefixes.removeAllSpaces().split(',').map((e) => e.trim()).toList(),
     );
   }
 
-  BooleanPrefixParameters({required this.prefixes});
+  BooleanPrefixParameters({
+    required this.ignoreMethods,
+    required this.ignoreFields,
+    required this.ignoreParameters,
+    required this.ignoredNames,
+    required this.ignoreGetters,
+    required this.prefixes,
+  });
 
   @override
-  String toString() => prefixes.join(', ');
+  String toString() {
+    return prefixes.join(', ');
+  }
 }

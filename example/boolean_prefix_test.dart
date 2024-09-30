@@ -1,4 +1,4 @@
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: lines_longer_than_80_chars, copy_with_method_field_check
 
 import 'package:flutter/widgets.dart';
 
@@ -31,9 +31,13 @@ class Person {
   const Person(this.name, this.age, this.firstName);
 
   bool get isAdult => age >= 18;
-  bool get isMinor => age < 18;
+  bool get minor => age < 18;
 
-  // ignore: boolean_prefixes
+  // ignore: unused_parameter, prefer_named_bool_parameters
+  bool adult(bool valid) {
+    return age >= 18;
+  }
+
   bool get adultOrMinor => age >= 18 || age < 18;
 
   Person get incrementAge => copyWith(age: age + 1);
@@ -63,7 +67,6 @@ class Person {
   }
 }
 
-// expect_lint: boolean_prefixes
 const debugMode = true;
 
 // "at" is a valid prefix since we specified it in the analysis_options.yaml.
@@ -75,10 +78,8 @@ class Point {
 
   const Point(this.x, this.y);
 
-  // expect_lint: boolean_prefixes
   bool get origin => x == 0 && y == 0;
 
-  // expect_lint: boolean_prefixes
   bool samePoint(covariant Point other) => x == other.x && y == other.y;
 }
 
@@ -94,6 +95,5 @@ class Point3D extends Point {
 bool shouldsamePoint(Point a, Point b) => a.x == b.x && a.y == b.y;
 
 extension PointExtension on Point {
-  // expect_lint: boolean_prefixes
   bool get onXAxis => y == 0;
 }

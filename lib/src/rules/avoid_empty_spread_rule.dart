@@ -56,8 +56,12 @@ class _AvoidUselessSpreadFix extends DartFix {
       changeBuilder.addDartFileEdit((builder) {
         builder
           ..addDeletion(range.token(node.beginToken.previous!))
-          ..addDeletion(range.token(node.beginToken))
-          ..addDeletion(range.token(node.endToken));
+          ..addDeletion(range.token(node.beginToken));
+        if (node.endToken.previous?.type == TokenType.COMMA) {
+          builder.addDeletion(range.token(node.endToken.previous!));
+        }
+        builder
+          .addDeletion(range.token(node.endToken));
       });
     });
   }

@@ -12,4 +12,44 @@ void fn() {
   collection.where((item) => item is! String).isEmpty; // LINT
 
   collection.where((item) => item == 4).isEmpty; // LINT
+  collection.where((item) => item != 4).isEmpty; // LINT
+  collection.where((item) => !(item != 4)).isEmpty; // LINT
 }
+
+void fn2(Iterable<int> numbers) {
+  numbers.where((n) => n.isEven).isEmpty;
+
+  numbers.where((n) => n == 0).isEmpty;
+
+  numbers.where((n) => n > 0).isEmpty;
+
+  numbers.where((n) => n % 3 == 0).isEmpty;
+
+  numbers.where((n) => isMultipleOfThree(n)).isEmpty;
+
+  numbers.where((n) => !isMultipleOfThree(n)).isEmpty;
+
+  numbers.where(isMultipleOfThree).isEmpty;
+
+  numbers.where((n) {
+    return n.isEven;
+  }).isEmpty;
+
+  numbers.where((n) {
+    return n == 0;
+  }).isEmpty;
+
+  numbers.where((n) {
+    return n > 0;
+  }).isEmpty;
+
+  numbers.where((n) {
+    return n % 3 == 0;
+  }).isEmpty;
+
+  numbers.where((n) {
+    return isMultipleOfThree(n);
+  }).isEmpty;
+}
+
+bool isMultipleOfThree(int number) => number % 3 == 0;

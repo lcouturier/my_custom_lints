@@ -8,6 +8,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 class PreferAnyOrEveryRule extends BaseLintRule<PreferAnyOrEveryParameters> {
@@ -95,7 +96,6 @@ class _PreferAnyOrEveryFix extends DartFix {
           priority: 80,
         );
 
-        // ignore: cascade_invocations
         changeBuilder.addDartFileEdit((builder) {
           builder
             ..addSimpleReplacement(target.methodName.sourceRange, 'any')
@@ -112,14 +112,14 @@ class _PreferAnyOrEveryFix extends DartFix {
         final argType = arg.staticType;
         if (argType is! FunctionType) return;
         if (!argType.returnType.isDartCoreBool) return;
-        final body = arg.body;
-        final expression = switch (body) {
+
+        final expression = switch (arg.body) {
           BlockFunctionBody(:final block) => block.statements.whereType<ReturnStatement>().firstOrNull?.expression,
           ExpressionFunctionBody(:final expression) => expression,
           _ => null,
         };
-        if (expression == null) return;
 
+        if (expression == null) return;
         final type = expression.staticType;
         if (type == null || !type.isDartCoreBool) return;
 
@@ -133,7 +133,12 @@ class _PreferAnyOrEveryFix extends DartFix {
             if (expression.notOperator != null) {
               builder.addDeletion(expression.notOperator!.sourceRange);
             } else {
-              builder.addSimpleInsertion(expression.isOperator.end, '!');
+              builder.addSimpleInsertion(expression.isOperator.end, TokenType.BANG.lexeme);
+            }
+          } else if (expression is BinaryExpression) {
+            final (token, inverted) = expression.operator.type.invert;
+            if (inverted) {
+              builder.addSimpleReplacement(expression.operator.sourceRange, token!.lexeme);
             }
           } else {
             builder.addSimpleInsertion(expression.sourceRange.offset, '!(');

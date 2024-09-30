@@ -1,6 +1,7 @@
 // Extension to check if a class is an Equatable class
 
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 
@@ -93,6 +94,20 @@ extension FunctionBodyExtensions on FunctionBody {
       final BlockFunctionBody b => b.block.statements.any((e) => e is ReturnStatement),
       ExpressionFunctionBody _ => true,
       _ => false,
+    };
+  }
+}
+
+extension TokenTypeExtensions on TokenType {
+  (TokenType?, bool) get invert {
+    return switch (this) {
+      TokenType.EQ_EQ => (TokenType.BANG_EQ, true),
+      TokenType.BANG_EQ => (TokenType.EQ_EQ, true),
+      TokenType.GT => (TokenType.LT_EQ, true),
+      TokenType.LT => (TokenType.GT_EQ, true),
+      TokenType.GT_EQ => (TokenType.LT, true),
+      TokenType.LT_EQ => (TokenType.GT, true),
+      _ => (null, false),
     };
   }
 }

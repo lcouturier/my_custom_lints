@@ -60,8 +60,7 @@ class _AvoidUselessSpreadFix extends DartFix {
         if (node.endToken.previous?.type == TokenType.COMMA) {
           builder.addDeletion(range.token(node.endToken.previous!));
         }
-        builder
-          .addDeletion(range.token(node.endToken));
+        builder.addDeletion(range.token(node.endToken));
       });
     });
   }

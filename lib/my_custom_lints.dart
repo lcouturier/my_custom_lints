@@ -14,6 +14,7 @@ import 'package:my_custom_lints/src/rules/always_call_super_props_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_dynamic_return_type_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_empty_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
@@ -83,6 +84,7 @@ class _MyCustomLint extends PluginBase {
       AvoidNestedIfRule.createRule(configs),
       const VerifyAutoRouteUsageRule(),
       const AvoidPlusRule(),
+      const AvoidUselessSpreadRule(),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs)
     ];

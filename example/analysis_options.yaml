@@ -51,3 +51,4 @@ custom_lint:
       ignore-single: false
       ignore-single-boolean: false
     - prefer_any_or_every
+    - avoid_empty_spread

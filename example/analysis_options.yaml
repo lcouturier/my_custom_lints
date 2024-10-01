@@ -52,3 +52,4 @@ custom_lint:
       ignore-single-boolean: false
     - prefer_any_or_every
     - avoid_useless_spread
+    - avoid_inverted_boolean_checks

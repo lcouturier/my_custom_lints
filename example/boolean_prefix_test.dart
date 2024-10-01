@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 class Option<T> {
   final T? value;
+
   const Option(this.value);
 
   factory Option.none() => const Option(null);
@@ -22,6 +23,8 @@ class Option<T> {
   bool get isSome => hasValue;
   Option<T> getOrElseGet(Option<T> Function() defaultValue) => value != null ? this : defaultValue();
 }
+
+typedef MyFunc = void Function(bool);
 
 @immutable
 class Person {

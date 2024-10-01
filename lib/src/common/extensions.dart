@@ -100,7 +100,7 @@ extension FunctionBodyExtensions on FunctionBody {
 }
 
 extension TokenTypeExtensions on TokenType {
-  (TokenType?, bool) get invert {
+  (TokenType, bool) get invert {
     return switch (this) {
       TokenType.EQ_EQ => (TokenType.BANG_EQ, true),
       TokenType.BANG_EQ => (TokenType.EQ_EQ, true),
@@ -108,7 +108,9 @@ extension TokenTypeExtensions on TokenType {
       TokenType.LT => (TokenType.GT_EQ, true),
       TokenType.GT_EQ => (TokenType.LT, true),
       TokenType.LT_EQ => (TokenType.GT, true),
-      _ => (null, false),
+      TokenType.AMPERSAND_AMPERSAND => (TokenType.BAR_BAR, true),
+      TokenType.BAR_BAR => (TokenType.AMPERSAND_AMPERSAND, true),
+      _ => (this, false),
     };
   }
 }

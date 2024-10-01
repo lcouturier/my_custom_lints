@@ -1,7 +1,6 @@
 // ignore_for_file: lines_longer_than_80_chars
 
-import 'dart:developer';
-
+// ignore: unused_import
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -136,6 +135,9 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
   }
 
   bool isNameValid(String name) {
+    if (name.isEmpty) return true;
+    if (name.containsOnlyUnderscores) return true;
+
     final nameWithoutUnderscore = name.startsWith('_') ? name.substring(1) : name;
 
     if (config.parameters.ignoredNames.any((e) => e == nameWithoutUnderscore)) return true;
@@ -158,9 +160,6 @@ class BooleanPrefixParameters {
   factory BooleanPrefixParameters.fromJson(Map<String, Object?> map) {
     final prefixes = map['prefixes'] as String? ?? '';
     final ignoredNames = map['ignored-names'] as String? ?? '';
-
-    log(prefixes);
-    log(ignoredNames);
 
     return BooleanPrefixParameters(
       ignoreMethods: map['ignore-methods'] as bool? ?? false,

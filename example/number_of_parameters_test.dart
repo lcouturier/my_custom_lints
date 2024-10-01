@@ -1,5 +1,4 @@
-// ignore_for_file: unused_parameter
-import 'dart:developer';
+// ignore_for_file: unused_parameter, avoid_print
 
 String other(String a, String b) {
   return a;
@@ -17,7 +16,7 @@ class NumberOfParameters {
   void unusedParameter(String a) {}
 
   void usedParameter(String a) {
-    log(a);
+    print(a);
   }
 
   void numberOfParametersDeprecated(String a, String b, String c, String d, String e, String f, String g) {

@@ -14,6 +14,7 @@ import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_dynamic_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_inverted_boolean_checks_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_plus_rule.dart';
@@ -82,6 +83,7 @@ class _MyCustomLint extends PluginBase {
       const VerifyAutoRouteUsageRule(),
       const AvoidPlusRule(),
       const AvoidUselessSpreadRule(),
+      const AvoidInvertedBooleanChecksRule(),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs)
     ];

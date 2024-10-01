@@ -48,10 +48,10 @@ class PreferNoGrowableListRule extends DartLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [PreferNoGrowableListFix()];
+  List<Fix> getFixes() => [_PreferNoGrowableListFix()];
 }
 
-class PreferNoGrowableListFix extends DartFix {
+class _PreferNoGrowableListFix extends DartFix {
   @override
   void run(
     CustomLintResolver resolver,

@@ -95,22 +95,22 @@ class _PreferNamedBoolParametersFix extends DartFix {
         range.startEnd(parameters.beginToken.next!, parameters.endToken.previous!),
         (builder) {
           for (final p in parameters.parameters
+              .whereType<SimpleFormalParameter>()
               .where((e) => !e.isNamed)
-              .where((e) => !e.isBool)
-              .whereType<SimpleFormalParameter>()) {
+              .where((e) => !e.isBool)) {
             builder.write('${p.type} ${p.name?.lexeme}, ');
           }
           builder.write('{');
           for (final p in parameters.parameters
+              .whereType<SimpleFormalParameter>()
               .where((e) => e.isNamed)
-              .where((e) => !e.isBool)
-              .whereType<SimpleFormalParameter>()) {
+              .where((e) => !e.isBool)) {
             builder.write('required ${p.type} ${p.name?.lexeme}, ');
           }
           for (final p in parameters.parameters
+              .whereType<SimpleFormalParameter>()
               .where((e) => !e.isNamed)
-              .where((e) => e.isBool)
-              .whereType<SimpleFormalParameter>()) {
+              .where((e) => e.isBool)) {
             builder.write('required ${p.type} ${p.name?.lexeme}, ');
           }
           builder.write('}');

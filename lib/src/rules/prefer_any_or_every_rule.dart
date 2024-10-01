@@ -138,7 +138,7 @@ class _PreferAnyOrEveryFix extends DartFix {
           } else if (expression is BinaryExpression) {
             final (token, inverted) = expression.operator.type.invert;
             if (inverted) {
-              builder.addSimpleReplacement(expression.operator.sourceRange, token!.lexeme);
+              builder.addSimpleReplacement(expression.operator.sourceRange, token.lexeme);
             }
           } else {
             builder.addSimpleInsertion(expression.sourceRange.offset, '!(');

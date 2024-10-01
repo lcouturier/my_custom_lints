@@ -67,7 +67,7 @@ custom_lint:
     - avoid_plus_usage
     - prefer_named_bool_parameters
     - prefer_any_or_every
-    - avoid_empty_spread
+    - avoid_useless_spread
 
 
 linter:

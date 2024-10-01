@@ -4,7 +4,6 @@ library my_custom_lints;
 
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/assists/check_state_getter_assist.dart';
-
 import 'package:my_custom_lints/src/assists/copy_with_nullable_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_map_method_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_when_method_assist.dart';
@@ -14,13 +13,13 @@ import 'package:my_custom_lints/src/rules/always_call_super_props_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_dynamic_return_type_rule.dart';
-import 'package:my_custom_lints/src/rules/avoid_empty_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_plus_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
+import 'package:my_custom_lints/src/rules/avoid_useless_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_widget_function_rule.dart';
 import 'package:my_custom_lints/src/rules/boolean_prefix_rule.dart';
 import 'package:my_custom_lints/src/rules/copy_with_method_field_check_rule.dart';
@@ -32,12 +31,10 @@ import 'package:my_custom_lints/src/rules/no_equal_then_else_rule.dart';
 import 'package:my_custom_lints/src/rules/not_length_in_index_expression_rule.dart';
 import 'package:my_custom_lints/src/rules/number_of_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_any_or_every_rule.dart';
-
 import 'package:my_custom_lints/src/rules/prefer_iterable_first_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_isempty_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_last_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_named_bool_parameters_rule.dart';
-
 import 'package:my_custom_lints/src/rules/prefer_no_growable_list_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_of_over_current.dart';
 import 'package:my_custom_lints/src/rules/prefer_returning_condition_rule.dart';

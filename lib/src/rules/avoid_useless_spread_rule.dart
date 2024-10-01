@@ -8,7 +8,7 @@ class AvoidUselessSpreadRule extends DartLintRule {
   const AvoidUselessSpreadRule()
       : super(
           code: const LintCode(
-            name: 'avoid_empty_spread',
+            name: 'avoid_useless_spread',
             problemMessage: 'Avoid useless spread.',
             errorSeverity: ErrorSeverity.WARNING,
           ),

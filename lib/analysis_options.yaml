@@ -70,6 +70,7 @@ custom_lint:
     - prefer_any_or_every
     - avoid_useless_spread
     - avoid_inverted_boolean_checks
+    - avoid_map_keys_contains
 
 
 linter:

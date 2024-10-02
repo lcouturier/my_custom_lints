@@ -31,8 +31,9 @@ class AvoidInvertedBooleanChecksRule extends DartLintRule {
       if (node.operand is! ParenthesizedExpression) return;
       final operand = node.operand as ParenthesizedExpression;
       if (operand.expression is! BinaryExpression) return;
-      
+
       final binary = operand.expression as BinaryExpression;
+      if (binary.operator.type == TokenType.QUESTION_QUESTION) return;
       if (binary.leftOperand is BinaryExpression) return;
       if (binary.rightOperand is BinaryExpression) return;
 

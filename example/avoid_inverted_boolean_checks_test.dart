@@ -2,6 +2,11 @@ void fn() {
   final x = 1;
   final a = 2;
 
+  final z = x == 1 ? null : true;
+  if (!(z ?? false)) {}
+  if (!(z ?? true)) {}
+  if (z ?? true) {}
+
   if (!(x == 1)) {} // LINT
 
   if (!(x != 1)) {} // LINT

@@ -71,6 +71,8 @@ custom_lint:
     - avoid_useless_spread
     - avoid_inverted_boolean_checks
     - avoid_map_keys_contains
+    - avoid_long_records:
+      max-number: 6
 
 
 linter:

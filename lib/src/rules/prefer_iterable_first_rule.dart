@@ -29,24 +29,16 @@ class PreferIterableFirst extends DartLintRule {
   ) {
     context.registry.addIndexExpression((node) {
       final targetType = node.realTarget.staticType;
-      if (targetType == null || !listChecker.isAssignableFromType(targetType)) {
-        return;
-      }
+      if (targetType == null || !listChecker.isAssignableFromType(targetType)) return;
 
       final indexExpression = node.index;
-      if (indexExpression is! IntegerLiteral || indexExpression.value != 0) {
-        return;
-      }
+      if (indexExpression is! IntegerLiteral || indexExpression.value != 0) return;
 
-      reporter.reportErrorForNode(
-        code,
-        node,
-        [
-          'list[0]',
-          node.toSource(),
-          '${node.realTarget.toSource()}.first',
-        ],
-      );
+      reporter.reportErrorForNode(code, node, [
+        'list[0]',
+        node.toSource(),
+        '${node.realTarget.toSource()}.first',
+      ]);
     });
 
     context.registry.addMethodInvocation((node) {
@@ -82,6 +74,9 @@ class PreferIterableFirstFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
+    final node = analysisError.data! as IndexExpression;
+    if (!analysisError.sourceRange.covers(node.sourceRange)) return;
+
     context.registry.addIndexExpression((node) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 

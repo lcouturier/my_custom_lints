@@ -31,6 +31,11 @@ class AvoidInvertedBooleanChecksRule extends DartLintRule {
       if (node.operand is! ParenthesizedExpression) return;
       final operand = node.operand as ParenthesizedExpression;
       if (operand.expression is! BinaryExpression) return;
+      
+      final binary = operand.expression as BinaryExpression;
+      if (binary.leftOperand is BinaryExpression) return;
+      if (binary.rightOperand is BinaryExpression) return;
+
       reporter.reportErrorForNode(code, node);
     });
   }
@@ -52,6 +57,8 @@ class _AvoidInvertedBooleanChecksFix extends DartFix {
       final expression = node.operand;
       if (expression is! ParenthesizedExpression) return;
       final binary = expression.expression as BinaryExpression;
+      if (binary.leftOperand is BinaryExpression) return;
+      if (binary.rightOperand is BinaryExpression) return;
 
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
       final changeBuilder = reporter.createChangeBuilder(
@@ -59,56 +66,19 @@ class _AvoidInvertedBooleanChecksFix extends DartFix {
         priority: 80,
       );
 
-      if ((binary.leftOperand is! BinaryExpression) && (binary.rightOperand is! BinaryExpression)) {
-        final (token, _) = binary.operator.type.invert;
-        changeBuilder.addDartFileEdit((builder) {
-          builder.addReplacement(
-            range.node(node),
-            (builder) {
-              builder
-                ..write(binary.leftOperand.toSource())
-                ..write(token.lexeme)
-                ..write(binary.rightOperand.toSource());
-            },
-          );
-          builder.format(range.node(node));
-        });
-      }
-
-      if ((binary.leftOperand is BinaryExpression) && (binary.rightOperand is BinaryExpression)) {
-        // final (token, _) = binary.operator.type.invert;
-        final bl = binary.leftOperand as BinaryExpression;
-        final br = binary.rightOperand as BinaryExpression;
-        changeBuilder.addDartFileEdit((builder) {
-          builder.addDeletion(range.entity(node.operator));
-          builder.addDeletion(range.entity((node.operand as ParenthesizedExpression).leftParenthesis));
-          builder.addDeletion(range.entity((node.operand as ParenthesizedExpression).rightParenthesis));
-          builder.addReplacement(
-            range.node(binary.leftOperand),
-            (builder) {
-              builder
-                ..write(bl.leftOperand.toSource())
-                ..write(bl.operator.type.invert.$1.lexeme)
-                ..write(bl.rightOperand.toSource());
-            },
-          );
-          builder.addReplacement(
-            range.startEnd(binary.operator, binary.operator),
-            (builder) => builder.write(binary.operator.type.invert.$1.lexeme),
-          );
-          builder.addReplacement(
-            range.node(binary.rightOperand),
-            (builder) {
-              builder
-                ..write(br.leftOperand.toSource())
-                ..write(br.operator.type.invert.$1.lexeme)
-                ..write(br.rightOperand.toSource());
-            },
-          );
-
-          builder.format(range.node(node));
-        });
-      }
+      final (token, _) = binary.operator.type.invert;
+      changeBuilder.addDartFileEdit((builder) {
+        builder.addReplacement(
+          range.node(node),
+          (builder) {
+            builder
+              ..write(binary.leftOperand.toSource())
+              ..write(token.lexeme)
+              ..write(binary.rightOperand.toSource());
+          },
+        );
+        builder.format(range.node(node));
+      });
     });
   }
 }

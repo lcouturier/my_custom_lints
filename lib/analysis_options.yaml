@@ -39,6 +39,7 @@ custom_lint:
       ignore-fields: false
       ignore-parameters: false
       ignore-methods: false
+      ignored-names: 'stringify'
       prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should, with'
     - cyclomatic_complexity:
       max_complexity: 10

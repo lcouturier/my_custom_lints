@@ -16,7 +16,7 @@ void fn() {
 
   var b = !(x != 1) ? 1 : 2; // LINT
 
-  var foo = x > 4; // LINT
+  var foo = !(x > 4); // LINT
 
-  if (!(a > 4 && b < 2)) {} // LINT
+  if (!(a > 4 && b < 2)) {}
 }

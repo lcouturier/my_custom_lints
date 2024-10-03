@@ -3,6 +3,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
 
@@ -69,26 +70,22 @@ class _AvoidDynamicReturnTypeFix extends DartFix {
       priority: 80,
     );
 
+    final typeAnnotation = switch (node) {
+      FunctionDeclaration _ => node.returnType,
+      MethodDeclaration _ => node.returnType,
+      GenericFunctionType _ => node.returnType,
+      FunctionTypedFormalParameter _ => node.returnType,
+      _ => null,
+    };
+
     changeBuilder.addDartFileEdit((builder) {
-      if (node is GenericFunctionType) {
-        builder.addInsertion(node.offset, (builder) {
+      if (typeAnnotation == null) {
+        builder.addInsertion(node.beginToken.offset, (builder) {
           builder.write('void ');
         });
-      } else if (node is MethodDeclaration) {
-        builder.addInsertion(node.offset, (builder) {
-          builder.write('void ');
-        });
-      } else if (node is FunctionDeclaration) {
-        builder.addInsertion(node.offset, (builder) {
-          builder.write('void ');
-        });
-      } else if (node is FunctionTypedFormalParameter) {
-        builder.addInsertion(node.offset, (builder) {
-          builder.write('void ');
-        });
-      } else if (node is FunctionTypeAlias) {
-        builder.addInsertion(node.offset, (builder) {
-          builder.write('void ');
+      } else {
+        builder.addReplacement(range.token(node.beginToken), (builder) {
+          builder.write('void');
         });
       }
     });

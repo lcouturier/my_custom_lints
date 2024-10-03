@@ -19,6 +19,7 @@ import 'package:my_custom_lints/src/rules/avoid_inverted_boolean_checks_rule.dar
 import 'package:my_custom_lints/src/rules/avoid_long_records_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
+import 'package:my_custom_lints/src/rules/avoid_nullable_boolean_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_plus_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
@@ -91,6 +92,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidMapKeysContainsRule(),
       const UseTernaryInsteadOfIfElse(),
       const AvoidExtensionOnEnumRule(),
+      const AvoidNullableBooleanRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs)

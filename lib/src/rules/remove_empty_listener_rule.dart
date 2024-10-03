@@ -79,12 +79,14 @@ class RemoveEmptyListenerFix extends DartFix {
             'BlocBuilder',
           );
           // ignore: cascade_invocations
-          builder.addDeletion(
-            node.argumentList.arguments.last.endToken.next != null &&
-                    node.argumentList.arguments.last.endToken.next!.type == TokenType.COMMA
-                ? range.startEnd(listenerArgument, node.argumentList.arguments.last.endToken.next!)
-                : range.node(listenerArgument),
-          );
+          builder
+            ..addDeletion(
+              node.argumentList.arguments.last.endToken.next != null &&
+                      node.argumentList.arguments.last.endToken.next!.type == TokenType.COMMA
+                  ? range.startEnd(listenerArgument, node.argumentList.arguments.last.endToken.next!)
+                  : range.node(listenerArgument),
+            )
+            ..format(range.node(node));
         });
       }
     });

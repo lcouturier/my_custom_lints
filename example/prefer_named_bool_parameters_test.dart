@@ -1,4 +1,4 @@
-// ignore_for_file: boolean_prefixes, unused_parameter
+// ignore_for_file: boolean_prefixes, avoid_print, duplicate_ignore
 void someFunction1(String name, {required bool isExternal, required bool isTemporary}) {
   // ignore: avoid_print
   print(name);
@@ -22,6 +22,19 @@ void fn2(bool p1) {
   print(p1);
 }
 
+class EditablePassenger {
+  final String name;
+  final bool isExternal;
+  final bool isTemporary;
+
+  EditablePassenger({required this.name, required this.isExternal, required this.isTemporary});
+}
+
+void fn3(EditablePassenger editablePassenger, String? pet, bool? selected) {
+  print(pet ?? 'null');
+  print(selected ?? 'null');
+}
+
 class MyClass {
   final bool p1;
   final bool p2;
@@ -29,12 +42,17 @@ class MyClass {
 
   MyClass(this.p1, this.p2, this.p3);
 
-  void fn(String name, bool p1, bool p2, bool p3) {
+  void fn(String name, bool p1, bool? p2, bool p3) {
     // ignore: avoid_print
     print(p1);
     // ignore: avoid_print
     print(p2);
     // ignore: avoid_print
     print(p3);
+  }
+
+  void fn3(int max, String? pet, bool? selected) {
+    print(pet ?? 'null');
+    print(selected ?? 'null');
   }
 }

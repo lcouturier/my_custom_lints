@@ -21,9 +21,11 @@ extension DartTypeExtensions on DartType {
 }
 
 extension FormalParameterExtension on FormalParameter {
-  bool get isBool {
-    return this is SimpleFormalParameter && ((this as SimpleFormalParameter).type!.type?.isDartCoreBool ?? false);
-  }
+  bool get isBool =>
+      this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isDartCoreBool ?? false);
+
+  bool get isNullable =>
+      this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isNullable ?? false);
 }
 
 extension ExpressionExtensions on Expression {

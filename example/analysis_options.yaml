@@ -32,7 +32,7 @@ custom_lint:
     - prefer_iterable_isempty
     - no_length_in_index_expression
     - unused_parameter:
-    - parameters: 'state, event'
+      parameters: 'state, event'
     - equatable_props_check: false
     - add_cubit_suffix_rule
     - avoid_filter_usage
@@ -58,3 +58,4 @@ custom_lint:
       max-number: 6
     - use_ternary_instead_of_if_else
     - avoid_extension_on_enum
+    - avoid_nullable_boolean

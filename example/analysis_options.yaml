@@ -56,3 +56,5 @@ custom_lint:
     - avoid_map_keys_contains
     - avoid_long_records:
       max-number: 6
+    - use_ternary_instead_of_if_else
+    - avoid_extension_on_enum

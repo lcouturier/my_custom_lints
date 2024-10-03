@@ -29,7 +29,7 @@ class AvoidDynamicReturnTypeRule extends DartLintRule {
       }
     });
 
-    context.registry.addFunctionTypeAlias((node) {
+    context.registry.addFunctionTypedFormalParameter((node) {
       if (node.returnType == null || node.returnType.toString() == 'dynamic') {
         reporter.reportErrorForNode(code, node, [], [], (node, false));
       }
@@ -70,19 +70,23 @@ class _AvoidDynamicReturnTypeFix extends DartFix {
     );
 
     changeBuilder.addDartFileEdit((builder) {
-      if (node case GenericFunctionType()) {
+      if (node is GenericFunctionType) {
         builder.addInsertion(node.offset, (builder) {
           builder.write('void ');
         });
-      } else if (node case MethodDeclaration()) {
+      } else if (node is MethodDeclaration) {
         builder.addInsertion(node.offset, (builder) {
           builder.write('void ');
         });
-      } else if (node case FunctionDeclaration()) {
+      } else if (node is FunctionDeclaration) {
         builder.addInsertion(node.offset, (builder) {
           builder.write('void ');
         });
-      } else if (node case FunctionTypeAlias()) {
+      } else if (node is FunctionTypedFormalParameter) {
+        builder.addInsertion(node.offset, (builder) {
+          builder.write('void ');
+        });
+      } else if (node is FunctionTypeAlias) {
         builder.addInsertion(node.offset, (builder) {
           builder.write('void ');
         });

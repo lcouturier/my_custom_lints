@@ -13,6 +13,7 @@ import 'package:my_custom_lints/src/rules/always_call_super_props_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_dynamic_return_type_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_extension_on_enum_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_inverted_boolean_checks_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_long_records_rule.dart';
@@ -44,6 +45,7 @@ import 'package:my_custom_lints/src/rules/prefer_returning_condition_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_underscore_for_unused_callback_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_custom_lints/src/rules/remove_empty_listener_rule.dart';
+import 'package:my_custom_lints/src/rules/use_ternary_instead_of_ifelse_rule.dart';
 import 'package:my_custom_lints/src/rules/verify_autoroute_usage_rule.dart';
 
 PluginBase createPlugin() => _MyCustomLint();
@@ -87,6 +89,8 @@ class _MyCustomLint extends PluginBase {
       const AvoidUselessSpreadRule(),
       const AvoidInvertedBooleanChecksRule(),
       const AvoidMapKeysContainsRule(),
+      const UseTernaryInsteadOfIfElse(),
+      const AvoidExtensionOnEnumRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs)

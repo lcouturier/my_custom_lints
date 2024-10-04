@@ -3,6 +3,9 @@
 analyzer:
   plugins:
     - custom_lint
+  exclude:
+    - sample
+    - test/**.dart
 
 custom_lint:
   debug: true # enable debug mode
@@ -59,3 +62,4 @@ custom_lint:
     - use_ternary_instead_of_if_else
     - avoid_extension_on_enum
     - avoid_nullable_boolean
+    - avoid_local_function

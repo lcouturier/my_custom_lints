@@ -76,6 +76,7 @@ custom_lint:
     - use_ternary_instead_of_if_else
     - avoid_extension_on_enum
     - avoid_nullable_boolean
+    - avoid_local_function
 
 
 linter:

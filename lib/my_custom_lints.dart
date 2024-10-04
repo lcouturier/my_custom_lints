@@ -16,6 +16,7 @@ import 'package:my_custom_lints/src/rules/avoid_dynamic_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_extension_on_enum_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_inverted_boolean_checks_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_local_function_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_long_records_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
@@ -80,6 +81,7 @@ class _MyCustomLint extends PluginBase {
       const CopyWithMethodFieldCheckRule(),
       const AvoidCachedNetworkImage(),
       const AvoidNullableListReturnTypeRule(),
+      const AvoidLocalFunctionRule(),
       PreferVoidCallbackRule.createRule(configs),
       BooleanPrefixesRule.createRule(configs),
       PreferIterableIsEmptyRule.createRule(configs),

@@ -32,8 +32,10 @@ custom_lint:
     - avoid_print: false
     - avoid_bang_operator: false 
     - prefer_void_callback
-    - number_of_parameters:
-      max_parameters: 5
+    - avoid_long_parameter_list:
+      max-parameters: 5
+      ignore-optional: true
+      ignored-names: 'copyWith'
     - boolean_prefixes:
       ignore-getters: false
       ignore-fields: false

@@ -19,6 +19,7 @@ import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_getter_prefix_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_inverted_boolean_checks_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_local_function_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_long_parameter_list_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_long_records_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
@@ -37,7 +38,6 @@ import 'package:my_custom_lints/src/rules/missing_field_in_equatable_props.dart'
 import 'package:my_custom_lints/src/rules/no_boolean_literal_compare_rule.dart';
 import 'package:my_custom_lints/src/rules/no_equal_then_else_rule.dart';
 import 'package:my_custom_lints/src/rules/not_length_in_index_expression_rule.dart';
-import 'package:my_custom_lints/src/rules/number_of_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_any_or_every_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_first_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_isempty_rule.dart';
@@ -59,7 +59,7 @@ class _MyCustomLint extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) {
     return <LintRule>[
-      NumberOfParametersRule.createRule(configs),
+      AvoidLongParameterListRule.createRule(configs),
       const AvoidPrintRule(),
       const AvoidBangOperatorRule(),
       const AvoidWidgetFunctionRule(),

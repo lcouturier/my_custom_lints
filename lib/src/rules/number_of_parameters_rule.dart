@@ -29,6 +29,7 @@ class NumberOfParametersRule extends BaseLintRule<NumberOfParametersParameters> 
     CustomLintContext context,
   ) {
     context.registry.addDeclaration((node) {
+      if (!config.enabled) return;
       if (node.metadata.any((e) => e.name.name.startsWith('Deprecated'))) return;
 
       if (node is! MethodDeclaration && node is! FunctionDeclaration) return;

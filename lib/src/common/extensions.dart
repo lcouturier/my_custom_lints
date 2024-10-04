@@ -73,6 +73,15 @@ extension StringExtensions on String {
         3 => this == '___',
         _ => RegExp(r'^_+$').hasMatch(this),
       };
+
+  String removePrefix([String prefix = 'get']) {
+    if (startsWith(prefix)) {
+      return substring(prefix.length);
+    }
+    return this;
+  }
+
+  String get firstLowerCase => substring(0, 1).toLowerCase() + substring(1);
 }
 
 extension IterableExtensions<E> on Iterable<E> {

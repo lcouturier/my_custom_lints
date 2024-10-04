@@ -16,8 +16,8 @@ custom_lint:
     - avoid_print   
     - avoid_bang_operator: false 
     - prefer_void_callback
-    - number_of_parameters: true
-      max_parameters: 7
+    - number_of_parameters:
+      max_parameters: 5
     - boolean_prefixes:
       ignore-getters: false
       ignore-fields: true
@@ -63,3 +63,5 @@ custom_lint:
     - avoid_extension_on_enum
     - avoid_nullable_boolean
     - avoid_local_function
+    - avoid_equal_expressions
+    - avoid_getter_prefix

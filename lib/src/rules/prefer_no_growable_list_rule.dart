@@ -14,8 +14,8 @@ class PreferNoGrowableListRule extends DartLintRule {
       : super(
           code: const LintCode(
             name: ruleName,
-            problemMessage: 'Prefer use toList(growable: false).',
-            errorSeverity: ErrorSeverity.WARNING,
+            problemMessage: 'Always use non-growable arrays if possible.',
+            correctionMessage: '',
           ),
         );
 

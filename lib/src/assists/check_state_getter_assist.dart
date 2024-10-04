@@ -1,7 +1,11 @@
 // ignore_for_file: cascade_invocations, unused_element, unused_import, no_leading_underscores_for_local_identifiers
 
+import 'dart:ffi';
+
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/source/source_range.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
@@ -25,12 +29,32 @@ class CheckStateGetterAssist extends DartAssist {
 
       changeBuilder.addDartFileEdit((builder) {
         builder.addInsertion(node.end - 1, (builder) {
+          // _writeGetter(builder, subclasses);
           builder.write(_generateGetter(subclasses));
         });
         builder.format(range.node(node));
       });
     });
   }
+
+  /// TODO(utiliser writeGetterDeclaration)
+
+  // void _writeGetter( DartEditBuilder builder, List<ClassDeclaration> subclasses) {
+  //   final getters = subclasses.map(
+  //     (e) => (
+  //       propName:
+  //           e.name.lexeme.endsWith('State') ? e.name.lexeme.substring(0, e.name.lexeme.length - 5) : e.name.lexeme,
+  //       name: e.name,
+  //     ),
+  //   );
+  //   for (final e in getters) {
+  //     builder.writeGetterDeclaration(
+  //       'is${e.propName}',
+  //       bodyWriter: () => builder.write('=> this is ${e.name};'),
+  //       returnType: Booltype
+  //     );
+  //   }
+  // }
 
   String _generateGetter(List<ClassDeclaration> subclasses) {
     final getters = subclasses

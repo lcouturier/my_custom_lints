@@ -25,15 +25,15 @@ class AvoidExtensionOnEnumRule extends DartLintRule {
     CustomLintContext context,
   ) {
     // Register a callback for each method invocation in the file.
-    context.registry.addExtensionDeclaration((ExtensionDeclaration node) {
-      if (node.extendedType is NamedType) {
+    context.registry.addExtensionDeclaration(
+      (node) {
+        if (node.extendedType is! NamedType) return;
         final namedType = node.extendedType as NamedType;
         final isEnum = namedType.element is EnumElement;
-        if (isEnum) {
-          // If it is an enum, report the lint
-          reporter.reportErrorForNode(code, namedType);
-        }
-      }
-    });
+        if (!isEnum) return;
+
+        reporter.reportErrorForNode(code, namedType);
+      },
+    );
   }
 }

@@ -98,20 +98,37 @@ class _PreferNamedBoolParametersFix extends DartFix {
               .whereType<SimpleFormalParameter>()
               .where((e) => !e.isNamed)
               .where((e) => !e.isBool)) {
-            builder.write('${p.type} ${p.name?.lexeme}, ');
+            builder.writeParameter(
+              p.name?.lexeme ?? 'unamed',
+              type: p.type?.type,
+            );
+            builder.writeln(', ');
           }
+
           builder.write('{');
           for (final p in parameters.parameters
               .whereType<SimpleFormalParameter>()
               .where((e) => e.isNamed)
               .where((e) => !e.isBool)) {
-            builder.write('required ${p.type} ${p.name?.lexeme}, ');
+            builder.writeParameter(
+              p.name?.lexeme ?? 'unamed',
+              isRequiredType: p.isRequired,
+              isRequiredNamed: p.isRequired,
+              type: p.type?.type,
+            );
+            builder.writeln(', ');
           }
           for (final p in parameters.parameters
               .whereType<SimpleFormalParameter>()
               .where((e) => !e.isNamed)
               .where((e) => e.isBool)) {
-            builder.write('required ${p.type} ${p.name?.lexeme}, ');
+            builder.writeParameter(
+              p.name?.lexeme ?? 'unamed',
+              isRequiredType: true,
+              isRequiredNamed: true,
+              type: p.type?.type,
+            );
+            builder.writeln(', ');
           }
           builder.write('}');
         },

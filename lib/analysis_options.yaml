@@ -77,6 +77,8 @@ custom_lint:
     - avoid_extension_on_enum
     - avoid_nullable_boolean
     - avoid_local_function
+    - avoid_equal_expressions
+    - avoid_getter_prefix
 
 
 linter:

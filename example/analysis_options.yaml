@@ -68,3 +68,4 @@ custom_lint:
     - avoid_equal_expressions
     - avoid_getter_prefix
     - avoid_self_assignment
+    - avoid_single_child_column_or_row

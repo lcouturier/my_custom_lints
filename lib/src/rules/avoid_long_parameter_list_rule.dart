@@ -36,7 +36,7 @@ class AvoidLongParameterListRule extends BaseLintRule<AvoidLongParameterListPara
       if (config.parameters.ignoredNames.isNotEmpty && config.parameters.ignoredNames.contains(node.name.lexeme)) {
         return;
       }
-      // TODO(Process Optional)
+
       final count = node.parameters?.parameters.length ?? 0;
       if (count > config.parameters.maxParameters) {
         reporter.reportErrorForNode(code, node);

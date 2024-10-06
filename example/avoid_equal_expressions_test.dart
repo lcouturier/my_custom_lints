@@ -8,6 +8,12 @@ void fn() {
     return;
   }
 
+  final val = '1';
+
+  if (val == val) {
+    return;
+  }
+
 // LINT
   if (num == anotherNum || num == anotherNum) {
     return;

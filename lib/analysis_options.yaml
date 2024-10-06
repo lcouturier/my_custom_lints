@@ -81,6 +81,7 @@ custom_lint:
     - avoid_local_function
     - avoid_equal_expressions
     - avoid_getter_prefix
+    - avoid_self_assignment
 
 
 linter:

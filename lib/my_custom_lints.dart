@@ -17,6 +17,7 @@ import 'package:my_custom_lints/src/rules/avoid_equal_expression_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_extension_on_enum_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_getter_prefix_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_incomplete_copy_with_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_inverted_boolean_checks_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_local_function_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_long_parameter_list_rule.dart';
@@ -27,11 +28,11 @@ import 'package:my_custom_lints/src/rules/avoid_nullable_boolean_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_plus_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_self_assignment_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
 import 'package:my_custom_lints/src/rules/avoid_useless_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_widget_function_rule.dart';
 import 'package:my_custom_lints/src/rules/boolean_prefix_rule.dart';
-import 'package:my_custom_lints/src/rules/copy_with_method_field_check_rule.dart';
 import 'package:my_custom_lints/src/rules/cyclomatic_complexity_rule.dart';
 import 'package:my_custom_lints/src/rules/first_init_state_rule.dart';
 import 'package:my_custom_lints/src/rules/missing_field_in_equatable_props.dart';
@@ -80,7 +81,7 @@ class _MyCustomLint extends PluginBase {
       const PreferUnderscoreForUnusedCallbackParameters(),
       const RemoveEmptyListenerRule(),
       const AvoidDynamicReturnTypeRule(),
-      const CopyWithMethodFieldCheckRule(),
+      const AvoidIncompleteCopyWithRule(),
       const AvoidCachedNetworkImage(),
       const AvoidNullableListReturnTypeRule(),
       const AvoidLocalFunctionRule(),
@@ -98,6 +99,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidExtensionOnEnumRule(),
       const AvoidNullableBooleanRule(),
       const AvoidEqualExpressionsRule(),
+      const AvoidSelfAssignmentRule(),
       const AvoidGetterPrefixRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

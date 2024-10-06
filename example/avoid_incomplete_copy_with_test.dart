@@ -23,7 +23,7 @@ class PersonWithNullable {
   final String? nickName;
   final int age;
 
-  PersonWithNullable({required this.name, this.nickName, required this.age});
+  const PersonWithNullable({required this.name, this.nickName, required this.age});
 
   PersonWithNullable copyWith({String? name, String? Function()? nickName}) {
     return PersonWithNullable(

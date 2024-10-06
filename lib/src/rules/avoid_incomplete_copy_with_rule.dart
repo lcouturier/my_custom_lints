@@ -5,11 +5,11 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/copy_with_utils.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
-class CopyWithMethodFieldCheckRule extends DartLintRule {
-  const CopyWithMethodFieldCheckRule()
+class AvoidIncompleteCopyWithRule extends DartLintRule {
+  const AvoidIncompleteCopyWithRule()
       : super(
           code: const LintCode(
-            name: 'copy_with_method_field_check',
+            name: 'avoid_incomplete_copy_with',
             problemMessage: 'Ensure all fields are included in copyWith method.',
             correctionMessage: '',
             errorSeverity: ErrorSeverity.WARNING,
@@ -45,10 +45,10 @@ class CopyWithMethodFieldCheckRule extends DartLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [_CopyWithMethodFieldCheckFix()];
+  List<Fix> getFixes() => [_AvoidIncompleteCopyWithFix()];
 }
 
-class _CopyWithMethodFieldCheckFix extends DartFix with CopyWithMixin {
+class _AvoidIncompleteCopyWithFix extends DartFix with CopyWithMixin {
   @override
   void run(
     CustomLintResolver resolver,

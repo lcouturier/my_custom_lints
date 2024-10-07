@@ -9,5 +9,5 @@ void function() {
   final first = record.$1; // LINT
   final second = record.$2; // LINT
 
-  final (x, y) = record; // LINT
+  final (x, y) = record;
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_cast, cascade_invocations
+// ignore_for_file: unnecessary_cast, cascade_invocations, unused_element
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
@@ -63,6 +63,7 @@ class _AvoidDynamicReturnTypeFix extends DartFix {
     List<AnalysisError> others,
   ) {
     final (node, hasReturnStatement) = analysisError.data! as (AstNode, bool);
+    if (!analysisError.sourceRange.covers(node.sourceRange)) return;
     if (hasReturnStatement) return;
 
     final changeBuilder = reporter.createChangeBuilder(

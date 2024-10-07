@@ -1,4 +1,4 @@
-// ignore_for_file: unused_element, cascade_invocations
+// ignore_for_file: unused_element, cascade_invocations, unused_import
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
@@ -69,9 +69,7 @@ class PreferAnyOrEveryRule extends BaseLintRule<PreferAnyOrEveryParameters> {
   }
 
   @override
-  List<Fix> getFixes() {
-    return [_PreferAnyOrEveryFix()];
-  }
+  List<Fix> getFixes() => [_PreferAnyOrEveryFix()];
 }
 
 class _PreferAnyOrEveryFix extends DartFix {

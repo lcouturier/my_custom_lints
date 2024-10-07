@@ -1,4 +1,4 @@
-// ignore_for_file: pattern_never_matches_value_type
+// ignore_for_file: pattern_never_matches_value_type, unused_element
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
@@ -65,10 +65,10 @@ class PreferOfOverCurrentRule extends DartLintRule with ContextName {
   }
 
   @override
-  List<Fix> getFixes() => <Fix>[_PreferOfOverCurrent()];
+  List<Fix> getFixes() => <Fix>[_PreferOfOverCurrentFix()];
 }
 
-class _PreferOfOverCurrent extends DartFix with ContextName {
+class _PreferOfOverCurrentFix extends DartFix with ContextName {
   static const String badWay = 'I18n.current.';
 
   @override

@@ -78,7 +78,6 @@ class _AvoidInvertedBooleanChecksFix extends DartFix {
               ..write(binary.rightOperand.toSource());
           },
         );
-        builder.format(range.node(node));
       });
     });
   }

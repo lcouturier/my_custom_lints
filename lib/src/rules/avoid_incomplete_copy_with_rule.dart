@@ -1,8 +1,10 @@
+// ignore_for_file: avoid_single_cascade_in_expression_statements
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:my_custom_lints/src/common/copy_with_utils.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 class AvoidIncompleteCopyWithRule extends DartLintRule {
@@ -48,7 +50,7 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
   List<Fix> getFixes() => [_AvoidIncompleteCopyWithFix()];
 }
 
-class _AvoidIncompleteCopyWithFix extends DartFix with CopyWithMixin {
+class _AvoidIncompleteCopyWithFix extends DartFix {
   @override
   void run(
     CustomLintResolver resolver,
@@ -73,7 +75,15 @@ class _AvoidIncompleteCopyWithFix extends DartFix with CopyWithMixin {
       final fields =
           node.declaredElement!.fields.where((field) => !field.isStatic).where((field) => !field.isSynthetic).toList();
 
-      final text = generateCopyWithMethod(node.name.lexeme, fields);
+      final fieldParams =
+          fields.map((f) => '${f.type}${isNullableType(f.type) ? 'Function()?' : '?'} ${f.name}').join(', ');
+      final fieldAssignments = fields.map((f) {
+        if (!isNullableType(f.type)) {
+          return '${f.name}: ${f.name} ?? this.${f.name},';
+        } else {
+          return '${f.name}: ${f.name} != null ? ${f.name}() : this.${f.name},';
+        }
+      }).join('\n    ');
 
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Fix copyWith Method',
@@ -83,7 +93,15 @@ class _AvoidIncompleteCopyWithFix extends DartFix with CopyWithMixin {
       // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {
         builder
-          ..addSimpleReplacement(copyWithMethod.sourceRange, text)
+          ..addReplacement(range.node(copyWithMethod), (builder) {
+            builder
+              ..writeln('${node.name} ${copyWithMethod.name}({$fieldParams})')
+              ..writeln('{ ')
+              ..write(' return ${node.name}(')
+              ..write(fieldAssignments)
+              ..writeln(' );')
+              ..writeln('}');
+          })
           ..format(node.sourceRange);
       });
     });

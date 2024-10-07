@@ -1,4 +1,4 @@
-// ignore_for_file: boolean_prefixes, avoid_print, duplicate_ignore
+// ignore_for_file: boolean_prefixes, avoid_print, duplicate_ignore, unused_parameter, avoid_nullable_boolean
 void someFunction1(String name, {required bool isExternal, required bool isTemporary}) {
   // ignore: avoid_print
   print(name);

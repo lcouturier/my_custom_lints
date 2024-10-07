@@ -1,4 +1,4 @@
-// ignore_for_file: cascade_invocations
+// ignore_for_file: cascade_invocations, unused_element
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
@@ -133,7 +133,6 @@ class _PreferNamedBoolParametersFix extends DartFix {
           builder.write('}');
         },
       );
-      builder.format(range.node(parameters));
     });
   }
 }

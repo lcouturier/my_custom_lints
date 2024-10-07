@@ -10,4 +10,16 @@ class PreferNoGrowableListTest {
     // ignore: avoid_print
     print(result);
   }
+
+  void fn2() {
+    final value = 1;
+    switch (value) {
+      case 1:
+        print(1);
+        break;
+      case _:
+        print('other');
+        break;
+    }
+  }
 }

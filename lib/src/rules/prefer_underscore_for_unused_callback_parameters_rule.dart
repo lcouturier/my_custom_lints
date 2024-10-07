@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
@@ -48,10 +50,10 @@ class PreferUnderscoreForUnusedCallbackParameters extends DartLintRule {
   }
 
   @override
-  List<Fix> getFixes() => <Fix>[PreferUnderscoreForUnusedCallbackParametersFix()];
+  List<Fix> getFixes() => <Fix>[_PreferUnderscoreForUnusedCallbackParametersFix()];
 }
 
-class PreferUnderscoreForUnusedCallbackParametersFix extends DartFix {
+class _PreferUnderscoreForUnusedCallbackParametersFix extends DartFix {
   @override
   void run(
     CustomLintResolver resolver,

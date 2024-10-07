@@ -53,3 +53,16 @@ void fn2(Iterable<int> numbers) {
 }
 
 bool isMultipleOfThree(int number) => number % 3 == 0;
+
+class MyClass {
+  final List<String> names;
+
+  MyClass({required this.names});
+
+  bool get hasAnyTest => names.where((e) => e.startsWith("test")).isNotEmpty;
+  bool get hasEveryTest => names.where((e) => e.startsWith("test")).isEmpty;
+
+  bool isAnyTest() {
+    return names.where((e) => e.startsWith("test")).isNotEmpty;
+  }
+}

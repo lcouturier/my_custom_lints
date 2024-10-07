@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 void fn() {
   final x = 1;
   final a = 2;

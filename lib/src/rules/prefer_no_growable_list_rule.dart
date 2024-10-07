@@ -1,4 +1,4 @@
-// ignore_for_file: cascade_invocations
+// ignore_for_file: cascade_invocations, unused_element
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
@@ -42,7 +42,7 @@ class PreferNoGrowableListRule extends DartLintRule {
           '${node.realTarget?.toSource()}.toList(growable: false)',
         ],
         [],
-        node.methodName,
+        node,
       );
     });
   }
@@ -60,21 +60,15 @@ class _PreferNoGrowableListFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addMethodInvocation((node) {
-      if (!analysisError.sourceRange.covers(node.methodName.sourceRange)) return;
+    final changeBuilder = reporter.createChangeBuilder(
+      message: 'Replace toList() by toList(growable: false)',
+      priority: 80,
+    );
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Replace toList() by toList(growable: false)',
-        priority: 80,
-      );
+    final method = analysisError.data! as MethodInvocation;
 
-      final p = analysisError.data! as SimpleIdentifier;
-
-      changeBuilder.addDartFileEdit((builder) {
-        builder.addInsertion(p.offset + p.length + 1, (builder) {
-          builder.write('growable: false');
-        });
-      });
+    changeBuilder.addDartFileEdit((builder) {
+      builder.addSimpleInsertion(method.methodName.offset + method.methodName.length + 1, 'growable: false');
     });
   }
 }

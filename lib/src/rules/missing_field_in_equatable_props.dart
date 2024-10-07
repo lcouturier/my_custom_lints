@@ -76,8 +76,7 @@ class MissingFieldInEquatablePropsFix extends DartFix {
           changeBuilder.addDartFileEdit((builder) {
             builder
               ..addSimpleInsertion(propsReturnExpression!.sourceRange.end - 1, ',')
-              ..addSimpleInsertion(propsReturnExpression.sourceRange.end - 1, fieldElement.displayName)
-              ..format(propsReturnExpression.sourceRange);
+              ..addSimpleInsertion(propsReturnExpression.sourceRange.end - 1, fieldElement.displayName);
           });
         });
       }

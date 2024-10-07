@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, dead_code
+// ignore_for_file: avoid_print, dead_code, unused_local_variable
 
 void fun() {
   final _valueA = 1;

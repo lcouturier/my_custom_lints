@@ -1,3 +1,4 @@
+// ignore_for_file: unused_parameter
 import 'package:flutter/foundation.dart';
 
 @immutable
@@ -25,11 +26,10 @@ class PersonWithNullable {
 
   const PersonWithNullable({required this.name, this.nickName, required this.age});
 
-  PersonWithNullable copyWith({String? name, String? Function()? nickName}) {
+  PersonWithNullable copyWith({String? name, int? age}) {
     return PersonWithNullable(
       name: name ?? this.name,
-      nickName: nickName != null ? nickName() : this.nickName,
-      age: this.age,
+      age: age ?? this.age,
     );
   }
 }

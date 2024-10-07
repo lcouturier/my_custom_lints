@@ -27,6 +27,7 @@ import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_boolean_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_plus_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_positional_record_field_access_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_self_assignment_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_single_child_column_or_row_rule.dart';
@@ -103,9 +104,10 @@ class _MyCustomLint extends PluginBase {
       const AvoidSelfAssignmentRule(),
       const AvoidGetterPrefixRule(),
       const AvoidSingleChildColumnOrRowRule(),
+      const AvoidPositionalRecordFieldAccessRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
-      PreferAnyOrEveryRule.createRule(configs)
+      PreferAnyOrEveryRule.createRule(configs),
     ];
   }
 
@@ -115,7 +117,7 @@ class _MyCustomLint extends PluginBase {
       CopyWithNullableAssist(),
       MaybeWhenMethodAssist(),
       MaybeMapMethodAssist(),
-      CheckStateGetterAssist()
+      CheckStateGetterAssist(),
     ];
   }
 }

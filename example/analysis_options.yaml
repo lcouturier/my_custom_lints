@@ -61,6 +61,7 @@ custom_lint:
     - avoid_map_keys_contains
     - avoid_long_records:
       max-number: 6
+      ignore-one-field: true
     - use_ternary_instead_of_if_else
     - avoid_extension_on_enum
     - avoid_nullable_boolean
@@ -69,3 +70,4 @@ custom_lint:
     - avoid_getter_prefix
     - avoid_self_assignment
     - avoid_single_child_column_or_row
+    - avoid_positional_record_field_access

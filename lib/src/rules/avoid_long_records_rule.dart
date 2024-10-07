@@ -29,7 +29,12 @@ class AvoidLongRecordsRule extends BaseLintRule<AvoidLongRecordsParameters> {
     CustomLintContext context,
   ) {
     context.registry.addRecordLiteral((RecordLiteral node) {
-      if (node.fields.length > config.parameters.maxNumber){
+      if (!config.enabled) return;
+
+      if (node.fields.length > config.parameters.maxNumber) {
+        reporter.reportErrorForNode(code, node);
+      }
+      if (!config.parameters.ignoreOneField && node.fields.length == 1) {
         reporter.reportErrorForNode(code, node);
       }
     });
@@ -38,12 +43,16 @@ class AvoidLongRecordsRule extends BaseLintRule<AvoidLongRecordsParameters> {
 
 class AvoidLongRecordsParameters {
   final int maxNumber;
+  final bool ignoreOneField;
 
   factory AvoidLongRecordsParameters.fromJson(Map<String, Object?> map) {
-    return AvoidLongRecordsParameters(maxNumber: map['max-number'] as int? ?? 5);
+    return AvoidLongRecordsParameters(
+      maxNumber: map['max-number'] as int? ?? 5,
+      ignoreOneField: map['ignore-one-field'] as bool? ?? false,
+    );
   }
 
-  AvoidLongRecordsParameters({required this.maxNumber});
+  AvoidLongRecordsParameters({required this.maxNumber, required this.ignoreOneField});
 
   @override
   String toString() => '$maxNumber';

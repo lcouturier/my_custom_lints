@@ -22,6 +22,15 @@ class PersonWithNullable extends Equatable {
 
   @override
   List<Object?> get props => [firstName, lastName, nickName, age];
+
+  PersonWithNullable copyWith({String? firstName, String? lastName, String? Function()? nickName, int? age}) {
+    return PersonWithNullable(
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      nickName: nickName != null ? nickName() : this.nickName,
+      age: age ?? this.age,
+    );
+  }
 }
 
 @immutable
@@ -31,14 +40,6 @@ class PersonWithImmatable {
   final int age;
 
   PersonWithImmatable({required this.firstName, required this.lastName, required this.age});
-
-  PersonWithImmatable copyWith({String? firstName, String? lastName, int? age}) {
-    return PersonWithImmatable(
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      age: age ?? this.age,
-    );
-  }
 }
 
 class PersonWithoutNamedParameters {

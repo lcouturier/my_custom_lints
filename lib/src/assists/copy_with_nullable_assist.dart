@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -17,8 +19,6 @@ class CopyWithNullableAssist extends DartAssist with CopyWithMixin {
       if (!node.sourceRange.covers(target)) return;
       if (node.declaredElement?.isAbstract ?? true) return;
 
-      if (!_isValidNode(node)) return;
-
       final copyWithMethod =
           node.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith');
       if (copyWithMethod != null) return;
@@ -27,12 +27,13 @@ class CopyWithNullableAssist extends DartAssist with CopyWithMixin {
       if (constructor == null) return;
 
       final isAllNamed = constructor.parameters.parameters.every((e) => e.isNamed);
-      if (!isAllNamed) return;
-
       final fields =
           node.declaredElement!.fields.where((field) => !field.isStatic).where((field) => !field.isSynthetic).toList();
 
-      final text = generateCopyWithMethod(node.name.lexeme, fields);
+      final isAllFinal = fields.every((e) => e.isFinal);
+      if (!isAllFinal) return;
+
+      final text = generateCopyWithMethod(node.name.lexeme, fields, isAllNamed: isAllNamed);
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Add copyWith Method',
         priority: 80,

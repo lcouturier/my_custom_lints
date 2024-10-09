@@ -71,3 +71,4 @@ custom_lint:
     - avoid_single_child_column_or_row
     - avoid_positional_record_field_access
     - avoid_ignoring_return_values
+    - prefer_usage_of_value_getter

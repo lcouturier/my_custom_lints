@@ -41,10 +41,6 @@ DartType? _getSelfOrSupertypes(
   return null;
 }
 
-extension DartTypeExtensions on DartType? {
-  bool get isNullable => isNullableType(this);
-}
-
 extension IterableExtensions<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T element) test) {
     for (final element in this) {

@@ -32,7 +32,7 @@ class PreferNamedBoolParametersRule extends BaseLintRule<PreferNamedBoolParamete
     if ((config.parameters.ignoreSingleBoolean) && _onlyOne(parameters.parameters)) return;
 
     for (final p in parameters.parameters.whereType<SimpleFormalParameter>()) {
-      if ((p.type!.type?.isDartCoreBool ?? false) && !p.isNamed) {
+      if ((p.type?.type?.isDartCoreBool ?? false) && !p.isNamed) {
         reporter.reportErrorForNode(code, p, [p.name?.lexeme ?? ''], [], parameters);
       }
     }
@@ -133,6 +133,7 @@ class _PreferNamedBoolParametersFix extends DartFix {
           builder.write('}');
         },
       );
+      builder.format(range.node(parameters));
     });
   }
 }

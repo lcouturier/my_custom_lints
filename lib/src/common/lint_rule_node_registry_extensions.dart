@@ -63,6 +63,24 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     });
   }
 
+  void addReturnType(void Function(TypeAnnotation? node, AstNode parent) listener) {
+    addGenericFunctionType((node) {
+      listener(node.returnType, node);
+    });
+
+    addFunctionTypedFormalParameter((node) {
+      listener(node.returnType, node);
+    });
+
+    addMethodDeclaration((node) {
+      listener(node.returnType, node);
+    });
+
+    addFunctionDeclaration((node) {
+      listener(node.returnType, node);
+    });
+  }
+
   void addEquatableClassFieldDeclaration(
     void Function({
       required FieldElement fieldElement,

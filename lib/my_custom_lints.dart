@@ -12,11 +12,12 @@ import 'package:my_custom_lints/src/rules/add_cubit_suffix_rule.dart';
 import 'package:my_custom_lints/src/rules/always_call_super_props_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
-import 'package:my_custom_lints/src/rules/avoid_dynamic_return_type_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_dynamic_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_equal_expression_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_extension_on_enum_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_getter_prefix_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_ignoring_return_values_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_incomplete_copy_with_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_inverted_boolean_checks_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_local_function_rule.dart';
@@ -63,6 +64,7 @@ class _MyCustomLint extends PluginBase {
   List<LintRule> getLintRules(CustomLintConfigs configs) {
     return <LintRule>[
       AvoidLongParameterListRule.createRule(configs),
+      const AvoidDynamicRule(),
       const AvoidPrintRule(),
       const AvoidBangOperatorRule(),
       const AvoidWidgetFunctionRule(),
@@ -82,7 +84,6 @@ class _MyCustomLint extends PluginBase {
       const PreferNoGrowableListRule(),
       const PreferUnderscoreForUnusedCallbackParameters(),
       const RemoveEmptyListenerRule(),
-      const AvoidDynamicReturnTypeRule(),
       const AvoidIncompleteCopyWithRule(),
       const AvoidCachedNetworkImage(),
       const AvoidNullableListReturnTypeRule(),

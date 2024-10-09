@@ -62,7 +62,7 @@ custom_lint:
     - prefer_no_growable_list
     - prefer_underscore_for_unused_callback_parameters
     - remove_empty_listener
-    - avoid_dynamic_return_type
+    - avoid_dynamic
     - copy_with_method_field_check
     - avoid_cached_network_image: false
     - avoid_nullable_list_return_type
@@ -75,7 +75,6 @@ custom_lint:
     - avoid_map_keys_contains
     - avoid_long_records:
       max-number: 6
-      ignore-one-field: true
     - use_ternary_instead_of_if_else
     - avoid_extension_on_enum
     - avoid_nullable_boolean
@@ -85,6 +84,7 @@ custom_lint:
     - avoid_self_assignment
     - avoid_single_child_column_or_row
     - avoid_positional_record_field_access
+    - avoid_ignoring_return_values
 
 
 linter:

@@ -20,12 +20,18 @@ extension DartTypeExtensions on DartType {
   }
 }
 
+extension DartTypeNullableExtensions on DartType? {
+  bool get isNullable => isNullableType(this);
+}
+
 extension FormalParameterExtension on FormalParameter {
   bool get isBool =>
       this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isDartCoreBool ?? false);
 
   bool get isNullable =>
       this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isNullable ?? false);
+
+  bool get isDynamic => declaredElement?.type is DynamicType;
 }
 
 extension ExpressionExtensions on Expression {

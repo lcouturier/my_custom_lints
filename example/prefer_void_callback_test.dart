@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element, avoid_dynamic
+
 typedef B = void Function();
 
 typedef C = void Function()?;
@@ -23,7 +25,7 @@ class Person {
   }
 }
 
-getValue1() => '';
+dynamic getValue1() => '';
 
 getValue2() {
   return '';
@@ -33,3 +35,7 @@ printValue() {
   // ignore: avoid_print
   print('nothing');
 }
+
+(dynamic,) _getValue() {
+  return (null,);
+} // LINT

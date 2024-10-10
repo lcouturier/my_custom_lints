@@ -12,7 +12,7 @@ class AvoidSingleChildColumnOrRowRule extends DartLintRule {
           code: const LintCode(
             name: 'avoid_single_child_column_or_row',
             problemMessage: 'Avoid single child Column or Row.',
-            correctionMessage: '',
+            correctionMessage: 'Remove the widget',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );

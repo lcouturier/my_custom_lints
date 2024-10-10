@@ -5,6 +5,8 @@ import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
+/// TODO: gestion multi clauses
+
 class AvoidOnlyRethrowRule extends DartLintRule {
   const AvoidOnlyRethrowRule()
       : super(

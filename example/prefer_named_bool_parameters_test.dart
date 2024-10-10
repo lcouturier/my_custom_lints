@@ -43,12 +43,12 @@ class MyClass {
   MyClass(this.p1, this.p2, this.p3);
 
   void fn(String name, bool p1, bool? p2, bool p3) {
-    // ignore: avoid_print
-    print(p1);
-    // ignore: avoid_print
-    print(p2);
-    // ignore: avoid_print
-    print(p3);
+    final value = switch ((p1, p2, p3)) {
+      (true, true, true) => 'all',
+      (_, _, _) => 'other',
+    };
+
+    print(value);
   }
 
   void fn3(int max, String? pet, bool? selected) {

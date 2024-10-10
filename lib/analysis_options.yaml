@@ -87,6 +87,7 @@ custom_lint:
     - avoid_ignoring_return_values
     - prefer_usage_of_value_getter
     - avoid_assignments_as_conditions
+    - avoid_shrink_wrap_in_lists
 
 
 linter:

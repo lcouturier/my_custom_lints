@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 void fnBad1(List<String> values) {
   int other = 0;
   bool? flag;

@@ -28,6 +28,7 @@ import 'package:my_custom_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_boolean_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_only_rethrow_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_plus_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_positional_record_field_access_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
@@ -112,6 +113,7 @@ class _MyCustomLint extends PluginBase {
       const PreferUsageOfValueGetterRule(),
       const AvoidAssignmentsAsConditionsRule(),
       const AvoidShrinkWrapInListRule(),
+      const AvoidOnlyRethrowRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs),

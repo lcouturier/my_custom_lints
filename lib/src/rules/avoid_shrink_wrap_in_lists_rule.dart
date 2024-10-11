@@ -24,6 +24,10 @@ class AvoidShrinkWrapInListRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addInstanceCreationExpression((node) {
+      const listViewChecker = TypeChecker.fromName('ListView', packageName: 'flutter');
+
+      if (!listViewChecker.isExactlyType(node.staticType!)) return;
+
       if (node.constructorName.type.name2.lexeme != 'ListView') return;
       if (node.argumentList.arguments.isEmpty) return;
 
@@ -33,10 +37,10 @@ class AvoidShrinkWrapInListRule extends DartLintRule {
       if (!found) return;
 
       if (p!.expression is! BooleanLiteral) return;
-      final value = p.expression as BooleanLiteral;
-      if (!value.value) return;
+      final litteral = p.expression as BooleanLiteral;
+      if (!litteral.value) return;
 
-      reporter.reportErrorForNode(code, node.constructorName);
+      reporter.reportErrorForNode(code, p);
     });
   }
 }

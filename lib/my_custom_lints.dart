@@ -108,7 +108,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidEqualExpressionsRule(),
       const AvoidSelfAssignmentRule(),
       const AvoidGetterPrefixRule(),
-      const AvoidSingleChildColumnOrRowRule(),
+      AvoidSingleChildColumnOrRowRule.createRule(configs),
       const AvoidPositionalRecordFieldAccessRule(),
       const PreferUsageOfValueGetterRule(),
       const AvoidAssignmentsAsConditionsRule(),
@@ -123,10 +123,10 @@ class _MyCustomLint extends PluginBase {
   @override
   List<Assist> getAssists() {
     return <Assist>[
-      CopyWithNullableAssist(),
-      MaybeWhenMethodAssist(),
-      MaybeMapMethodAssist(),
-      CheckStateGetterAssist(),
+      // CopyWithNullableAssist(),
+      // MaybeWhenMethodAssist(),
+      // MaybeMapMethodAssist(),
+      // CheckStateGetterAssist(),
     ];
   }
 }

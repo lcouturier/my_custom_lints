@@ -22,15 +22,6 @@ class PersonWithNullable extends Equatable {
 
   @override
   List<Object?> get props => [firstName, lastName, nickName, age];
-
-  PersonWithNullable copyWith({String? firstName, String? lastName, String? Function()? nickName, int? age}) {
-    return PersonWithNullable(
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      nickName: nickName != null ? nickName() : this.nickName,
-      age: age ?? this.age,
-    );
-  }
 }
 
 @immutable

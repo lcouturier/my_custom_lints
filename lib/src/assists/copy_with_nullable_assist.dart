@@ -16,7 +16,10 @@ class CopyWithNullableAssist extends DartAssist with CopyWithMixin {
     SourceRange target,
   ) {
     context.registry.addClassDeclaration((node) {
-      if (!node.sourceRange.covers(target)) return;
+      if (!target.intersects(node.sourceRange)) return;
+
+      if (node.isWidget) return;
+
       if (node.declaredElement?.isAbstract ?? true) return;
 
       final copyWithMethod =
@@ -26,13 +29,13 @@ class CopyWithNullableAssist extends DartAssist with CopyWithMixin {
       final constructor = node.members.whereType<ConstructorDeclaration>().firstWhereOrNull((c) => c.name == null);
       if (constructor == null) return;
 
-      final isAllNamed = constructor.parameters.parameters.every((e) => e.isNamed);
       final fields =
           node.declaredElement!.fields.where((field) => !field.isStatic).where((field) => !field.isSynthetic).toList();
 
       final isAllFinal = fields.every((e) => e.isFinal);
       if (!isAllFinal) return;
 
+      final isAllNamed = constructor.parameters.parameters.every((e) => e.isNamed);
       final text = generateCopyWithMethod(node.name.lexeme, fields, isAllNamed: isAllNamed);
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Add copyWith Method',

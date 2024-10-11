@@ -94,10 +94,12 @@ class UnusedParameterFix extends DartFix {
     List<AnalysisError> others,
   ) {
     context.registry.addMethodDeclaration((node) {
+      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
       update(analysisError, reporter);
     });
 
     context.registry.addFunctionDeclaration((node) {
+      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
       update(analysisError, reporter);
     });
   }

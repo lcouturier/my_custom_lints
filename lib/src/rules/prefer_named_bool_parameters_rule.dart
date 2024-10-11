@@ -72,12 +72,14 @@ class _PreferNamedBoolParametersFix extends DartFix {
     List<AnalysisError> others,
   ) {
     context.registry.addMethodDeclaration((node) {
+      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
       final parameters = analysisError.data! as FormalParameterList;
 
       update(reporter, parameters);
     });
 
     context.registry.addFunctionDeclaration((node) {
+      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
       final parameters = analysisError.data! as FormalParameterList;
 
       update(reporter, parameters);

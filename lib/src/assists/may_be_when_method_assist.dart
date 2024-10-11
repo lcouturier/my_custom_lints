@@ -21,7 +21,7 @@ class MaybeWhenMethodAssist extends DartAssist {
     SourceRange target,
   ) {
     context.registry.addSubclassesFromClassDeclaration((node, subclasses) {
-      if (!node.sourceRange.covers(target)) return;
+      if (!target.intersects(node.sourceRange)) return;
 
       final whenMethod = node.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'when');
       if (whenMethod != null) return;

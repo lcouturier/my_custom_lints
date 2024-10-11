@@ -4,28 +4,23 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/base_lint_rule.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
-class AvoidSingleChildColumnOrRowRule extends DartLintRule {
-  const AvoidSingleChildColumnOrRowRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_single_child_column_or_row',
-            problemMessage: 'Avoid single child Column or Row.',
-            correctionMessage: 'Remove the widget',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+class AvoidSingleChildColumnOrRowRule extends BaseLintRule<AvoidSingleChildColumnOrRowParameters> {
+  AvoidSingleChildColumnOrRowRule._(super.rule);
 
-  static const widgets = <String>[
-    'Column',
-    'Row',
-    'Flex',
-    'Wrap',
-    'SliverList',
-    'SliverMainAxisGroup',
-    'SliverCrossAxisGroup',
-  ];
+  factory AvoidSingleChildColumnOrRowRule.createRule(CustomLintConfigs configs) {
+    final rule = RuleConfig(
+      configs: configs,
+      name: 'avoid_single_child_column_or_row',
+      paramsParser: AvoidSingleChildColumnOrRowParameters.fromJson,
+      problemMessage: (value) => 'Avoid single child Column or Row.',
+    );
+
+    return AvoidSingleChildColumnOrRowRule._(rule);
+  }
 
   @override
   void run(
@@ -34,7 +29,7 @@ class AvoidSingleChildColumnOrRowRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addInstanceCreationExpression((node) {
-      if (!widgets.contains(node.constructorName.type.name2.lexeme)) return;
+      if (!config.parameters.widgets.contains(node.constructorName.type.name2.lexeme)) return;
       if (node.argumentList.arguments.isEmpty) return;
 
       final (found, p) = node.argumentList.arguments
@@ -48,4 +43,17 @@ class AvoidSingleChildColumnOrRowRule extends DartLintRule {
       reporter.reportErrorForNode(code, node.constructorName);
     });
   }
+}
+
+class AvoidSingleChildColumnOrRowParameters {
+  final List<String> widgets;
+
+  factory AvoidSingleChildColumnOrRowParameters.fromJson(Map<String, Object?> map) {
+    final items = map['widgets'] as String? ?? '';
+    return AvoidSingleChildColumnOrRowParameters(
+      widgets: items.isEmpty ? [] : items.removeAllSpaces().split(',').map((e) => e.trim()).toList(),
+    );
+  }
+
+  AvoidSingleChildColumnOrRowParameters({required this.widgets});
 }

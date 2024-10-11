@@ -21,7 +21,7 @@ class MaybeMapMethodAssist extends DartAssist {
     SourceRange target,
   ) {
     context.registry.addSubclassesFromClassDeclaration((node, subclasses) {
-      if (!node.sourceRange.covers(target)) return;
+      if (!target.intersects(node.sourceRange)) return;
 
       final mapMethod = node.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'map');
       if (mapMethod != null) return;

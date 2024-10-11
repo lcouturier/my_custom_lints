@@ -37,7 +37,7 @@ custom_lint:
     - prefer_iterable_isempty
     - no_length_in_index_expression
     - unused_parameter:
-      parameters: 'state, event'
+      parameters: 'state, event, context, router, response'
     - equatable_props_check: false
     - add_cubit_suffix_rule
     - avoid_filter_usage
@@ -68,7 +68,8 @@ custom_lint:
     - avoid_equal_expressions
     - avoid_getter_prefix
     - avoid_self_assignment
-    - avoid_single_child_column_or_row
+    - avoid_single_child_column_or_row:
+      widgets: 'Column, Row, Flex, Wrap, SliverList, SliverMainAxisGroup, SliverCrossAxisGroup'
     - avoid_positional_record_field_access
     - avoid_ignoring_return_values
     - prefer_usage_of_value_getter

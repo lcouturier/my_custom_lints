@@ -63,6 +63,8 @@ class _PreferUnderscoreForUnusedCallbackParametersFix extends DartFix {
     List<AnalysisError> others,
   ) {
     context.registry.addFunctionExpression((node) {
+      if (!analysisError.sourceRange.covers(node.sourceRange)) return;
+
       final p = analysisError.data! as FormalParameter;
 
       final changeBuilder = reporter.createChangeBuilder(

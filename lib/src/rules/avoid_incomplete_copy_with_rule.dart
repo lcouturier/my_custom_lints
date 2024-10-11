@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_single_cascade_in_expression_statements
 
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
@@ -50,9 +48,6 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
       final missingFields = fields.difference(parameters!);
       if (missingFields.isEmpty) return;
 
-      log('parameters : $parameters');
-      log('Found missing fields : $missingFields');
-
       reporter.reportErrorForNode(
           code,
           node,
@@ -61,6 +56,7 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
           parent.declaredElement!.fields
               .where((field) => !field.isStatic)
               .where((field) => !field.isSynthetic)
+              .where((field) => !field.isFinal)
               .toSet());
     });
   }

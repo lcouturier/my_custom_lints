@@ -67,7 +67,6 @@ extension ClassDeclarationExtensions on ClassDeclaration {
   }
 
   bool get isImmutable => metadata.any((e) => e.name.name.startsWith('immutable'));
-
   bool get isEquatable => declaredElement != null && equatableChecker.isAssignableFromType(declaredElement!.thisType);
   bool get isWidget => declaredElement != null && widgetChecker.isAssignableFromType(declaredElement!.thisType);
 }

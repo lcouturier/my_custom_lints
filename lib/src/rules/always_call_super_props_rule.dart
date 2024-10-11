@@ -24,8 +24,8 @@ class AlwaysCallSuperPropsRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addEquatableSuperClassDeclaration((props, propsDetails) {
-      reporter.reportErrorForNode(code, props, ['super.props']);
+    context.registry.addEquatableSuperClassDeclaration((node, details) {
+      reporter.reportErrorForNode(code, node, ['super.props']);
     });
   }
 
@@ -43,7 +43,9 @@ class CallSuperInOverridedEquatableProps extends DartFix {
     List<AnalysisError> others,
   ) {
     context.registry.addEquatableSuperClassDeclaration(
-      (props, propsDetails) {
+      (node, _) {
+        if (!analysisError.sourceRange.covers(node.sourceRange)) return;
+
         final changeBuilder = reporter.createChangeBuilder(
           message: 'Add ...super.props to props getter',
           priority: 80,
@@ -51,7 +53,7 @@ class CallSuperInOverridedEquatableProps extends DartFix {
 
         // ignore: cascade_invocations
         changeBuilder.addDartFileEdit((builder) {
-          builder.addSimpleInsertion(props.beginToken.offset + 1, '...super.props,');
+          builder.addSimpleInsertion(node.beginToken.offset + 1, '...super.props,');
         });
       },
     );
@@ -61,7 +63,7 @@ class CallSuperInOverridedEquatableProps extends DartFix {
 extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
   void addEquatableSuperClassDeclaration(
       void Function(
-        Expression node,
+        ListLiteral node,
         List<String> equatablePropsExpressionDetails,
       ) listener) {
     addClassDeclaration((node) {
@@ -69,22 +71,23 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       if (classSuperTypeElement == null) {
         return;
       }
-      final equatablePropsAccessorElement = classSuperTypeElement.accessors.firstWhereOrNull(
-        (accessor) => accessor.hasOverride && accessor.isGetter && accessor.name == 'props',
+      final (found, _) = classSuperTypeElement.accessors.firstWhereOrNot(
+        (e) => e.hasOverride && e.isGetter && e.name == 'props',
       );
-      if (equatablePropsAccessorElement == null) return;
+      if (!found) return;
 
       final propsReturnExpression = node.getPropsReturnExpression();
       if (propsReturnExpression == null) return;
 
-      final doesPropsCallSuper = propsReturnExpression.toString().contains('super.props');
+      final expression = propsReturnExpression as ListLiteral;
+
+      final doesPropsCallSuper = expression.elements.any((element) => element.toString().contains('super.props'));
       if (doesPropsCallSuper) {
         return;
       }
 
-      final propsFields = propsReturnExpression.getFieldsFromProps();
-
-      listener(propsReturnExpression, propsFields);
+      final fields = expression.getFieldsFromProps();
+      listener(expression, fields);
     });
   }
 }

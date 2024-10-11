@@ -17,3 +17,13 @@ class MyClass extends MyBaseClass {
 }
 
 sealed class AnotherClass extends Equatable {}
+
+class Person extends MyBaseClass {
+  final String name;
+  final int age;
+
+  Person({required this.name, required this.age});
+
+  @override
+  List<Object?> get props => [name, age];
+}

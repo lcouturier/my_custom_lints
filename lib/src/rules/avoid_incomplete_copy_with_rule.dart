@@ -1,6 +1,9 @@
 // ignore_for_file: avoid_single_cascade_in_expression_statements
 
+import 'dart:developer';
+
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -24,8 +27,13 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      final fields = node.members
+    context.registry.addMethodDeclaration((node) {
+      if (node.name.lexeme != 'copyWith') return;
+
+      final parent = node.parent;
+      if (parent is! ClassDeclaration) return;
+
+      final fields = parent.members
           .whereType<FieldDeclaration>()
           .map((e) => e.fields.variables.map((variable) => variable.name.lexeme).toList())
           .expand((f) => f)
@@ -33,7 +41,7 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
       if (fields.isEmpty) return;
 
       final copyWithMethod =
-          node.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith');
+          parent.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith');
       if (copyWithMethod == null) return;
 
       final parameters = copyWithMethod.parameters?.parameters.map((e) => e.name?.lexeme ?? '').toSet();
@@ -42,7 +50,18 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
       final missingFields = fields.difference(parameters!);
       if (missingFields.isEmpty) return;
 
-      reporter.reportErrorForNode(code, copyWithMethod, [], [], node);
+      log('parameters : $parameters');
+      log('Found missing fields : $missingFields');
+
+      reporter.reportErrorForNode(
+          code,
+          node,
+          [missingFields.join(', ')],
+          [],
+          parent.declaredElement!.fields
+              .where((field) => !field.isStatic)
+              .where((field) => !field.isSynthetic)
+              .toSet());
     });
   }
 
@@ -59,21 +78,10 @@ class _AvoidIncompleteCopyWithFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addClassDeclaration((_) {
-      final node = analysisError.data! as ClassDeclaration;
+    context.registry.addMethodDeclaration((node) {
+      if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
-      final copyWithMethod =
-          node.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith');
-      if (copyWithMethod == null) return;
-
-      final constructor = node.members.whereType<ConstructorDeclaration>().firstWhereOrNull((c) => c.name == null);
-      if (constructor == null) return;
-
-      final isAllNamed = constructor.parameters.parameters.every((e) => e.isNamed);
-      if (!isAllNamed) return;
-
-      final fields =
-          node.declaredElement!.fields.where((field) => !field.isStatic).where((field) => !field.isSynthetic).toList();
+      final fields = analysisError.data! as Set<FieldElement>;
 
       final fieldParams =
           fields.map((f) => '${f.type}${isNullableType(f.type) ? 'Function()?' : '?'} ${f.name}').join(', ');
@@ -90,19 +98,22 @@ class _AvoidIncompleteCopyWithFix extends DartFix {
         priority: 80,
       );
 
+      final parent = node.parent;
+      final className = (parent as ClassDeclaration).name.lexeme;
+
       // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {
         builder
-          ..addReplacement(range.node(copyWithMethod), (builder) {
+          ..addReplacement(range.node(node), (builder) {
             builder
-              ..writeln('${node.name} ${copyWithMethod.name}({$fieldParams})')
+              ..writeln('$className ${node.name}({$fieldParams})')
               ..writeln('{ ')
-              ..write(' return ${node.name}(')
+              ..write(' return $className(')
               ..write(fieldAssignments)
               ..writeln(' );')
               ..writeln('}');
           })
-          ..format(node.sourceRange);
+          ..format(range.node(node));
       });
     });
   }

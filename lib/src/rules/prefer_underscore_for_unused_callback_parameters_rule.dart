@@ -62,20 +62,16 @@ class _PreferUnderscoreForUnusedCallbackParametersFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addFunctionExpression((node) {
-      if (!analysisError.sourceRange.covers(node.sourceRange)) return;
+    final p = analysisError.data! as FormalParameter;
 
-      final p = analysisError.data! as FormalParameter;
+    final changeBuilder = reporter.createChangeBuilder(
+      message: 'Replace ${p.name?.lexeme ?? 'undefined'} by _',
+      priority: 80,
+    );
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Replace ${p.name?.lexeme ?? 'undefined'} by _',
-        priority: 80,
-      );
-
-      // ignore: cascade_invocations
-      changeBuilder.addDartFileEdit((builder) {
-        builder.addSimpleReplacement(range.node(p), '_');
-      });
+    // ignore: cascade_invocations
+    changeBuilder.addDartFileEdit((builder) {
+      builder.addSimpleReplacement(range.node(p), '_');
     });
   }
 }

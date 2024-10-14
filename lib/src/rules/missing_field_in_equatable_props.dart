@@ -22,7 +22,7 @@ class MissingFieldInEquatablePropsRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addEquatableProps((node, watchableFields, missingFields) {
+    context.registry.addEquatableProps((node, watchableFields, missingFields, hasSuperProps) {
       reporter.reportErrorForNode(code, node, [missingFields.join(', ')]);
     });
   }
@@ -40,7 +40,7 @@ class MissingFieldInEquatablePropsFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addEquatableProps((node, watchableFields, missingFields) {
+    context.registry.addEquatableProps((node, watchableFields, missingFields, hasSuperProps) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
@@ -51,8 +51,12 @@ class MissingFieldInEquatablePropsFix extends DartFix {
       // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {
         builder.addReplacement(range.startEnd(node.beginToken.next!, node.endToken.previous!), (builder) {
+          if (hasSuperProps) {
+            builder.write('...super.props, ');
+          }
           builder.write(watchableFields.join(', '));
         });
+        builder.format(range.node(node));
       });
     });
   }

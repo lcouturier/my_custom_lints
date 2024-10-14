@@ -81,7 +81,8 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
   }
 
   void addEquatableProps(
-      void Function(ListLiteral node, Set<String> watchableFields, Set<String> missingFields) listener) {
+      void Function(ListLiteral node, Set<String> watchableFields, Set<String> missingFields, bool hasSuperProps)
+          listener) {
     addClassDeclaration((node) {
       if (!node.isEquatable) return;
 
@@ -103,7 +104,10 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       final missingFields = watchableFields.toSet().difference(propsFields.toSet()).toSet();
       if (missingFields.isEmpty) return;
 
-      listener(propsReturnExpression as ListLiteral, watchableFields, missingFields);
+      final values = propsReturnExpression as ListLiteral;
+      final hasSuperProps = values.elements.any((element) => element.toString().contains('super.props'));
+
+      listener(values, watchableFields, missingFields, hasSuperProps);
     });
   }
 }

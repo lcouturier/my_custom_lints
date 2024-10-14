@@ -1,37 +1,15 @@
+// ignore_for_file: unused_field
+
 import 'package:equatable/equatable.dart';
 
-class ShowAddCompanionState extends Equatable {
-  const ShowAddCompanionState({
-    required this.isCompanionAnonymous,
-    required this.hasCompanionToggle,
-    required this.isConnected,
-    this.verifyFirstNameAndLastName = true,
-  });
+class PersonMissingFields extends Equatable {
+  final String name;
+  final int age;
+  final String? nickName;
+  final bool isAdult;
 
-  final bool isCompanionAnonymous;
-  final bool hasCompanionToggle;
-  final bool isConnected;
-  final bool verifyFirstNameAndLastName;
-
-  ShowAddCompanionState.initial() : this(isCompanionAnonymous: false, hasCompanionToggle: false, isConnected: false);
-
-  // ignore: boolean_prefixes
-  bool get displayToggle => isCompanionAnonymous && isConnected && hasCompanionToggle && verifyFirstNameAndLastName;
+  PersonMissingFields({required this.name, required this.age, required this.nickName, required this.isAdult});
 
   @override
-  List<Object> get props => [isCompanionAnonymous, hasCompanionToggle, verifyFirstNameAndLastName];
-
-  ShowAddCompanionState copyWith({
-    bool? isCompanionAnonymous,
-    bool? hasCompanionToggle,
-    bool? isConnected,
-    bool? verifyFirstNameAndLastName,
-  }) {
-    return ShowAddCompanionState(
-      isCompanionAnonymous: isCompanionAnonymous ?? this.isCompanionAnonymous,
-      hasCompanionToggle: hasCompanionToggle ?? this.hasCompanionToggle,
-      isConnected: isConnected ?? this.isConnected,
-      verifyFirstNameAndLastName: verifyFirstNameAndLastName ?? this.verifyFirstNameAndLastName,
-    );
-  }
+  List<Object?> get props => [name, age, nickName];
 }

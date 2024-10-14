@@ -111,13 +111,9 @@ class _PreferAnyOrEveryFix extends DartFix {
         if (argType is! FunctionType) return;
         if (!argType.returnType.isDartCoreBool) return;
 
-        final expression = switch (arg.body) {
-          BlockFunctionBody(:final block) => block.statements.whereType<ReturnStatement>().firstOrNull?.expression,
-          ExpressionFunctionBody(:final expression) => expression,
-          _ => null,
-        };
-
+        final expression = arg.body.expression;
         if (expression == null) return;
+
         final type = expression.staticType;
         if (type == null || !type.isDartCoreBool) return;
 

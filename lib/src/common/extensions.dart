@@ -49,21 +49,33 @@ extension ExpressionExtensions on Expression {
   }
 }
 
+extension FunctionBodyExtensions on FunctionBody {
+  Expression? get expression => switch (this) {
+        BlockFunctionBody(:final block) => block.statements.whereType<ReturnStatement>().firstOrNull?.expression,
+        ExpressionFunctionBody(:final expression) => expression,
+        _ => null,
+      };
+  bool get hasReturnStatement {
+    return switch (this) {
+      final BlockFunctionBody b => b.block.statements.any((e) => e is ReturnStatement),
+      ExpressionFunctionBody _ => true,
+      _ => false,
+    };
+  }
+}
+
 extension ClassDeclarationExtensions on ClassDeclaration {
   List<FieldElement> get fields => declaredElement!.fields
       .where((field) => !field.isStatic)
       .where((field) => !field.isSynthetic)
       .toList(growable: false);
 
-  Expression? getPropsReturnExpression() {
-    for (final member in members) {
-      if (member is MethodDeclaration && member.name.lexeme == 'props' && member.isGetter) {
-        if (member.body is ExpressionFunctionBody) {
-          return (member.body as ExpressionFunctionBody?)?.expression;
-        }
-      }
-    }
-    return null;
+  Expression? propsReturnExpression() {
+    final member =
+        members.whereType<MethodDeclaration>().where((e) => e.name.lexeme == 'props' && e.isGetter).firstOrNull;
+    if (member == null) return null;
+
+    return member.body.expression;
   }
 
   bool get isImmutable => metadata.any((e) => e.name.name.startsWith('immutable'));
@@ -105,16 +117,6 @@ extension IterableExtensions<E> on Iterable<E> {
   }
 
   Iterable<E> separatedBy(E separator) => indexed.expand((e) => [if (e.$1 > 0) separator, e.$2]);
-}
-
-extension FunctionBodyExtensions on FunctionBody {
-  bool get hasReturnStatement {
-    return switch (this) {
-      final BlockFunctionBody b => b.block.statements.any((e) => e is ReturnStatement),
-      ExpressionFunctionBody _ => true,
-      _ => false,
-    };
-  }
 }
 
 extension TokenTypeExtensions on TokenType {

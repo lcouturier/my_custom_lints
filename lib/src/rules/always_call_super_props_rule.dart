@@ -76,7 +76,7 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       );
       if (!found) return;
 
-      final propsReturnExpression = node.getPropsReturnExpression();
+      final propsReturnExpression = node.propsReturnExpression();
       if (propsReturnExpression == null) return;
 
       final expression = propsReturnExpression as ListLiteral;

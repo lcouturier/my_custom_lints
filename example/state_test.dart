@@ -39,7 +39,7 @@ class OnboardingBackgroundGeolocAnimationInProgress extends OnboardingBackground
   const OnboardingBackgroundGeolocAnimationInProgress({required this.skipPermission, required this.skipAnimation});
 
   @override
-  List<Object?> get props => [...super.props, skipPermission, skipAnimation];
+  List<Object?> get props => [...super.props, skipAnimation];
 }
 
 class OnboardingBackgroundGeolocOver extends OnboardingBackgroundGeolocState {}

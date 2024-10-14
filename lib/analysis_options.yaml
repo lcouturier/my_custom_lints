@@ -57,7 +57,7 @@ custom_lint:
     - no_length_in_index_expression
     - unused_parameter:
       parameters: 'state, event, context, router, response'
-    - equatable_props_check: false
+    - equatable_props_check
     - add_cubit_suffix_rule
     - avoid_filter_usage
     - first_init_state

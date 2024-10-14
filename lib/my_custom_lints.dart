@@ -79,7 +79,7 @@ class _MyCustomLint extends PluginBase {
       const NoBooleanLiteralCompareRule(),
       const NoLengthInIndexExpression(),
       UnusedParameterRule.createRule(configs),
-      const MissingFieldInEquatableProps(),
+      const MissingFieldInEquatablePropsRule(),
       const AlwaysCallSuperPropsRule(),
       const AddCubitSuffixRule(),
       const AvoidFilterRule(),

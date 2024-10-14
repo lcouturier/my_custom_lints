@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
@@ -81,54 +80,30 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     });
   }
 
-  void addEquatableClassFieldDeclaration(
-    void Function({
-      required FieldElement fieldElement,
-      required ClassDeclaration classNode,
-      required List<String> equatablePropsExpressionDetails,
-      Expression? propsReturnExpression,
-    }) listener,
-  ) {
-    addFieldDeclaration((fieldNode) {
-      final classNode = fieldNode.parent;
+  void addEquatableProps(
+      void Function(ListLiteral node, Set<String> watchableFields, Set<String> missingFields) listener) {
+    addClassDeclaration((node) {
+      if (!node.isEquatable) return;
 
-      if (classNode is! ClassDeclaration) {
-        return;
-      }
-
-      final classElement = classNode.declaredElement;
-      if (classElement == null) {
-        return;
-      }
-
-      final classType = classElement.thisType;
-
-      if (!equatableChecker.isAssignableFromType(classType)) {
-        return;
-      }
-
-      final propsReturnExpression = classNode.getPropsReturnExpression();
+      final propsReturnExpression = node.propsReturnExpression();
       if (propsReturnExpression == null) return;
 
-      final propsFields = propsReturnExpression.getFieldsFromProps();
+      final props = node.propsReturnExpression();
+      if (props == null) return;
 
-      final watchableFields =
-          classElement.fields.where((field) => !field.isSynthetic).where((field) => !field.isStatic).toList();
+      final propsFields = props.getFieldsFromProps();
+      if (propsFields.isEmpty) return;
 
-      final fieldElement = watchableFields.firstWhereOrNull(
-        (field) => fieldNode.toString().contains('$field ') || fieldNode.toString().contains('$field;'),
-      );
+      final watchableFields = node.members
+          .whereType<FieldDeclaration>()
+          .map((e) => e.fields.variables.map((variable) => variable.name.lexeme).toList())
+          .expand((e) => e)
+          .toSet();
 
-      if (fieldElement == null) {
-        return;
-      }
+      final missingFields = watchableFields.toSet().difference(propsFields.toSet()).toSet();
+      if (missingFields.isEmpty) return;
 
-      listener(
-        fieldElement: fieldElement,
-        classNode: classNode,
-        equatablePropsExpressionDetails: propsFields,
-        propsReturnExpression: propsReturnExpression,
-      );
+      listener(propsReturnExpression as ListLiteral, watchableFields, missingFields);
     });
   }
 }

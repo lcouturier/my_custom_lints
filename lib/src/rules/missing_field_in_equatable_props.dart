@@ -48,7 +48,6 @@ class MissingFieldInEquatablePropsFix extends DartFix {
         priority: 80,
       );
 
-      // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {
         builder.addReplacement(range.startEnd(node.beginToken.next!, node.endToken.previous!), (builder) {
           if (hasSuperProps) {

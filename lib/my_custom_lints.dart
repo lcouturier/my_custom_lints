@@ -20,6 +20,7 @@ import 'package:my_custom_lints/src/rules/avoid_filter_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_getter_prefix_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_ignoring_return_values_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_incomplete_copy_with_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_invalid_prefix_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_inverted_boolean_checks_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_local_function_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_long_parameter_list_rule.dart';
@@ -114,6 +115,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidAssignmentsAsConditionsRule(),
       const AvoidShrinkWrapInListRule(),
       const AvoidOnlyRethrowRule(),
+      const AvoidInvalidPrefixRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs),

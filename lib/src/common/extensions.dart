@@ -70,12 +70,12 @@ extension ClassDeclarationExtensions on ClassDeclaration {
       .where((field) => !field.isSynthetic)
       .toList(growable: false);
 
-  Expression? propsReturnExpression() {
+  ({bool found, Expression? expression}) propsReturnExpression() {
     final member =
         members.whereType<MethodDeclaration>().where((e) => e.name.lexeme == 'props' && e.isGetter).firstOrNull;
-    if (member == null) return null;
+    if (member == null) return (found: false, expression: null);
 
-    return member.body.expression;
+    return (found: true, expression: member.body.expression);
   }
 
   bool get isImmutable => metadata.any((e) => e.name.name.startsWith('immutable'));
@@ -84,6 +84,9 @@ extension ClassDeclarationExtensions on ClassDeclaration {
 }
 
 extension StringExtensions on String {
+  bool get isCamelCase => RegExp(r'(?<=[a-z])[A-Z]').hasMatch(this);
+  bool get isPascalCase => RegExp(r'(?<=[A-Z])[a-z]').hasMatch(this);
+
   String removeAllSpaces() => replaceAll(' ', '');
   bool get containsOnlyUnderscores => switch (length) {
         0 => false,
@@ -101,6 +104,7 @@ extension StringExtensions on String {
   }
 
   String get firstLowerCase => substring(0, 1).toLowerCase() + substring(1);
+  List<String> splitOnUppercase() => split(RegExp(r'(?=[A-Z])'));
 }
 
 extension IterableExtensions<E> on Iterable<E> {

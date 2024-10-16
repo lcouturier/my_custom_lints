@@ -77,9 +77,9 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       if (!found) return;
 
       final propsReturnExpression = node.propsReturnExpression();
-      if (propsReturnExpression == null) return;
+      if (!propsReturnExpression.found) return;
 
-      final values = propsReturnExpression as ListLiteral;
+      final values = propsReturnExpression.expression as ListLiteral;
       final hasSuperProps = values.elements.any((element) => element.toString().contains('super.props'));
       if (hasSuperProps) return;
 

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 
 void main() {
   test('Test plus', () async {
@@ -15,6 +16,11 @@ void main() {
 
     final result2 = ["label1", "label2", 'label3', 'label4'].fold('', (p0, p1) => '$p0 $p1') + ',';
     print(result2);
+  });
+
+  test('remove prefix', () {
+    final result = "EnumFileDisplayType".removePrefix('Enum');
+    print(result);
   });
 }
 

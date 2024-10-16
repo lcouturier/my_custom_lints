@@ -86,13 +86,10 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     addClassDeclaration((node) {
       if (!node.isEquatable) return;
 
-      final propsReturnExpression = node.propsReturnExpression();
-      if (propsReturnExpression == null) return;
-
       final props = node.propsReturnExpression();
-      if (props == null) return;
+      if (!props.found) return;
 
-      final propsFields = props.getFieldsFromProps();
+      final propsFields = props.expression!.getFieldsFromProps();
       if (propsFields.isEmpty) return;
 
       final watchableFields = node.members
@@ -104,7 +101,7 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       final missingFields = watchableFields.toSet().difference(propsFields.toSet()).toSet();
       if (missingFields.isEmpty) return;
 
-      final values = propsReturnExpression as ListLiteral;
+      final values = props.expression! as ListLiteral;
       final hasSuperProps = values.elements.any((element) => element.toString().contains('super.props'));
 
       listener(values, watchableFields, missingFields, hasSuperProps);

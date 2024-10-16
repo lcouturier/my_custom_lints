@@ -41,6 +41,7 @@ import 'package:my_custom_lints/src/rules/avoid_useless_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_widget_function_rule.dart';
 import 'package:my_custom_lints/src/rules/boolean_prefix_rule.dart';
 import 'package:my_custom_lints/src/rules/cyclomatic_complexity_rule.dart';
+import 'package:my_custom_lints/src/rules/enum_constant_ordering_rule.dart';
 import 'package:my_custom_lints/src/rules/first_init_state_rule.dart';
 import 'package:my_custom_lints/src/rules/missing_field_in_equatable_props.dart';
 import 'package:my_custom_lints/src/rules/no_boolean_literal_compare_rule.dart';
@@ -116,6 +117,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidShrinkWrapInListRule(),
       const AvoidOnlyRethrowRule(),
       const AvoidInvalidPrefixRule(),
+      const EnumConstantsOrderingRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs),

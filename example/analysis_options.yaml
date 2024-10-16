@@ -77,3 +77,4 @@ custom_lint:
     - avoid_shrink_wrap_in_lists
     - avoid_only_rethrow
     - avoid_invalid_prefix
+    - enum_constants_ordering

@@ -1,24 +1,24 @@
+// ignore_for_file: unused_element, unused_import, prefer_interpolation_to_compose_strings
+
+import 'dart:developer';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:my_custom_lints/src/common/utils.dart';
 import 'package:my_custom_lints/src/names.dart';
 
-/// Rule which forbids building widgets with getters/methods/functions,
-/// unless it's a Provider.
 class AvoidWidgetFunctionRule extends DartLintRule {
-  static const problem = 'Returning a widget from a function or method '
-      'is an anti-pattern.';
-  static const correction = 'Unless method is overridden, '
-      'consider extracting your widget to a separate class.';
-
   const AvoidWidgetFunctionRule()
       : super(
           code: const LintCode(
-            name: RuleNames.avoidWidgetFunction,
-            problemMessage: problem,
-            correctionMessage: correction,
+            name: 'avoid_widget_function',
+            problemMessage: 'Avoid building widgets with functions.',
+            correctionMessage: 'Wrap this call by a builder.',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );
@@ -29,49 +29,66 @@ class AvoidWidgetFunctionRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry
-      ..addFunctionDeclaration((node) {
-        final isOverridden = node.declaredElement?.hasOverride ?? false;
-        if (!isOverridden) {
-          _checkReturnType(reporter, node.returnType);
-        }
-      })
-      ..addMethodDeclaration((node) {
-        final isOverridden = node.declaredElement?.hasOverride ?? false;
-        if (!isOverridden) {
-          _checkReturnType(reporter, node.returnType);
-        }
-      });
+    context.registry.addMethodInvocation((node) {
+      final returnType = node.staticType;
+
+      if (returnType == null) return;
+      if (!returnType.isWidget) return;
+
+      final namedExpression = _getNamedExpression(node) as NamedExpression?;
+      if (namedExpression?.name.label.name == 'builder') return;
+
+      reporter.reportErrorForNode(code, node);
+    });
   }
 
-  void _checkReturnType(ErrorReporter reporter, TypeAnnotation? returnType) {
-    final type = returnType?.type;
-    if (returnType != null && type != null && _hasWidgetType(type)) {
-      reporter.reportErrorForNode(code, returnType);
+  Expression? _getNamedExpression(AstNode node) {
+    if (node.parent is FunctionBody) {
+      return ((node.parent as ExpressionFunctionBody).parent as FunctionExpression).parent as NamedExpression;
     }
+
+    if (node.parent is ReturnStatement) {
+      return ((((node.parent as ReturnStatement).parent as Block).parent as BlockFunctionBody).parent
+              as FunctionExpression)
+          .parent as NamedExpression;
+    }
+    return null;
   }
 
-  bool _hasWidgetType(DartType type) {
-    final isWidget = _isWidgetOrSubclass(type);
+  @override
+  List<Fix> getFixes() => [_AvoidWidgetFunctionFix()];
+}
 
-    final isProvider = _isMultiProviderOrSubclass(type) || _isProviderOrSubclass(type);
+class _AvoidWidgetFunctionFix extends DartFix {
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    context.registry.addMethodInvocation((node) {
+      if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
 
-    return isWidget && !isProvider;
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Wrap with Builder widget',
+        priority: 80,
+      );
+
+      changeBuilder.addDartFileEdit((builder) {
+        builder
+          ..addReplacement(
+            range.node(node),
+            (builder) {
+              builder
+                ..write('Builder(')
+                ..write('builder: (context) => ' + node.toSource() + ',')
+                ..write(')');
+            },
+          )
+          ..format(range.node(node));
+      });
+    });
   }
-
-  bool _isWidgetOrSubclass(DartType? type) => _isClassOrSubclass(type, _isWidget);
-
-  bool _isWidget(DartType? type) => type?.getDisplayString(withNullability: false) == 'Widget';
-
-  bool _isMultiProviderOrSubclass(DartType? type) => _isClassOrSubclass(type, _isMultiProvider);
-
-  bool _isMultiProvider(DartType? type) => type?.getDisplayString(withNullability: false) == 'MultiProvider';
-
-  bool _isProviderOrSubclass(DartType? type) => _isClassOrSubclass(type, _isInheritedProvider);
-
-  bool _isInheritedProvider(DartType? type) =>
-      type?.getDisplayString(withNullability: false).startsWith('InheritedProvider') ?? false;
-
-  bool _isClassOrSubclass(DartType? type, bool Function(DartType?) isClass) =>
-      isClass(type) || (type is InterfaceType && type.allSupertypes.any(isClass));
 }

@@ -37,6 +37,7 @@ import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_self_assignment_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_shrink_wrap_in_lists_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_single_child_column_or_row_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_unnecessary_setstate_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
 import 'package:my_custom_lints/src/rules/avoid_useless_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_widget_function_rule.dart';
@@ -120,6 +121,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidInvalidPrefixRule(),
       const EnumConstantsOrderingRule(),
       const AvoidEmptySetStateRule(),
+      const AvoidUnnecessarySetStateRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs),

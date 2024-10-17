@@ -98,3 +98,4 @@ custom_lint:
     - avoid_invalid_prefix
     - enum_constants_ordering
     - avoid_empty_set_state
+    - avoid_unnecessary_setstate

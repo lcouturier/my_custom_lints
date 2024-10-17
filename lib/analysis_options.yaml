@@ -97,3 +97,4 @@ custom_lint:
     - avoid_only_rethrow
     - avoid_invalid_prefix
     - enum_constants_ordering
+    - avoid_empty_set_state

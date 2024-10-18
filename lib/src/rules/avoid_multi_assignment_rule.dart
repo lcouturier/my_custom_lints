@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
 
 import 'package:analyzer/error/error.dart';
@@ -24,7 +22,6 @@ class AvoidMultiAssignmentRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addAssignmentExpression((AssignmentExpression node) {
-      log('addAssignmentExpression : $node');
       if (node.rightHandSide is AssignmentExpression) {
         reporter.reportErrorForNode(code, node);
       }

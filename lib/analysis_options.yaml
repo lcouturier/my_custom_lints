@@ -100,3 +100,4 @@ custom_lint:
     - avoid_empty_set_state
     - avoid_unnecessary_setstate
     - avoid_multi_assignment
+    - avoid_nested_record

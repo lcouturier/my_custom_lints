@@ -125,7 +125,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidEmptySetStateRule(),
       const AvoidUnnecessarySetStateRule(),
       const AvoidMultiAssignmentRule(),
-      const AvoiddNestedRecordRule(),
+      const AvoidNestedRecordRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs),

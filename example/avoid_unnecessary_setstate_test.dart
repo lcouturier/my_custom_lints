@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_underscore_for_unused_callback_parameters, avoid_dynamic
 import 'package:flutter/material.dart';
 
 class MyWidget extends StatefulWidget {
@@ -58,14 +59,43 @@ class _MyWidgetState extends State<MyWidget> {
 
     myStateUpdateMethod(); // LINT: Avoid calling sync methods that call 'setState'. Try changing the state directly.
 
-    return ElevatedButton(
-      onPressed: () => myStateUpdateMethod(),
-      onLongPress: () {
-        setState(() {
+    // return ElevatedButton(
+    //   onPressed: () => myStateUpdateMethod(),
+    //   onHover: (value) {
+    //     setState(() {
+    //       if (value) {
+    //         myString = 'data';
+    //       }
+    //     });
+    //   },
+    //   onLongPress: () {
+    //     setState(() {
+    //       myString = 'data';
+    //     });
+    //   },
+    //   child: Text('PRESS'),
+    // );
+    return MyTestWidget(onChange: () {
+      setState(
+        () {
           myString = 'data';
-        });
-      },
-      child: Text('PRESS'),
-    );
+        },
+      );
+    });
+  }
+}
+
+class MyTestWidget extends StatefulWidget {
+  const MyTestWidget({super.key, this.onChange});
+  final Function()? onChange;
+
+  @override
+  State<MyTestWidget> createState() => _MyTestWidgetState();
+}
+
+class _MyTestWidgetState extends State<MyTestWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

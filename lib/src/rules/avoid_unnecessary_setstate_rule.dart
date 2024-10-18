@@ -1,9 +1,15 @@
+// ignore_for_file: unused_import
+
+import 'dart:developer';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 
 class AvoidUnnecessarySetStateRule extends DartLintRule {
   const AvoidUnnecessarySetStateRule()
@@ -29,7 +35,7 @@ class AvoidUnnecessarySetStateRule extends DartLintRule {
       final body = node.body;
       if (body is! BlockFunctionBody) return;
 
-      final visitor = _Visitor();
+      final visitor = _Visitor(inBuildMethod: node.name.lexeme == 'build');
       node.accept(visitor);
 
       for (final element in visitor.nodes) {
@@ -44,14 +50,31 @@ class AvoidUnnecessarySetStateRule extends DartLintRule {
 
 class _Visitor extends RecursiveAstVisitor<void> {
   final _nodes = <AstNode>[];
+  final bool inBuildMethod;
+
+  _Visitor({this.inBuildMethod = false});
 
   Iterable<AstNode> get nodes => _nodes;
   @override
   void visitMethodInvocation(MethodInvocation node) {
     super.visitMethodInvocation(node);
     if (node.methodName.name == 'setState') {
+      if (inBuildMethod) {
+        if (_isEventHandler(node.thisOrAncestorOfType<FunctionExpression>()?.parent)) {
+          return;
+        }
+      }
+
       _nodes.add(node);
     }
+  }
+
+  bool _isEventHandler(AstNode? node) {
+    return node != null &&
+        node is NamedExpression &&
+        node.toString().startsWith('on') &&
+        (node.expression is FunctionExpression) &&
+        (node.expression as FunctionExpression).staticType.isCallbackType;
   }
 }
 

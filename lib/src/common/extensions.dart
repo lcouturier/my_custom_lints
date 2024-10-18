@@ -23,8 +23,16 @@ extension DartTypeExtensions on DartType {
 extension DartTypeNullableExtensions on DartType? {
   bool get isNullable => isNullableType(this);
   bool get isWidget => this?.getDisplayString(withNullability: false) == 'Widget';
-}
 
+  bool get isCallbackType {
+    return toString().startsWith('Null') || _isCallbackType(this);
+  }
+
+  bool _isCallbackType(DartType? type) {
+    return (type is FunctionType &&
+        (type.returnType is VoidType || type.returnType is DynamicType || type.parameters.isEmpty));
+  }
+}
 extension FormalParameterExtension on FormalParameter {
   bool get isBool =>
       this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isDartCoreBool ?? false);

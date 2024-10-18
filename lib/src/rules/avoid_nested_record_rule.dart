@@ -28,10 +28,9 @@ class AvoiddNestedRecordRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addRecordLiteral((node) {
-      for (var element in node.fields) {
-        if (element is RecordLiteral) {
-          reporter.reportErrorForNode(code, node);
-        }
+      bool hasNestedRecord = node.fields.any((e) => e is RecordLiteral);
+      if (hasNestedRecord) {
+        reporter.reportErrorForNode(code, node);
       }
     });
 

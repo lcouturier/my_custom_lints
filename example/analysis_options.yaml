@@ -80,4 +80,5 @@ custom_lint:
     - enum_constants_ordering
     - avoid_empty_set_state
     - avoid_unnecessary_setstate
+    - avoid_multi_assignment
     

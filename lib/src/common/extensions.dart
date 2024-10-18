@@ -20,6 +20,10 @@ extension DartTypeExtensions on DartType {
   }
 }
 
+extension RecordTypeExtensions on RecordType {
+  bool get isMixed => positionalFields.isNotEmpty && namedFields.isNotEmpty;
+}
+
 extension DartTypeNullableExtensions on DartType? {
   bool get isNullable => isNullableType(this);
   bool get isWidget => this?.getDisplayString(withNullability: false) == 'Widget';
@@ -33,6 +37,7 @@ extension DartTypeNullableExtensions on DartType? {
         (type.returnType is VoidType || type.returnType is DynamicType || type.parameters.isEmpty));
   }
 }
+
 extension FormalParameterExtension on FormalParameter {
   bool get isBool =>
       this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isDartCoreBool ?? false);

@@ -39,7 +39,8 @@ class AvoidNestedRecordRule extends DartLintRule {
       if (element.aliasedType is! RecordType) return;
 
       final record = element.aliasedType as RecordType;
-      bool isNested = record.positionalFields.any((e) => e.type is RecordType);
+      bool isNested = record.positionalFields.any((e) => e.type is RecordType) ||
+          record.namedFields.any((e) => e.type is RecordType);
       if (!isNested) return;
 
       reporter.reportErrorForNode(code, node);

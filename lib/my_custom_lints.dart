@@ -27,6 +27,7 @@ import 'package:my_custom_lints/src/rules/avoid_local_function_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_long_parameter_list_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_long_records_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_map_keys_contains_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_mixing_named_and_positional_fields_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_multi_assignment_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_record_rule.dart';
@@ -128,6 +129,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidUnnecessarySetStateRule(),
       const AvoidMultiAssignmentRule(),
       const AvoidNestedRecordRule(),
+      const AvoidMixingNamedAndPositionalFieldsRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs),

@@ -82,4 +82,5 @@ custom_lint:
     - avoid_unnecessary_setstate
     - avoid_multi_assignment
     - avoid_nested_record
+    - avoid_mixing_named_and_positional_fields_rule
     

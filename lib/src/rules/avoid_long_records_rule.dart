@@ -34,21 +34,26 @@ class AvoidLongRecordsRule extends BaseLintRule<AvoidLongRecordsParameters> {
       if (node.fields.length > config.parameters.maxNumber) {
         reporter.reportErrorForNode(code, node);
       }
+      if (node.fields.length < config.parameters.minNumber) {
+        reporter.reportErrorForNode(code, node);
+      }
     });
   }
 }
 
 class AvoidLongRecordsParameters {
+  final int minNumber;
   final int maxNumber;
 
   factory AvoidLongRecordsParameters.fromJson(Map<String, Object?> map) {
     return AvoidLongRecordsParameters(
+      minNumber: map['min-number'] as int? ?? 1,
       maxNumber: map['max-number'] as int? ?? 5,
     );
   }
 
-  AvoidLongRecordsParameters({required this.maxNumber});
+  AvoidLongRecordsParameters({required this.minNumber, required this.maxNumber});
 
   @override
-  String toString() => '$maxNumber';
+  String toString() => '$minNumber <= number <= $maxNumber';
 }

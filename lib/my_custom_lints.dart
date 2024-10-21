@@ -12,6 +12,7 @@ import 'package:my_custom_lints/src/rules/add_cubit_suffix_rule.dart';
 import 'package:my_custom_lints/src/rules/always_call_super_props_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_assignments_as_conditions_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_banned_usage_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_dynamic_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_empty_set_state_rule.dart';
@@ -133,6 +134,7 @@ class _MyCustomLint extends PluginBase {
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs),
+      AvoidBannedUsageRule.createRule(configs),
     ];
   }
 

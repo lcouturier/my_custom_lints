@@ -102,3 +102,13 @@ custom_lint:
     - avoid_multi_assignment
     - avoid_nested_record
     - avoid_mixing_named_and_positional_fields_rule
+    - avoid_banned_usage:
+      entries:
+        - paths: []
+          types: ['SomeType']
+          message: 'Do not use SomeType here.'
+          severity: error
+        - paths: ['core/.*\.dart']
+          types: ['CounterBloc']
+          message: 'State management should be not used inside "core" folder.'
+

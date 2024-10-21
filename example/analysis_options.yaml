@@ -93,4 +93,3 @@ custom_lint:
           types: ['CounterBloc']
           message: 'State management should be not used inside "core" folder.'
           severity: error
-    

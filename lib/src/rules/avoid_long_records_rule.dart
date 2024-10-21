@@ -47,7 +47,7 @@ class AvoidLongRecordsParameters {
 
   factory AvoidLongRecordsParameters.fromJson(Map<String, Object?> map) {
     return AvoidLongRecordsParameters(
-      minNumber: map['min-number'] as int? ?? 1,
+      minNumber: map['min-number'] as int? ?? 2,
       maxNumber: map['max-number'] as int? ?? 5,
     );
   }

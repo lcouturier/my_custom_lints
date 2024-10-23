@@ -50,8 +50,8 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
         if (!checker.isAssignableFromType(node.type!)) return;
       }
 
-      final filePath = resolver.source.fullName;
-      if (forbiddenClasses.every((e) => !filePath.contains(e.path))) return;
+      // final filePath = resolver.source.fullName;
+      // if (forbiddenClasses.every((e) => !filePath.contains(e.path))) return;
 
       reporter.reportErrorForNode(
         code.copyWith(
@@ -59,6 +59,7 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
               ? ErrorSeverity.WARNING
               : ErrorSeverity.values.firstWhere(
                   (e) => e.name == result!.severity!.toUpperCase(),
+                  orElse: () => ErrorSeverity.WARNING,
                 ),
         ),
         node,

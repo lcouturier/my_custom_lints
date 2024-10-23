@@ -88,7 +88,7 @@ custom_lint:
     - avoid_getter_prefix
     - avoid_self_assignment
     - avoid_single_child_column_or_row:
-      widgets: 'Column, Row, Flex, Wrap, SliverList, SliverMainAxisGroup, SliverCrossAxisGroup'
+      widgets: ['Column', 'Row', 'Flex', 'Wrap', 'SliverList', 'SliverMainAxisGroup', 'SliverCrossAxisGroup']
     - avoid_positional_record_field_access
     - avoid_ignoring_return_values
     - prefer_usage_of_value_getter

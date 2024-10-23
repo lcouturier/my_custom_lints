@@ -30,21 +30,61 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
     CustomLintContext context,
   ) {
     final forbiddenClasses = config.parameters.entries
-        .expand((e) => (e.types.map((m) => (className: m, message: e.message, severity: e.severity))))
+        .expand((e) => (e.paths.map(
+              (p) => (
+                className: e.className,
+                message: e.message,
+                severity: e.severity,
+                package: e.package,
+                path: p,
+              ),
+            )))
         .toList();
 
-    context.registry.addInstanceCreationExpression((node) {
-      // final filePath = resolver.source.fullName;
-      final (found, result) =
-          (forbiddenClasses.firstWhereOrNot((e) => e.className == node.constructorName.type.name2.lexeme));
+    context.registry.addNamedType((node) {
+      final (found, result) = (forbiddenClasses.firstWhereOrNot((e) => e.className == node.name2.lexeme));
       if (!found) return;
 
+      if (result?.package != null && node.type != null) {
+        final checker = TypeChecker.fromName(result!.className, packageName: '${result.package}');
+        if (!checker.isAssignableFromType(node.type!)) return;
+      }
+
+      final filePath = resolver.source.fullName;
+      if (forbiddenClasses.every((e) => !filePath.contains(e.path))) return;
+
       reporter.reportErrorForNode(
-        code,
-        node.constructorName,
-        [result?.message ?? node.constructorName.type.name2.lexeme],
+        code.copyWith(
+          errorSeverity: result?.severity == null
+              ? ErrorSeverity.WARNING
+              : ErrorSeverity.values.firstWhere(
+                  (e) => e.name == result!.severity!.toUpperCase(),
+                ),
+        ),
+        node,
+        [result?.message ?? node.name2.lexeme],
       );
     });
+  }
+}
+
+extension on LintCode {
+  LintCode copyWith({
+    String? name,
+    String? problemMessage,
+    String? correctionMessage,
+    String? uniqueName,
+    String? url,
+    ErrorSeverity? errorSeverity,
+  }) {
+    return LintCode(
+      name: name ?? this.name,
+      problemMessage: problemMessage ?? this.problemMessage,
+      correctionMessage: correctionMessage ?? this.correctionMessage,
+      uniqueName: uniqueName ?? this.uniqueName,
+      url: url ?? this.url,
+      errorSeverity: errorSeverity ?? this.errorSeverity,
+    );
   }
 }
 
@@ -57,7 +97,8 @@ class AvoidBannedUsageParameters {
     final entries = yamlEntries.map((e) {
       return Entry(
         paths: List<String>.from(e['paths'] as YamlList),
-        types: List<String>.from(e['types'] as YamlList),
+        className: e['class_name'] as String,
+        package: e['package'] as String?,
         message: e['message'] as String,
         severity: e['severity'] as String?,
       );
@@ -70,12 +111,14 @@ class AvoidBannedUsageParameters {
 
 class Entry {
   final List<String> paths;
-  final List<String> types;
+  final String className;
+  final String? package;
   final String message;
   final String? severity;
 
-  Entry({required this.paths, required this.types, required this.message, this.severity});
+  Entry({required this.paths, required this.className, required this.message, required this.package, this.severity});
 
   @override
-  String toString() => 'Entry(paths: $paths, types: $types, message: $message, severity: $severity)';
+  String toString() =>
+      'Entry(paths: $paths, types: $className, package: $package, message: $message, severity: $severity)';
 }

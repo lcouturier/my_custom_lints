@@ -7,6 +7,7 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:yaml/yaml.dart';
 
 class AvoidSingleChildColumnOrRowRule extends BaseLintRule<AvoidSingleChildColumnOrRowParameters> {
   AvoidSingleChildColumnOrRowRule._(super.rule);
@@ -49,9 +50,8 @@ class AvoidSingleChildColumnOrRowParameters {
   final List<String> widgets;
 
   factory AvoidSingleChildColumnOrRowParameters.fromJson(Map<String, Object?> map) {
-    final items = map['widgets'] as String? ?? '';
     return AvoidSingleChildColumnOrRowParameters(
-      widgets: items.isEmpty ? [] : items.removeAllSpaces().split(',').map((e) => e.trim()).toList(),
+      widgets: List<String>.from(map['widgets'] as YamlList),
     );
   }
 

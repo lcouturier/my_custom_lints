@@ -69,7 +69,7 @@ custom_lint:
     - avoid_getter_prefix
     - avoid_self_assignment
     - avoid_single_child_column_or_row:
-      widgets: 'Column, Row, Flex, Wrap, SliverList, SliverMainAxisGroup, SliverCrossAxisGroup'
+      widgets: ['Column', 'Row', 'Flex', 'Wrap', 'SliverList', 'SliverMainAxisGroup', 'SliverCrossAxisGroup']
     - avoid_positional_record_field_access
     - avoid_ignoring_return_values
     - prefer_usage_of_value_getter
@@ -85,11 +85,12 @@ custom_lint:
     - avoid_mixing_named_and_positional_fields_rule
     - avoid_banned_usage:
       entries:
-        - paths: ['example']
-          types: ['SomeType']
+        - paths: ['example', 'test']
+          class_name: 'SomeType'
           message: 'Do not use SomeType here.'
-          severity: error
+          severity: warning
         - paths: ['core/.*\.dart']
-          types: ['CounterBloc']
-          message: 'State management should be not used inside "core" folder.'
+          class_name: 'ChoiceChip'
+          package: 'flutter'
+          message: 'Do not use native ChoiceChip prefer ChoiceChip from Design system.'
           severity: error

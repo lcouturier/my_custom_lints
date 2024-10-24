@@ -61,12 +61,8 @@ class _PreferContainsMethodFix extends DartFix {
       changeBuilder.addDartFileEdit((builder) {
         final expression = node.parent as BinaryExpression;
         builder
-          ..addSimpleReplacement(
-            range.startEnd(node.methodName.beginToken, node.methodName.endToken),
-            'contains',
-          )
-          ..addDeletion(range.token(expression.operator))
-          ..addDeletion(range.startEnd(expression.rightOperand.beginToken, expression.rightOperand.endToken))
+          ..addSimpleReplacement(range.node(node.methodName), 'contains')
+          ..addDeletion(range.startEnd(expression.operator, expression.rightOperand.endToken))
           ..format(range.node(node.parent!));
       });
     });

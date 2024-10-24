@@ -6,6 +6,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 import 'package:yaml/yaml.dart';
 
@@ -29,63 +30,33 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    final forbiddenClasses = config.parameters.entries
-        .expand((e) => (e.paths.map(
-              (p) => (
-                className: e.className,
-                message: e.message,
-                severity: e.severity,
-                package: e.package,
-                path: p,
-              ),
-            )))
-        .toList();
-
     context.registry.addNamedType((node) {
-      final (found, result) = (forbiddenClasses.firstWhereOrNot((e) => e.className == node.name2.lexeme));
-      if (!found) return;
+      final entry = config.parameters.entries.firstWhereOrNull((e) => e.className == node.name2.lexeme);
+      if (entry == null) return;
 
-      if (result?.package != null && node.type != null) {
-        final checker = TypeChecker.fromName(result!.className, packageName: '${result.package}');
+      if (entry.package != null && node.type != null) {
+        final checker = TypeChecker.fromName(entry.className, packageName: '${entry.package}');
         if (!checker.isAssignableFromType(node.type!)) return;
       }
 
-      // final filePath = resolver.source.fullName;
-      // if (forbiddenClasses.every((e) => !filePath.contains(e.path))) return;
+      if (entry.paths.isNotEmpty) {
+        final filePath = resolver.source.fullName;
+        if (entry.paths.every((e) => !filePath.contains(e))) return;
+      }
 
       reporter.reportErrorForNode(
         code.copyWith(
-          errorSeverity: result?.severity == null
+          errorSeverity: entry.severity == null
               ? ErrorSeverity.WARNING
               : ErrorSeverity.values.firstWhere(
-                  (e) => e.name == result!.severity!.toUpperCase(),
+                  (e) => e.name == entry.severity!.toUpperCase(),
                   orElse: () => ErrorSeverity.WARNING,
                 ),
         ),
         node,
-        [result?.message ?? node.name2.lexeme],
+        [entry.message],
       );
     });
-  }
-}
-
-extension on LintCode {
-  LintCode copyWith({
-    String? name,
-    String? problemMessage,
-    String? correctionMessage,
-    String? uniqueName,
-    String? url,
-    ErrorSeverity? errorSeverity,
-  }) {
-    return LintCode(
-      name: name ?? this.name,
-      problemMessage: problemMessage ?? this.problemMessage,
-      correctionMessage: correctionMessage ?? this.correctionMessage,
-      uniqueName: uniqueName ?? this.uniqueName,
-      url: url ?? this.url,
-      errorSeverity: errorSeverity ?? this.errorSeverity,
-    );
   }
 }
 

@@ -85,12 +85,16 @@ custom_lint:
     - avoid_mixing_named_and_positional_fields_rule
     - avoid_banned_usage:
       entries:
-        - paths: ['example', 'test']
+        - paths: ['example']
           class_name: 'SomeType'
           message: 'Do not use SomeType here.'
           severity: warning
-        - paths: ['core/.*\.dart']
+        - paths: []
           class_name: 'ChoiceChip'
           package: 'flutter'
           message: 'Do not use native ChoiceChip prefer ChoiceChip from Design system.'
           severity: error
+        - paths: []
+          class_name: 'CachedNetworkImage'
+          message: 'For testability, use ConfigurableNetworkImage instead.'
+          severity: warning

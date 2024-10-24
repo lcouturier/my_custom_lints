@@ -6,6 +6,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 
 import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/error/error.dart';
+import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 extension DartTypeExtensions on DartType {
@@ -149,5 +151,25 @@ extension TokenTypeExtensions on TokenType {
       TokenType.BAR_BAR => (TokenType.AMPERSAND_AMPERSAND, true),
       _ => (this, false),
     };
+  }
+}
+
+extension LintCodeExtension on LintCode {
+  LintCode copyWith({
+    String? name,
+    String? problemMessage,
+    String? correctionMessage,
+    String? uniqueName,
+    String? url,
+    ErrorSeverity? errorSeverity,
+  }) {
+    return LintCode(
+      name: name ?? this.name,
+      problemMessage: problemMessage ?? this.problemMessage,
+      correctionMessage: correctionMessage ?? this.correctionMessage,
+      uniqueName: uniqueName ?? this.uniqueName,
+      url: url ?? this.url,
+      errorSeverity: errorSeverity ?? this.errorSeverity,
+    );
   }
 }

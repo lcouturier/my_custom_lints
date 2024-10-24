@@ -83,6 +83,7 @@ custom_lint:
     - avoid_multi_assignment
     - avoid_nested_record
     - avoid_mixing_named_and_positional_fields_rule
+    - prefer_contains_method
     - avoid_banned_usage:
       entries:
         - paths: ['example']

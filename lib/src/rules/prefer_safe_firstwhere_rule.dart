@@ -18,13 +18,13 @@ class PreferSafeFirstWhereRule extends DartLintRule {
           code: const LintCode(
             name: ruleName,
             problemMessage:
-                'firstWhere() and singleWhere() find the first or only element matching a condition, respectively. Both methods throw a StateError if no element matches, and singleWhere() throws an error if more than one element matches.',
+                'firstWhere(), lastWhere() and singleWhere() find the first or only element matching a condition, respectively. Both methods throw a StateError if no element matches, and singleWhere() throws an error if more than one element matches.',
             correctionMessage: 'Use the optional orElse parameter to provide a default if no element matches.',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );
 
-  static const methods = ['firstWhere', 'singleWhere'];
+  static const methods = ['firstWhere', 'singleWhere', 'lastWhere'];
 
   @override
   void run(
@@ -41,6 +41,9 @@ class PreferSafeFirstWhereRule extends DartLintRule {
       reporter.reportErrorForNode(code, node.methodName);
     });
   }
+
+  @override
+  List<Fix> getFixes() => [_PreferSafeFirstWhereFix()];
 }
 
 class _PreferSafeFirstWhereFix extends DartFix {
@@ -56,19 +59,13 @@ class _PreferSafeFirstWhereFix extends DartFix {
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Prefer fold with initial value instead.',
+        message: 'Add orElse parameter.',
         priority: 80,
       );
 
       changeBuilder.addDartFileEdit((builder) {
         builder
-          ..addSimpleReplacement(node.methodName.sourceRange, 'fold')
-          ..addInsertion(
-            node.methodName.sourceRange.end + 1,
-            (builder) {
-              builder.write('0,');
-            },
-          )
+          ..addInsertion(node.end - 1, (builder) => builder.write(', orElse: () => null'))
           ..format(node.sourceRange);
       });
     });

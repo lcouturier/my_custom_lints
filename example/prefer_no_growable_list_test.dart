@@ -1,13 +1,16 @@
+// ignore_for_file: avoid_print
 void fn() {
-  final result = [1, 2, 3, 4, 5].toList(growable: false);
-  // ignore: avoid_print
+  final result = [1, 2, 3, 4, 5].toList();
+
   print(result);
 }
 
 class PreferNoGrowableListTest {
   void fn() {
     final result = [1, 2, 3, 4, 5].toList();
-    // ignore: avoid_print
+
+    result.add(1);
+
     print(result);
   }
 

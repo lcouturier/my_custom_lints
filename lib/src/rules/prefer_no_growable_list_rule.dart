@@ -1,6 +1,5 @@
 // ignore_for_file: cascade_invocations, unused_element
 
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -15,7 +14,6 @@ class PreferNoGrowableListRule extends DartLintRule {
           code: const LintCode(
             name: ruleName,
             problemMessage: 'Always use non-growable arrays if possible.',
-            correctionMessage: '',
           ),
         );
 
@@ -27,23 +25,11 @@ class PreferNoGrowableListRule extends DartLintRule {
   ) {
     context.registry.addMethodInvocation((node) {
       final targetType = node.realTarget?.staticType;
-      if (targetType == null || !iterableChecker.isAssignableFromType(targetType)) {
-        return;
-      }
-
+      if (targetType == null || !iterableChecker.isAssignableFromType(targetType)) return;
       if (node.methodName.name != 'toList') return;
       if (node.argumentList.arguments.isNotEmpty) return;
 
-      reporter.reportErrorForNode(
-        code,
-        node.methodName,
-        [
-          node.toSource(),
-          '${node.realTarget?.toSource()}.toList(growable: false)',
-        ],
-        [],
-        node,
-      );
+      reporter.reportErrorForNode(code, node.methodName);
     });
   }
 
@@ -60,15 +46,17 @@ class _PreferNoGrowableListFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    final changeBuilder = reporter.createChangeBuilder(
-      message: 'Replace toList() by toList(growable: false)',
-      priority: 80,
-    );
+    context.registry.addMethodInvocation((node) {
+      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
-    final method = analysisError.data! as MethodInvocation;
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Add growable: false to toList()',
+        priority: 80,
+      );
 
-    changeBuilder.addDartFileEdit((builder) {
-      builder.addSimpleInsertion(method.methodName.offset + method.methodName.length + 1, 'growable: false');
+      changeBuilder.addDartFileEdit((builder) {
+        builder.addSimpleInsertion(node.methodName.end + 1, 'growable: false');
+      });
     });
   }
 }

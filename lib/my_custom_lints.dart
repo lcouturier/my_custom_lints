@@ -64,10 +64,12 @@ import 'package:my_custom_lints/src/rules/prefer_named_bool_parameters_rule.dart
 import 'package:my_custom_lints/src/rules/prefer_no_growable_list_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_of_over_current.dart';
 import 'package:my_custom_lints/src/rules/prefer_returning_condition_rule.dart';
+import 'package:my_custom_lints/src/rules/prefer_safe_firstwhere_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_underscore_for_unused_callback_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_custom_lints/src/rules/remove_empty_listener_rule.dart';
+import 'package:my_custom_lints/src/rules/use_join_string_list_rule.dart';
 import 'package:my_custom_lints/src/rules/use_ternary_instead_of_ifelse_rule.dart';
 import 'package:my_custom_lints/src/rules/verify_autoroute_usage_rule.dart';
 
@@ -135,6 +137,8 @@ class _MyCustomLint extends PluginBase {
       const AvoidMixingNamedAndPositionalFieldsRule(),
       const PreferContainsMethodRule(),
       const AvoidUnsafeReduceRule(),
+      const PreferSafeFirstWhereRule(),
+      const UseJoinOnStringsRule(),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),
       PreferAnyOrEveryRule.createRule(configs),

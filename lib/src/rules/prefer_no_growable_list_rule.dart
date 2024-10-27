@@ -1,4 +1,8 @@
-// ignore_for_file: cascade_invocations, unused_element
+// ignore_for_file: cascade_invocations, unused_element, unused_import
+
+import 'dart:developer';
+
+import 'package:analyzer/dart/ast/ast.dart';
 
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
@@ -28,6 +32,28 @@ class PreferNoGrowableListRule extends DartLintRule {
       if (targetType == null || !iterableChecker.isAssignableFromType(targetType)) return;
       if (node.methodName.name != 'toList') return;
       if (node.argumentList.arguments.isNotEmpty) return;
+
+      if (node.parent is ReturnStatement) {
+        reporter.reportErrorForNode(code, node.methodName);
+        return;
+      }
+
+      final method = node.thisOrAncestorOfType<MethodDeclaration>();
+      if (method != null) {
+        final body = method.body as BlockFunctionBody;
+
+        for (final statement in body.block.statements.whereType<ExpressionStatement>()) {
+          final expression = statement.expression;
+          if (expression is MethodInvocation) {
+            final targetType = node.realTarget?.staticType;
+            if (targetType != null || iterableChecker.isAssignableFromType(targetType!)) {
+              if (expression.methodName.name.startsWith('remove') || expression.methodName.name.startsWith('add')) {
+                return;
+              }
+            }
+          }
+        }
+      }
 
       reporter.reportErrorForNode(code, node.methodName);
     });

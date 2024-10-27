@@ -1,20 +1,21 @@
 // ignore_for_file: avoid_print
-void fn() {
+void fn1() {
   final result = [1, 2, 3, 4, 5].toList();
 
   print(result);
 }
 
 class PreferNoGrowableListTest {
-  void fn() {
+  List<int> fn2() {
     final result = [1, 2, 3, 4, 5].toList();
 
-    result.add(1);
+    result.add(6);
 
     print(result);
+    return result.toList();
   }
 
-  void fn2() {
+  void fn3() {
     final value = 1;
     switch (value) {
       case 1:

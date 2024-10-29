@@ -104,6 +104,7 @@ custom_lint:
     - avoid_unsafe_reduce
     - prefer_safe_first_where
     - use_join_on_strings
+    - prefer_named_parameters
     - avoid_banned_usage:
       entries:
         - paths: ['example']

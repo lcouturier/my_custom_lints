@@ -136,6 +136,16 @@ extension IterableExtensions<E> on Iterable<E> {
   }
 
   Iterable<E> separatedBy(E separator) => indexed.expand((e) => [if (e.$1 > 0) separator, e.$2]);
+
+  int countBy(bool Function(E) predicate) {
+    var count = 0;
+    for (final element in this) {
+      if (predicate(element)) {
+        count++;
+      }
+    }
+    return count;
+  }
 }
 
 extension TokenTypeExtensions on TokenType {

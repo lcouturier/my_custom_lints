@@ -1,9 +1,8 @@
-include: package:flutter_lints/flutter.yaml
+
 
 analyzer:
   plugins:
     - custom_lint
-
   exclude:
     - '**/*.freezed.dart'
     - '**/*.g.dart'
@@ -25,7 +24,6 @@ analyzer:
     unused_import: error
     unused_element: error
 
-
 custom_lint:
   debug: true # enable debug mode
   verbose: true # enable verbose mode
@@ -38,14 +36,14 @@ custom_lint:
     - avoid_long_parameter_list:
       max-parameters: 5
       ignore-optional: true
-      ignored-names: 'copyWith'
+      ignored-names: ['copyWith']
     - boolean_prefixes:
       ignore-getters: false
       ignore-fields: true
       ignore-parameters: false
       ignore-methods: true
-      ignored-names: 'stringify, selected, listen, value, enabled'
-      prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should, with'
+      ignored-names: ['stringify', 'selected', 'listen', 'value', 'enabled']
+      prefixes: ['is', 'are', 'was', 'were', 'has', 'have', 'had', 'can', 'will', 'do', 'does', 'did', 'should', 'with']
     - cyclomatic_complexity: false
       max_complexity: 10
     - max_nesting_level:
@@ -103,6 +101,7 @@ custom_lint:
     - avoid_nested_record
     - avoid_mixing_named_and_positional_fields_rule
     - prefer_contains_method
+    - avoid_unsafe_reduce
     - prefer_safe_first_where
     - use_join_on_strings
     - avoid_banned_usage:
@@ -120,4 +119,3 @@ custom_lint:
           class_name: 'CachedNetworkImage'
           message: 'For testability, use ConfigurableNetworkImage instead.'
           severity: warning
-

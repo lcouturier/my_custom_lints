@@ -3,7 +3,7 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
-import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:yaml/yaml.dart';
 
 class AvoidLongParameterListRule extends BaseLintRule<AvoidLongParameterListParameters> {
   static const lintName = 'avoid_long_parameter_list';
@@ -54,7 +54,7 @@ class AvoidLongParameterListParameters {
     return AvoidLongParameterListParameters(
       maxParameters: map['max-parameters'] as int? ?? 7,
       ignoreOptional: map['ignore-optional'] as bool? ?? false,
-      ignoredNames: (map['ignored-names'] as String? ?? '').removeAllSpaces().split(',').map((e) => e.trim()).toList(),
+      ignoredNames: List<String>.from(map['ignored-names'] as YamlList),
     );
   }
 

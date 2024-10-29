@@ -18,6 +18,6 @@ class MyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChoiceChip(label: Text('Test'), selected: true);
+    return ChoiceChip(label: Text(DateTime.now().toString()), selected: true);
   }
 }

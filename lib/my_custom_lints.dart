@@ -124,7 +124,7 @@ class _MyCustomLint extends PluginBase {
       const PreferEnumWithSentinelValueRule(),
       AvoidSingleChildColumnOrRowRule.createRule(configs),
       const AvoidPositionalRecordFieldAccessRule(),
-      const PreferUsageOfValueGetterRule(),
+      // const PreferUsageOfValueGetterRule(),
       const AvoidAssignmentsAsConditionsRule(),
       const AvoidShrinkWrapInListRule(),
       const AvoidOnlyRethrowRule(),

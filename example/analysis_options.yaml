@@ -19,14 +19,14 @@ custom_lint:
     - avoid_long_parameter_list:
       max-parameters: 5
       ignore-optional: true
-      ignored-names: 'copyWith'
+      ignored-names: ['copyWith']
     - boolean_prefixes:
       ignore-getters: false
       ignore-fields: true
       ignore-parameters: false
       ignore-methods: true
-      ignored-names: 'stringify, selected, listen, value, enabled'
-      prefixes: 'is, are, was, were, has, have, had, can, will, do, does, did, should, with'
+      ignored-names: ['stringify', 'selected', 'listen', 'value', 'enabled']
+      prefixes: ['is', 'are', 'was', 'were', 'has', 'have', 'had', 'can', 'will', 'do', 'does', 'did', 'should', 'with']
     - cyclomatic_complexity: false
       max_complexity: 10
     - max_nesting_level:

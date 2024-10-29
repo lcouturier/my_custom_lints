@@ -7,6 +7,7 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
+import 'package:yaml/yaml.dart';
 
 class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
   static const lintName = 'boolean_prefixes';
@@ -155,20 +156,14 @@ class BooleanPrefixParameters {
   final List<String> ignoredNames;
   final List<String> prefixes;
 
-  static final List<String> _defaultPrefixes = ['is', 'has', 'should'];
-
   factory BooleanPrefixParameters.fromJson(Map<String, Object?> map) {
-    final prefixes = map['prefixes'] as String? ?? '';
-    final ignoredNames = map['ignored-names'] as String? ?? '';
-
     return BooleanPrefixParameters(
       ignoreMethods: map['ignore-methods'] as bool? ?? false,
       ignoreFields: map['ignore-fields'] as bool? ?? false,
       ignoreParameters: map['ignore-parameters'] as bool? ?? false,
       ignoreGetters: map['ignore-getters'] as bool? ?? false,
-      ignoredNames: ignoredNames.isEmpty ? [] : ignoredNames.removeAllSpaces().split(',').map((e) => e.trim()).toList(),
-      prefixes:
-          prefixes.isEmpty ? _defaultPrefixes : prefixes.removeAllSpaces().split(',').map((e) => e.trim()).toList(),
+      ignoredNames: List<String>.from(map['ignored-names'] as YamlList),
+      prefixes: List<String>.from(map['prefixes'] as YamlList),
     );
   }
 

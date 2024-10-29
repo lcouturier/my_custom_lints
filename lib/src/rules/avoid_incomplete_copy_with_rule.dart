@@ -1,11 +1,11 @@
 // ignore_for_file: avoid_single_cascade_in_expression_statements
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/copy_with_utils.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 class AvoidIncompleteCopyWithRule extends DartLintRule {
@@ -49,15 +49,10 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
       if (missingFields.isEmpty) return;
 
       reporter.reportErrorForNode(
-          code,
-          node,
-          [missingFields.join(', ')],
-          [],
-          parent.declaredElement!.fields
-              .where((field) => !field.isStatic)
-              .where((field) => !field.isSynthetic)
-              .where((field) => !field.isFinal)
-              .toSet());
+        code,
+        node,
+        [missingFields.join(', ')],
+      );
     });
   }
 
@@ -65,7 +60,7 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
   List<Fix> getFixes() => [_AvoidIncompleteCopyWithFix()];
 }
 
-class _AvoidIncompleteCopyWithFix extends DartFix {
+class _AvoidIncompleteCopyWithFix extends DartFix with CopyWithMixin {
   @override
   void run(
     CustomLintResolver resolver,
@@ -77,37 +72,34 @@ class _AvoidIncompleteCopyWithFix extends DartFix {
     context.registry.addMethodDeclaration((node) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
-      final fields = analysisError.data! as Set<FieldElement>;
+      final parent = node.parent;
+      if (parent is! ClassDeclaration) return;
 
-      final fieldParams =
-          fields.map((f) => '${f.type}${isNullableType(f.type) ? 'Function()?' : '?'} ${f.name}').join(', ');
-      final fieldAssignments = fields.map((f) {
-        if (!isNullableType(f.type)) {
-          return '${f.name}: ${f.name} ?? this.${f.name},';
-        } else {
-          return '${f.name}: ${f.name} != null ? ${f.name}() : this.${f.name},';
-        }
-      }).join('\n    ');
+      final constructor = parent.members.whereType<ConstructorDeclaration>().firstWhereOrNull((c) => c.name == null);
+      if (constructor == null) return;
 
+      final isAllNamed = constructor.parameters.parameters.every((e) => e.isNamed);
+      if (!isAllNamed) return;
+
+      final fields = parent.declaredElement!.fields
+          .where((field) => !field.isStatic)
+          .where((field) => !field.isSynthetic)
+          .toList();
+
+      final isAllFinal = fields.every((e) => e.isFinal);
+      if (!isAllFinal) return;
+
+      final text = generateCopyWithMethod(parent.name.lexeme, fields, isAllNamed: isAllNamed);
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Fix copyWith Method',
         priority: 80,
       );
 
-      final parent = node.parent;
-      final className = (parent as ClassDeclaration).name.lexeme;
-
       // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {
         builder
           ..addReplacement(range.node(node), (builder) {
-            builder
-              ..writeln('$className ${node.name}({$fieldParams})')
-              ..writeln('{ ')
-              ..write(' return $className(')
-              ..write(fieldAssignments)
-              ..writeln(' );')
-              ..writeln('}');
+            builder.write(text);
           })
           ..format(range.node(node));
       });

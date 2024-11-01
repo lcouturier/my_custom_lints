@@ -148,6 +148,17 @@ extension IterableExtensions<E> on Iterable<E> {
   }
 }
 
+extension ListExtensions<E> on List<E> {
+  Map<T, List<E>> groupBy<T>(T Function(E) selector) {
+    final map = <T, List<E>>{};
+    for (final element in this) {
+      final key = selector(element);
+      map.putIfAbsent(key, () => []).add(element);
+    }
+    return map;
+  }
+}
+
 extension TokenTypeExtensions on TokenType {
   (TokenType, bool) get invert {
     return switch (this) {

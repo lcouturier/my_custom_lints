@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -29,9 +30,12 @@ class PreferContainsMethodRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addMethodInvocation((node) {
+      if (node.methodName.name != 'indexOf') return;
       final targetType = node.realTarget?.staticType;
       if (targetType == null || !listChecker.isAssignableFromType(targetType)) return;
-      if (node.methodName.name != 'indexOf') return;
+      final expression = node.parent as BinaryExpression;
+      if ((expression.operator.type != TokenType.EQ_EQ) && (expression.operator.type != TokenType.BANG_EQ)) return;
+      if (expression.rightOperand.toString() != '-1') return;
 
       reporter.reportErrorForNode(code, node);
     });
@@ -60,6 +64,10 @@ class _PreferContainsMethodFix extends DartFix {
 
       changeBuilder.addDartFileEdit((builder) {
         final expression = node.parent as BinaryExpression;
+        if (expression.operator.type == TokenType.EQ_EQ) {
+          builder.addSimpleInsertion(node.offset, '!');
+        }
+
         builder
           ..addSimpleReplacement(range.node(node.methodName), 'contains')
           ..addDeletion(range.startEnd(expression.operator, expression.rightOperand.endToken))

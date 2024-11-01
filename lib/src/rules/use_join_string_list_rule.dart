@@ -31,10 +31,15 @@ class UseJoinOnStringsRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addMethodInvocation((node) {
-      final targetType = node.realTarget?.staticType;
-      if (targetType == null || !iterableChecker.isAssignableFromType(targetType)) return;
       if (node.methodName.name != 'join') return;
-      if (targetType.toString().contains('String')) return;
+
+      final target = node.target;
+      if (target is! Identifier) return;
+      final type = target.staticType;
+
+      if (!(type is InterfaceType && type.isDartCoreList && type.typeArguments.isNotEmpty)) return;
+      final typeArgument = type.typeArguments.first;
+      if (typeArgument.isDartCoreString) return;
 
       reporter.reportErrorForNode(code, node.methodName);
     });

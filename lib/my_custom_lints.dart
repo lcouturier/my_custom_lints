@@ -46,6 +46,7 @@ import 'package:my_custom_lints/src/rules/avoid_unnecessary_setstate_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unsafe_reduce_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
 import 'package:my_custom_lints/src/rules/avoid_useless_spread_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_watch_outside_build_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_widget_function_rule.dart';
 import 'package:my_custom_lints/src/rules/boolean_prefix_rule.dart';
 import 'package:my_custom_lints/src/rules/cyclomatic_complexity_rule.dart';

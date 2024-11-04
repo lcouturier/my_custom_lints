@@ -15,6 +15,7 @@ import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_banned_usage_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_dynamic_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_empty_build_when_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_empty_set_state_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_equal_expression_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_extension_on_enum_rule.dart';
@@ -147,6 +148,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidWatchOutsideBuildRule(),
       const AvoidIgnoringReturnValuesRule(),
       const BinaryExpressionOperandOrderRule(),
+      const AvoidEmptyBuildWhenRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

@@ -44,24 +44,32 @@ class _AvoidUselessSpreadFix extends DartFix {
   ) {
     context.registry.addListLiteral((node) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
-      if (node.elements.isEmpty) return;
-      if (node.typeArguments != null) return;
 
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Remove spread operator',
         priority: 80,
       );
 
-      // ignore: cascade_invocations
-      changeBuilder.addDartFileEdit((builder) {
-        builder
-          ..addDeletion(range.token(node.beginToken.previous!))
-          ..addDeletion(range.token(node.beginToken));
-        if (node.endToken.previous?.type == TokenType.COMMA) {
-          builder.addDeletion(range.token(node.endToken.previous!));
-        }
-        builder.addDeletion(range.token(node.endToken));
-      });
+      bool hasToDelete = node.elements.isEmpty && node.typeArguments != null;
+      if (hasToDelete) {
+        changeBuilder.addDartFileEdit((builder) {
+          builder.addDeletion(
+            range.startEnd(node.beginToken.previous!,
+                (node.endToken.next?.type == TokenType.COMMA) ? node.endToken.next! : node.endToken),
+          );
+        });
+      } else {
+        // ignore: cascade_invocations
+        changeBuilder.addDartFileEdit((builder) {
+          builder
+            ..addDeletion(range.token(node.beginToken.previous!))
+            ..addDeletion(range.token(node.beginToken));
+          if (node.endToken.previous?.type == TokenType.COMMA) {
+            builder.addDeletion(range.token(node.endToken.previous!));
+          }
+          builder.addDeletion(range.token(node.endToken));
+        });
+      }
     });
   }
 }

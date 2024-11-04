@@ -7,6 +7,7 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:yaml/yaml.dart';
 
 class UnusedParameterRule extends BaseLintRule<UnusedParameters> {
   UnusedParameterRule._(super.rule);
@@ -131,10 +132,8 @@ class UnusedParameters {
   final List<String> values;
 
   factory UnusedParameters.fromJson(Map<String, Object?> map) {
-    final value = map['parameters'] as String? ?? '';
-
     return UnusedParameters(
-      values: value.isEmpty ? [] : value.split(',').map((e) => e.trim()).toList(),
+      values: List<String>.from(map['parameters'] as YamlList),
     );
   }
 

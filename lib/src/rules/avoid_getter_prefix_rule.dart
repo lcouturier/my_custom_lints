@@ -24,7 +24,7 @@ class AvoidGetterPrefixRule extends DartLintRule {
   ) {
     context.registry.addGetterDeclaration((node) {
       if (node.name.lexeme.startsWith('get')) {
-        reporter.reportErrorForNode(code, node);
+        reporter.reportErrorForToken(code, node.name);
       }
     });
   }

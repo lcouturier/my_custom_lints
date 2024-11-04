@@ -23,11 +23,11 @@ class AvoidWatchOutsideBuildRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addMethodInvocation((node) {
-      if (node.methodName.name != 'watch') return;
-      if (node.target?.staticType?.toString() != 'BuildContext') return;
-
       final m = node.thisOrAncestorOfType<MethodDeclaration>();
       if ((m?.name.lexeme ?? '') == 'build') return;
+
+      if (node.methodName.name != 'watch') return;
+      if (node.target?.staticType?.toString() != 'BuildContext') return;
 
       reporter.reportErrorForNode(code, node);
     });

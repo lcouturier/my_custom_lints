@@ -48,6 +48,7 @@ import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
 import 'package:my_custom_lints/src/rules/avoid_useless_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_watch_outside_build_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_widget_function_rule.dart';
+import 'package:my_custom_lints/src/rules/binary_expression_operand_order_rule.dart';
 import 'package:my_custom_lints/src/rules/boolean_prefix_rule.dart';
 import 'package:my_custom_lints/src/rules/cyclomatic_complexity_rule.dart';
 import 'package:my_custom_lints/src/rules/enum_constant_ordering_rule.dart';
@@ -106,7 +107,6 @@ class _MyCustomLint extends PluginBase {
       const PreferUnderscoreForUnusedCallbackParameters(),
       const RemoveEmptyListenerRule(),
       const AvoidIncompleteCopyWithRule(),
-      const AvoidCachedNetworkImage(),
       const AvoidNullableListReturnTypeRule(),
       const AvoidLocalFunctionRule(),
       PreferVoidCallbackRule.createRule(configs),
@@ -128,7 +128,6 @@ class _MyCustomLint extends PluginBase {
       const PreferEnumWithSentinelValueRule(),
       AvoidSingleChildColumnOrRowRule.createRule(configs),
       const AvoidPositionalRecordFieldAccessRule(),
-      // const PreferUsageOfValueGetterRule(),
       const AvoidAssignmentsAsConditionsRule(),
       const AvoidShrinkWrapInListRule(),
       const AvoidOnlyRethrowRule(),
@@ -146,6 +145,8 @@ class _MyCustomLint extends PluginBase {
       const PreferMultiBlocProviderRule(),
       const AvoidReadInsideBuildRule(),
       const AvoidWatchOutsideBuildRule(),
+      const AvoidIgnoringReturnValuesRule(),
+      const BinaryExpressionOperandOrderRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

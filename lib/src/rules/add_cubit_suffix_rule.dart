@@ -9,7 +9,6 @@ class AddCubitSuffixRule extends DartLintRule {
           code: const LintCode(
             name: 'add_cubit_suffix_rule',
             problemMessage: 'Consider add cubit suffix.',
-            correctionMessage: 'Consider add cubit suffix.',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );

@@ -38,6 +38,7 @@ import 'package:my_custom_lints/src/rules/avoid_only_rethrow_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_plus_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_positional_record_field_access_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_read_inside_build_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_self_assignment_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_shrink_wrap_in_lists_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_single_child_column_or_row_rule.dart';
@@ -60,6 +61,7 @@ import 'package:my_custom_lints/src/rules/prefer_enum_with_sentinel_value_rule.d
 import 'package:my_custom_lints/src/rules/prefer_iterable_first_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_isempty_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_last_rule.dart';
+import 'package:my_custom_lints/src/rules/prefer_multi_bloc_provider_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_named_bool_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_named_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_no_growable_list_rule.dart';
@@ -140,6 +142,9 @@ class _MyCustomLint extends PluginBase {
       const AvoidUnsafeReduceRule(),
       const PreferSafeFirstWhereRule(),
       const UseJoinOnStringsRule(),
+      const PreferMultiBlocProviderRule(),
+      const AvoidReadInsideBuildRule(),
+      const AvoidWatchOutsideBuildRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

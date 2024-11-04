@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_single_cascade_in_expression_statements
 
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -28,21 +27,22 @@ class PreferNamedParametersRule extends BaseLintRule<PreferNamedParameters> {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    // context.registry.addConstructorDeclaration((node) {
-    //   final parameters = node.parameters.parameters;
-    //   if (parameters.countBy((e) => e.isPositional) == config.parameters.maxNumber) return;
-    //   if (parameters.every((e) => e.isNamed)) return;
-
-    //   reporter.reportErrorForNode(code, node);
-    // });
-
-    context.registry.addMethodDeclaration((node) {
-      final parameters = node.parameters?.parameters ?? <FormalParameter>[];
-      final map = parameters.groupBy((e) => e.declaredElement?.type);
-      if (map.length != 1) return;
+    context.registry.addConstructorDeclaration((node) {
+      final parameters = node.parameters.parameters;
+      if (parameters.countBy((e) => e.isPositional) == config.parameters.maxNumber) return;
+      if (parameters.every((e) => e.isNamed)) return;
 
       reporter.reportErrorForNode(code, node);
     });
+
+    // context.registry.addMethodDeclaration((node) {
+    //   final parameters = node.parameters?.parameters ?? <FormalParameter>[];
+    //   if (parameters.length == 1) return;
+    //   final map = parameters.groupBy((e) => e.declaredElement?.type);
+    //   if (map.length != 1) return;
+
+    //   reporter.reportErrorForNode(code, node);
+    // });
   }
 }
 

@@ -53,4 +53,31 @@ class AvoidDynamicRule extends DartLintRule {
           parent);
     });
   }
+
+  @override
+  List<Fix> getFixes() => [_AvoidDynamicFix()];
+}
+
+class _AvoidDynamicFix extends DartFix {
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    context.registry.addReturnType((node, parent) {
+      if (!analysisError.sourceRange.covers(parent.sourceRange)) return;
+
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Add void keyword',
+        priority: 80,
+      );
+
+      changeBuilder.addDartFileEdit((builder) {
+        builder.addSimpleInsertion(parent.offset, 'void ');
+      });
+    });
+  }
 }

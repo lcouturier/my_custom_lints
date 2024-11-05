@@ -74,7 +74,9 @@ class _AvoidInvertedBooleanChecksFix extends DartFix {
           (builder) {
             builder
               ..write(binary.leftOperand.toSource())
+              ..write(' ')
               ..write(token.lexeme)
+              ..write(' ')
               ..write(binary.rightOperand.toSource());
           },
         );

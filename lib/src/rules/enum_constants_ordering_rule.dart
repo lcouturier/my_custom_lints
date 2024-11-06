@@ -52,11 +52,19 @@ class _EnumConstantsOrderingFix extends DartFix {
         priority: 80,
       );
 
-      changeBuilder.addDartFileEdit((builder) {
-        final none = node.constants.map((e) => e.name.lexeme).firstWhere((e) => e == 'none', orElse: () => '');
-        final constants =
-            node.constants.map((e) => e.name.lexeme).where((e) => e != 'none').toList().sorted().join(', ');
+      bool hasArguments = node.constants.every((e) => e.arguments != null);
+      final none = node.constants.map((e) => e.name.lexeme).firstWhere((e) => e == 'none', orElse: () => '');
+      final constants = hasArguments
+          ? node.constants
+              .map((e) => (e.name.lexeme, e.arguments.toString()))
+              .where((e) => e.$1 != 'none')
+              .toList()
+              .sortedBy((e) => e.$1)
+              .map((e) => '${e.$1}${e.$2}')
+              .join(', ')
+          : node.constants.map((e) => e.name.lexeme).where((e) => e != 'none').toList().sorted().join(', ');
 
+      changeBuilder.addDartFileEdit((builder) {
         builder
           ..addSimpleReplacement(range.startEnd(node.constants.beginToken!, node.constants.endToken!),
               ' ${none.isNotEmpty ? 'none, ' : ''} $constants ')

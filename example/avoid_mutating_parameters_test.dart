@@ -23,6 +23,10 @@ void anotherFunction(List<String> items) {
   items.add('new item');
 }
 
+AnotherClass anotherFunction2(int code, String name) {
+  return AnotherClass(code: code, name: name);
+}
+
 class MyClass {
   void someFunction(int z) {
     z = z + 1;
@@ -32,4 +36,11 @@ class MyClass {
     some.flag = false; // LINT: Avoid mutating parameters.
     some.value = 'hello'; // LINT: Avoid mutating parameters.
   }
+}
+
+class AnotherClass {
+  final int code;
+  final String name;
+
+  AnotherClass({required this.code, required this.name});
 }

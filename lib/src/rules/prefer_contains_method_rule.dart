@@ -7,6 +7,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
+
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
@@ -33,6 +34,7 @@ class PreferContainsMethodRule extends DartLintRule {
       if (node.methodName.name != 'indexOf') return;
       final targetType = node.realTarget?.staticType;
       if (targetType == null || !listChecker.isAssignableFromType(targetType)) return;
+      if (node.parent is! BinaryExpression) return;
       final expression = node.parent as BinaryExpression;
       if ((expression.operator.type != TokenType.EQ_EQ) && (expression.operator.type != TokenType.BANG_EQ)) return;
       if (expression.rightOperand.toString() != '-1') return;

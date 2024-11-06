@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_invalid_prefix
+// ignore_for_file: avoid_invalid_prefix, prefer_enum_with_sentinel_value
 
 enum SomeEnum {
   second,
@@ -13,4 +13,13 @@ enum Sports {
   cycling;
 
   String get name => toString().split('.').last;
+}
+
+enum TripsAndTicketsStatus {
+  upcoming('UPCOMING'),
+  passed('PASSED');
+
+  const TripsAndTicketsStatus(this.value);
+
+  final String value;
 }

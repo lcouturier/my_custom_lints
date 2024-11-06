@@ -40,8 +40,9 @@ class PreferNoGrowableListRule extends DartLintRule {
 
       final method = node.thisOrAncestorOfType<MethodDeclaration>();
       if (method != null) {
+        /// TODO : traiter le cas des ExpressionFunctionBody
+        if (method.body is! BlockFunctionBody) return;
         final body = method.body as BlockFunctionBody;
-
         for (final statement in body.block.statements.whereType<ExpressionStatement>()) {
           final expression = statement.expression;
           if (expression is MethodInvocation) {

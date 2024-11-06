@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:analyzer/dart/ast/ast.dart';
 
 import 'package:analyzer/error/error.dart';
@@ -82,10 +84,11 @@ class UnusedParameterRule extends BaseLintRule<UnusedParameters> {
   }
 
   @override
-  List<Fix> getFixes() => [UnusedParameterFix()];
+  List<Fix> getFixes() => [];
 }
 
-class UnusedParameterFix extends DartFix {
+// TODO : add affiner
+class _UnusedParameterFix extends DartFix {
   @override
   void run(
     CustomLintResolver resolver,

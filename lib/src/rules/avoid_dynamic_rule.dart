@@ -23,7 +23,7 @@ class AvoidDynamicRule extends DartLintRule {
           ),
         );
 
-  static List<bool Function(NamedType node)> _rules = [
+  static final List<bool Function(NamedType node)> _rules = [
     (e) => e.type == null,
     (e) => e.type is DynamicType,
     (e) => e.type.toString() == 'dynamic',
@@ -45,7 +45,7 @@ class AvoidDynamicRule extends DartLintRule {
       if (node != null) return;
 
       reporter.reportErrorForNode(
-          LintCode(
+          const LintCode(
             name: ruleName,
             errorSeverity: ErrorSeverity.WARNING,
             problemMessage: 'Add void type.',

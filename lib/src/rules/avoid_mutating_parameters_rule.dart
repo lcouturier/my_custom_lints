@@ -1,7 +1,3 @@
-// ignore_for_file: unused_import
-
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
@@ -24,56 +20,60 @@ class AvoidMutatingParametersRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    // Register a callback for each method invocation in the file.
     context.registry.addFunctionDeclaration((node) {
+      List<AstNode> nodes = [];
       final parameters = node.functionExpression.parameters?.parameters.map((e) => e.name?.lexeme ?? '') ?? [];
-      final visitor = _ParameterMutationChecker(parameters.toList());
+      if (parameters.isEmpty) return;
+
+      final visitor = RecursiveAssignmentVisitor(
+        paramNames: parameters.toList(),
+        onVisitAssignment: (node) => nodes.add(node),
+      );
       node.accept(visitor);
 
-      for (final element in visitor.nodes) {
+      for (final element in nodes) {
         reporter.reportErrorForNode(code, element);
       }
     });
 
     context.registry.addMethodDeclaration((node) {
+      List<AstNode> nodes = [];
       final parameters = node.parameters?.parameters.map((e) => e.name?.lexeme ?? '') ?? [];
-      final visitor = _ParameterMutationChecker(parameters.toList());
+      if (parameters.isEmpty) return;
+
+      final visitor = RecursiveAssignmentVisitor(
+        paramNames: parameters.toList(),
+        onVisitAssignment: (node) => nodes.add(node),
+      );
       node.accept(visitor);
 
-      for (final element in visitor.nodes) {
+      for (final element in nodes) {
         reporter.reportErrorForNode(code, element);
       }
     });
   }
 }
 
-class _ParameterMutationChecker extends RecursiveAstVisitor<void> {
-  final List<String> paramNames;
-  final nodes = <AstNode>[];
+class RecursiveAssignmentVisitor extends RecursiveAstVisitor<void> {
+  const RecursiveAssignmentVisitor({
+    required this.onVisitAssignment,
+    required this.paramNames,
+  });
 
-  _ParameterMutationChecker(this.paramNames);
+  final void Function(AstNode node) onVisitAssignment;
+  final List<String> paramNames;
 
   @override
   void visitAssignmentExpression(AssignmentExpression node) {
     final leftHandSide = node.leftHandSide;
 
     if (leftHandSide is SimpleIdentifier && paramNames.contains(leftHandSide.name)) {
-      nodes.add(node);
+      onVisitAssignment(node);
     } else {
       if (leftHandSide is PrefixedIdentifier && paramNames.contains(leftHandSide.prefix.name)) {
-        nodes.add(node);
+        onVisitAssignment(node);
       }
     }
-
     super.visitAssignmentExpression(node);
-  }
-
-  @override
-  void visitMethodInvocation(MethodInvocation node) {
-    final target = node.target;
-    if (target is SimpleIdentifier && paramNames.contains(target.name)) {
-      nodes.add(node);
-    }
-    super.visitMethodInvocation(node);
   }
 }

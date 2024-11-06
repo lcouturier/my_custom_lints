@@ -14,7 +14,6 @@ class AvoidMutatingParametersRule extends DartLintRule {
           code: const LintCode(
             name: 'avoid_mutating_parameters',
             problemMessage: "a parameter's field or setter is reassigned.",
-            correctionMessage: 'Consider using where method instead.',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );
@@ -47,12 +46,6 @@ class AvoidMutatingParametersRule extends DartLintRule {
     });
   }
 }
-
-// AssignmentExpression
-// ├── Left: PropertyAccess
-// │   ├── Target: Identifier (some)
-// │   └── Property: Identifier (flag)
-// └── Right: BooleanLiteral (false)
 
 class _ParameterMutationChecker extends RecursiveAstVisitor<void> {
   final List<String> paramNames;

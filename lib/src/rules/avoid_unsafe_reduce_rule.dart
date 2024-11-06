@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
@@ -33,16 +34,18 @@ class AvoidUnsafeReduceRule extends DartLintRule {
       if (targetType == null || !iterableChecker.isAssignableFromType(targetType)) return;
       if (node.methodName.name != 'reduce') return;
 
-      // if (node.parent is ConditionalExpression) {
-      //   final expression = node.parent as ConditionalExpression;
-      //   final thenExpression = expression.thenExpression;
-      //   final elseExpression = expression.elseExpression;
-      //   if (expression.condition is! PrefixedIdentifier) return;
+      if (node.parent is ConditionalExpression) {
+        final expression = node.parent as ConditionalExpression;
+        final thenExpr = expression.thenExpression;
+        final elseExpr = expression.elseExpression;
+        if (expression.condition is! PrefixedIdentifier) return;
 
-      //   final prefix = expression.condition as PrefixedIdentifier;
-      //   if ((prefix.toSource().contains('isEmpty')) && (elseExpression.toSource().contains('reduce'))) return;
-      //   if ((prefix.toSource().contains('isNotEmpty')) && (thenExpression.toSource().contains('reduce'))) return;
-      // }
+        final prefix = expression.condition as PrefixedIdentifier;
+        if (elseExpr is! MethodInvocation || thenExpr is! MethodInvocation) return;
+
+        if ((prefix.identifier.name == 'isEmpty') && ((elseExpr.methodName.name == 'reduce'))) return;
+        if ((prefix.identifier.name == 'isNotEmpty') && ((thenExpr.methodName.name == 'reduce'))) return;
+      }
 
       reporter.reportErrorForNode(code, node.methodName);
     });
@@ -64,6 +67,11 @@ class _AvoidUnsafeReduceFix extends DartFix {
     context.registry.addMethodInvocation((MethodInvocation node) {
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
+      final targetType = node.realTarget?.staticType;
+      if (!(targetType is InterfaceType && targetType.isDartCoreList && targetType.typeArguments.isNotEmpty)) return;
+      final typeArgument = targetType.typeArguments.first;
+      final defaultValue = _getDefaultValue(typeArgument);
+
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Prefer fold with initial value instead.',
         priority: 80,
@@ -75,11 +83,23 @@ class _AvoidUnsafeReduceFix extends DartFix {
           ..addInsertion(
             node.methodName.sourceRange.end + 1,
             (builder) {
-              builder.write('0,');
+              builder.write('$defaultValue,');
             },
           )
           ..format(node.sourceRange);
       });
     });
+  }
+
+  String _getDefaultValue(DartType dartType) {
+    return switch (dartType) {
+      _ when (dartType.isDartCoreString) => '""',
+      _ when (dartType.isDartCoreInt) => '0',
+      _ when (dartType.isDartCoreBool) => 'false',
+      _ when (dartType.isDartCoreDouble) => '0.0',
+      _ when (dartType.isDartCoreList) => '[]',
+      _ when (dartType.isDartCoreMap) => '{}',
+      _ => 'null',
+    };
   }
 }

@@ -11,3 +11,8 @@ void fn() {
     final sum3 = list.reduce((a, b) => a + b);
   }
 }
+
+String sum() {
+  final list = <String>[];
+  return list.reduce((a, b) => a + b);
+}

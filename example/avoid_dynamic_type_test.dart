@@ -41,4 +41,12 @@ class name extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container();
   }
+
+  List getItems() {
+    return [1, 2, 3].toList(growable: false);
+  }
+}
+
+List<int> getItems() {
+  return [1, 2, 3].toList(growable: false);
 }

@@ -27,6 +27,7 @@ class AvoidDynamicRule extends DartLintRule {
     (e) => e.type == null,
     (e) => e.type is DynamicType,
     (e) => e.type.toString() == 'dynamic',
+    (e) => e.type.toString() == 'List<dynamic>',
   ];
 
   @override

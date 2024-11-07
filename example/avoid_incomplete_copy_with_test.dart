@@ -33,3 +33,15 @@ class PersonWithNullable {
     );
   }
 }
+
+@immutable
+class MyClass {
+  final String name;
+  final int age;
+
+  MyClass({required this.name, required this.age});
+
+  MyClass copyWith({String? name, int? age}) {
+    return this;
+  }
+}

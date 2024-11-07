@@ -1,11 +1,13 @@
-// ignore_for_file: avoid_single_cascade_in_expression_statements
+// ignore_for_file: avoid_single_cascade_in_expression_statements, unused_import
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
+
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/copy_with_utils.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 class AvoidIncompleteCopyWithRule extends DartLintRule {
@@ -31,16 +33,26 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
       final parent = node.parent;
       if (parent is! ClassDeclaration) return;
 
+      final copyWithMethod =
+          parent.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith');
+      if (copyWithMethod == null) return;
+
+      if (copyWithMethod.body.hasReturnThis) {
+        reporter.reportErrorForNode(
+            code.copyWith(
+              problemMessage: 'return this in copyWith is an anti-pattern.',
+              errorSeverity: ErrorSeverity.ERROR,
+            ),
+            node);
+        return;
+      }
+
       final fields = parent.members
           .whereType<FieldDeclaration>()
           .map((e) => e.fields.variables.map((variable) => variable.name.lexeme).toList())
           .expand((f) => f)
           .toSet();
       if (fields.isEmpty) return;
-
-      final copyWithMethod =
-          parent.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith');
-      if (copyWithMethod == null) return;
 
       final parameters = copyWithMethod.parameters?.parameters.map((e) => e.name?.lexeme ?? '').toSet();
       if (parameters?.isEmpty ?? true) return;

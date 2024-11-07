@@ -77,6 +77,14 @@ extension FunctionBodyExtensions on FunctionBody {
       _ => false,
     };
   }
+
+  bool get hasReturnThis {
+    return switch (this) {
+      BlockFunctionBody b => b.block.statements.whereType<ReturnStatement>().first.expression is ThisExpression,
+      ExpressionFunctionBody e => e.expression is ThisExpression,
+      _ => false,
+    };
+  }
 }
 
 extension ClassDeclarationExtensions on ClassDeclaration {

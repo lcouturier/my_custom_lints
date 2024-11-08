@@ -89,6 +89,8 @@ custom_lint:
     - use_join_on_strings
     - prefer_named_parameters
     - do_not_use_datetime_now_in_tests
+    - avoid_nested_conditional_expressions:
+      max-nesting-level: 2
     - avoid_banned_usage:
       entries:
         - paths: ['example']

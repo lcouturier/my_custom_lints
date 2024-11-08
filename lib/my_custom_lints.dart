@@ -53,6 +53,7 @@ import 'package:my_custom_lints/src/rules/avoid_widget_function_rule.dart';
 import 'package:my_custom_lints/src/rules/binary_expression_operand_order_rule.dart';
 import 'package:my_custom_lints/src/rules/boolean_prefix_rule.dart';
 import 'package:my_custom_lints/src/rules/cyclomatic_complexity_rule.dart';
+import 'package:my_custom_lints/src/rules/do_not_use_datetime_now_rule.dart';
 import 'package:my_custom_lints/src/rules/enum_constants_ordering_rule.dart';
 import 'package:my_custom_lints/src/rules/first_init_state_rule.dart';
 import 'package:my_custom_lints/src/rules/missing_field_in_equatable_props.dart';
@@ -151,6 +152,7 @@ class _MyCustomLint extends PluginBase {
       const BinaryExpressionOperandOrderRule(),
       const AvoidEmptyBuildWhenRule(),
       const AvoidMutatingParametersRule(),
+      const DoNotUseDatetimeNowRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

@@ -10,7 +10,7 @@ analyzer:
     - '**/*.pb.dart'
     - '**/*.mocks.dart'
     - test/.test_coverage.dart
-    - test/**/*.dart'
+    # - test/**/*.dart'
     - lib/generated_plugin_registrant.dart
     - lib/firebase_options.dart
 
@@ -105,6 +105,7 @@ custom_lint:
     - prefer_safe_first_where
     - use_join_on_strings
     - prefer_named_parameters
+    - do_not_use_datetime_now_in_tests
     - avoid_banned_usage:
       entries:
         - paths: ['example']

@@ -35,6 +35,7 @@ import 'package:my_custom_lints/src/rules/avoid_mutating_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_conditional_expressions_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_if.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_record_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_nested_switch_expressions_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_boolean_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_only_rethrow_rule.dart';
@@ -155,6 +156,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidMutatingParametersRule(),
       const DoNotUseDatetimeNowRule(),
       AvoidNestedConditionalExpressionsRule.createRule(configs),
+      AvoidNestedSwitchExpressionRule.createRule(configs),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

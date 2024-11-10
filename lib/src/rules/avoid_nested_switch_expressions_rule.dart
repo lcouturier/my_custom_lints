@@ -9,21 +9,18 @@ import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:my_custom_lints/src/common/utils.dart';
 
-class AvoidNestedSwitchExpressionRule extends BaseLintRule<AvoidNestedConditionalExpressionParameters> {
-  AvoidNestedSwitchExpressionRule._(super.rule);
-
-  factory AvoidNestedSwitchExpressionRule.createRule(CustomLintConfigs configs) {
-    final rule = RuleConfig(
-      configs: configs,
-      name: 'avoid_nested_switch_expressions',
-      paramsParser: AvoidNestedConditionalExpressionParameters.fromJson,
-      problemMessage: (value) =>
-          'Nested conditional expression is too complex. Try to reduce at ${value.maxNestingLevel} the number of nested conditional expressions.',
-    );
-
-    return AvoidNestedSwitchExpressionRule._(rule);
-  }
+class AvoidNestedSwitchExpressionRule extends DartLintRule {
+  const AvoidNestedSwitchExpressionRule()
+      : super(
+          code: const LintCode(
+            name: 'avoid_nested_switch_expressions',
+            problemMessage: 'Nested conditional expression is too complex.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(
@@ -32,13 +29,10 @@ class AvoidNestedSwitchExpressionRule extends BaseLintRule<AvoidNestedConditiona
     CustomLintContext context,
   ) {
     context.registry.addSwitchExpression((node) {
-      for (var element in node.cases.whereType<SwitchExpression>()) {}
+      final (found, expr) = node.cases.firstWhereOrNot((e) => e.expression is SwitchExpression);
+      if (!found) return;
 
-      int count = _getNumberOfNestedConditionalExpressions(node);
-      log(count.toString());
-      // if (count <= config.parameters.maxNestingLevel) return;
-      // if (count <= 2) return;
-      reporter.reportErrorForNode(code, node);
+      reporter.reportErrorForNode(code, expr!.expression as SwitchExpression);
     });
   }
 

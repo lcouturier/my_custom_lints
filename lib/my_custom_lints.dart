@@ -156,7 +156,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidMutatingParametersRule(),
       const DoNotUseDatetimeNowRule(),
       AvoidNestedConditionalExpressionsRule.createRule(configs),
-      AvoidNestedSwitchExpressionRule.createRule(configs),
+      const AvoidNestedSwitchExpressionRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

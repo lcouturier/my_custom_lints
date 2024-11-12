@@ -46,6 +46,7 @@ import 'package:my_custom_lints/src/rules/avoid_read_inside_build_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_self_assignment_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_shrink_wrap_in_lists_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_single_child_column_or_row_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_thow_litteral_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unnecessary_setstate_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unsafe_reduce_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
@@ -157,6 +158,7 @@ class _MyCustomLint extends PluginBase {
       const DoNotUseDatetimeNowRule(),
       AvoidNestedConditionalExpressionsRule.createRule(configs),
       const AvoidNestedSwitchExpressionRule(),
+      const AvoidThrowLiteral(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

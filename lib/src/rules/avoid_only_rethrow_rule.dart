@@ -12,7 +12,8 @@ class AvoidOnlyRethrowRule extends DartLintRule {
       : super(
           code: const LintCode(
             name: 'avoid_only_rethrow',
-            problemMessage: 'Avoid only rethrow.',
+            problemMessage:
+                'Catch clauses with only the rethrow expression should either have some additional code to handle some type of exceptions or can be simply removed since they are redundant.',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );

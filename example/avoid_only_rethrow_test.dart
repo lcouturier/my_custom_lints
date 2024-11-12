@@ -19,3 +19,11 @@ void valid() {
     rethrow;
   }
 }
+
+void throwLitteral() {
+  try {
+    print('valid');
+  } on Object catch (error) {
+    throw 'error'; // LINT
+  }
+}

@@ -9,7 +9,7 @@ class AvoidNestedSwitchExpressionRule extends DartLintRule {
       : super(
           code: const LintCode(
             name: 'avoid_nested_switch_expressions',
-            problemMessage: 'Nested conditional expression is too complex.',
+            problemMessage: 'Avoid nested switch expressions. Try rewriting the code to remove nesting.',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );

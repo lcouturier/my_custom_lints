@@ -14,7 +14,7 @@ class AvoidMixingNamedAndPositionalFieldsRule extends DartLintRule {
       : super(
           code: const LintCode(
             name: lintName,
-            problemMessage: 'Mixing named and positional fields.',
+            problemMessage: 'Avoid mixing named and positional fields in record literals.',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );

@@ -9,7 +9,7 @@ class AvoidThrowLiteral extends DartLintRule {
   const AvoidThrowLiteral()
       : super(
           code: const LintCode(
-            name: 'avoid_thow_literal',
+            name: 'avoid_throw_literal',
             problemMessage: 'Throwing literal is an anti-pattern. Use throw Exception() instead.',
             errorSeverity: ErrorSeverity.WARNING,
           ),

@@ -154,6 +154,9 @@ extension IterableExtensions<E> on Iterable<E> {
     }
     return count;
   }
+
+  E? get next => skip(1).firstOrNull;
+  E? get previous => skip(-1).firstOrNull;
 }
 
 extension ListExtensions<E> on List<E> {

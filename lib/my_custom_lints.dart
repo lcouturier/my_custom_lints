@@ -55,6 +55,7 @@ import 'package:my_custom_lints/src/rules/avoid_watch_outside_build_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_widget_function_rule.dart';
 import 'package:my_custom_lints/src/rules/binary_expression_operand_order_rule.dart';
 import 'package:my_custom_lints/src/rules/boolean_prefix_rule.dart';
+import 'package:my_custom_lints/src/rules/check_is_not_closed_after_async_gap_rule.dart';
 import 'package:my_custom_lints/src/rules/cyclomatic_complexity_rule.dart';
 import 'package:my_custom_lints/src/rules/do_not_use_datetime_now_rule.dart';
 import 'package:my_custom_lints/src/rules/enum_constants_ordering_rule.dart';
@@ -82,7 +83,6 @@ import 'package:my_custom_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_custom_lints/src/rules/remove_empty_listener_rule.dart';
 import 'package:my_custom_lints/src/rules/use_join_string_list_rule.dart';
 import 'package:my_custom_lints/src/rules/use_ternary_instead_of_ifelse_rule.dart';
-import 'package:my_custom_lints/src/rules/verify_autoroute_usage_rule.dart';
 
 PluginBase createPlugin() => _MyCustomLint();
 const DataClass dataClass = DataClass();
@@ -120,7 +120,6 @@ class _MyCustomLint extends PluginBase {
       PreferIterableIsEmptyRule.createRule(configs),
       CyclomaticComplexityRule.createRule(configs),
       AvoidNestedIfRule.createRule(configs),
-      const VerifyAutoRouteUsageRule(),
       const AvoidPlusRule(),
       const AvoidUselessSpreadRule(),
       const AvoidInvertedBooleanChecksRule(),
@@ -159,6 +158,7 @@ class _MyCustomLint extends PluginBase {
       AvoidNestedConditionalExpressionsRule.createRule(configs),
       const AvoidNestedSwitchExpressionRule(),
       const AvoidThrowLiteral(),
+      const CheckIsNotClosedAfterAsyncGapRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

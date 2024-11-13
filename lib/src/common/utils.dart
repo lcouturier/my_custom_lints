@@ -69,6 +69,7 @@ const listChecker = TypeChecker.fromUrl('dart:core#List');
 const iterableChecker = TypeChecker.fromUrl('dart:core#Iterable');
 const equatableChecker = TypeChecker.fromName('Equatable', packageName: 'equatable');
 const cubitChecker = TypeChecker.fromName('Cubit', packageName: 'bloc');
+const blocChecker = TypeChecker.fromName('Bloc', packageName: 'bloc');
 const widgetChecker = TypeChecker.fromName('Widget', packageName: 'flutter');
 const stateChecker = TypeChecker.fromName('State', packageName: 'flutter');
 const statelessChecker = TypeChecker.fromName('StatelessWidget', packageName: 'flutter');

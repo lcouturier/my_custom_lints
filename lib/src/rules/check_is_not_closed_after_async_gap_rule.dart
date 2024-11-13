@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -16,6 +17,11 @@ class CheckIsNotClosedAfterAsyncGapRule extends DartLintRule {
           ),
         );
 
+  static final _types = [
+    (ClassElement e) => cubitChecker.isSuperOf(e),
+    (ClassElement e) => blocChecker.isSuperOf(e),
+  ];
+
   @override
   void run(
     CustomLintResolver resolver,
@@ -26,19 +32,23 @@ class CheckIsNotClosedAfterAsyncGapRule extends DartLintRule {
       if (node.parent is! MethodDeclaration) return;
       final classDeclaration = node.parent!.thisOrAncestorOfType<ClassDeclaration>();
       if (classDeclaration == null) return;
-      final isCubit = cubitChecker.isSuperOf(classDeclaration.declaredElement!);
-      if (!isCubit) return;
+
+      final declaredElement = classDeclaration.declaredElement!;
+      final isBloc = _types.any((element) => element(declaredElement));
+      if (!isBloc) return;
 
       if (node is! BlockFunctionBody) return;
 
       final statements = node.block.statements.whereType<ExpressionStatement>();
 
-      for (final statement in statements.indexed.where((e) => e.$2.expression is AwaitExpression)) {
-        final next = statements.elementAtOrNull(statement.$1 + 1);
-        if (next?.expression is MethodInvocation) {
-          final methodInvocation = next!.expression as MethodInvocation;
-          if (methodInvocation.methodName.name == 'emit') {
-            reporter.reportErrorForNode(code, next, [], [], next);
+      for (final statement in statements.indexed) {
+        if (statement.$2.expression is AwaitExpression) {
+          final next = statements.elementAtOrNull(statement.$1 + 1);
+          if (next?.expression is MethodInvocation) {
+            final methodInvocation = next!.expression as MethodInvocation;
+            if (methodInvocation.methodName.name == 'emit') {
+              reporter.reportErrorForNode(code, next, [], [], next);
+            }
           }
         }
       }

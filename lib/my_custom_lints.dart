@@ -126,7 +126,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidMapKeysContainsRule(),
       const UseTernaryInsteadOfIfElse(),
       const AvoidExtensionOnEnumRule(),
-      const AvoidNullableBooleanRule(),
+      AvoidNullableBooleanRule.createRule(configs),
       const AvoidEqualExpressionsRule(),
       const AvoidSelfAssignmentRule(),
       const AvoidGetterPrefixRule(),

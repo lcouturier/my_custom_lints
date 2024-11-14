@@ -9,3 +9,14 @@ void fn1(bool? flag) {
 void fn2(bool flag) {
   print(flag);
 }
+
+class Process {
+  final bool? flag;
+
+  Process({required this.flag});
+
+  Process copyWith({bool? flag}) {
+    // LINT
+    return Process(flag: flag ?? this.flag);
+  }
+}

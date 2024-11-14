@@ -1,44 +1,58 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/base_lint_rule.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:yaml/yaml.dart';
 
-// pas dans les copyWith
+class AvoidNullableBooleanRule extends BaseLintRule<AvoidNullableBooleanParameters> {
+  AvoidNullableBooleanRule._(super.rule);
 
-class AvoidNullableBooleanRule extends DartLintRule {
-  const AvoidNullableBooleanRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_nullable_boolean',
-            problemMessage: 'Avoid usage of nullable boolean.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+  factory AvoidNullableBooleanRule.createRule(CustomLintConfigs configs) {
+    final rule = RuleConfig(
+      configs: configs,
+      name: 'avoid_nullable_boolean',
+      paramsParser: AvoidNullableBooleanParameters.fromJson,
+      problemMessage: (value) => 'Avoid usage of nullable boolean.',
+    );
+
+    return AvoidNullableBooleanRule._(rule);
+  }
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
-    context.registry.addMethodDeclaration((MethodDeclaration node) {
-      if (node.name.lexeme == 'copyWith') return;
-      if (node.parameters == null) return;
-      if (node.parameters?.parameters.isEmpty ?? true) return;
+    context.registry.addNamedType((node) {
+      if (node.type == null) return;
+      if (!node.type!.isNullable) return;
+      if (!node.type!.isDartCoreBool) return;
+      if (_hasToIgnore(node)) return;
 
-      for (final p in node.parameters!.parameters.whereType<SimpleFormalParameter>()) {
-        if ((p.type?.type?.isDartCoreBool ?? false) && p.isNullable) {
-          reporter.reportErrorForNode(code, p, [p.name?.lexeme ?? ''], [], p);
-        }
-      }
-    });
-
-    context.registry.addFunctionDeclaration((FunctionDeclaration node) {
-      if (node.functionExpression.parameters == null) return;
-      if (node.functionExpression.parameters?.parameters.isEmpty ?? true) return;
-
-      for (final p in node.functionExpression.parameters!.parameters.whereType<SimpleFormalParameter>()) {
-        if ((p.type?.type?.isDartCoreBool ?? false) && p.isNullable) {
-          reporter.reportErrorForNode(code, p, [p.name?.lexeme ?? ''], [], p);
-        }
-      }
+      reporter.reportErrorForNode(code, node);
     });
   }
+
+  bool _hasToIgnore(NamedType node) {
+    if (node.parent is! SimpleFormalParameter) return false;
+
+    final p = node.parent as SimpleFormalParameter;
+    final method = p.thisOrAncestorOfType<MethodDeclaration>();
+    if (method == null) return false;
+
+    final name = method.name.lexeme;
+    return (config.parameters.ignoredNames.contains(name));
+  }
+}
+
+class AvoidNullableBooleanParameters {
+  final List<String> ignoredNames;
+
+  factory AvoidNullableBooleanParameters.fromJson(Map<String, Object?> map) {
+    return AvoidNullableBooleanParameters(
+      ignoredNames: List<String>.from(map['ignored-names'] as YamlList),
+    );
+  }
+
+  AvoidNullableBooleanParameters({
+    required this.ignoredNames,
+  });
 }

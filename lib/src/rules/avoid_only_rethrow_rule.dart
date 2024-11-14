@@ -1,11 +1,11 @@
-// ignore_for_file: avoid_single_cascade_in_expression_statements, cascade_invocations
+// ignore_for_file: avoid_single_cascade_in_expression_statements, cascade_invocations, unused_element
 
+// ignore: unused_import
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-
-/// TODO: gestion multi clauses
 
 class AvoidOnlyRethrowRule extends DartLintRule {
   const AvoidOnlyRethrowRule()
@@ -24,22 +24,17 @@ class AvoidOnlyRethrowRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addTryStatement((node) {
-      if (node.catchClauses.isEmpty) return;
-      if (node.catchClauses.length != 1) return;
+    context.registry.addCatchClause((node) {
+      if (node.body.statements.length != 1) return;
+      if ((node.body.statements.first as ExpressionStatement).expression is! RethrowExpression) return;
+      final expr = (node.body.statements.first as ExpressionStatement).expression as RethrowExpression;
 
-      final clause = node.catchClauses.first;
-      if (clause.body.statements.length != 1) return;
-      if (clause.body.statements.first.toSource() != 'rethrow;') return;
-
-      reporter.reportErrorForNode(code, clause.body.statements.first);
+      reporter.reportErrorForNode(code, expr);
     });
   }
-
-  @override
-  List<Fix> getFixes() => <Fix>[_AvoidOnlyRethrowFix()];
 }
 
+/// TODO : update dart fix
 class _AvoidOnlyRethrowFix extends DartFix {
   @override
   void run(
@@ -50,6 +45,8 @@ class _AvoidOnlyRethrowFix extends DartFix {
     List<AnalysisError> others,
   ) {
     context.registry.addTryStatement((node) {
+      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
+
       if (node.catchClauses.isEmpty) return;
       if (node.catchClauses.length != 1) return;
 

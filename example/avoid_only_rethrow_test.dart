@@ -8,6 +8,16 @@ void invalid() {
   }
 }
 
+void invalidMultiClauses() {
+  try {
+    print('valid');
+  } on IndexError catch (error) {
+    rethrow;
+  } on Object catch (error) {
+    rethrow; // LINT
+  }
+}
+
 void valid() {
   try {
     print('valid');

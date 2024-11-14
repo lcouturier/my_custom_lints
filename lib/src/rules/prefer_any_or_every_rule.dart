@@ -36,34 +36,20 @@ class PreferAnyOrEveryRule extends BaseLintRule<PreferAnyOrEveryParameters> {
   ) {
     context.registry.addPropertyAccess((node) {
       final propertyName = node.propertyName.name;
-      if (propertyName == 'isNotEmpty') {
-        final propertyAccessTarget = node.realTarget;
-        if (propertyAccessTarget is MethodInvocation && propertyAccessTarget.methodName.name == 'where') {
-          final target = propertyAccessTarget.realTarget;
-          final targetType = target?.staticType;
-          if (targetType == null) return;
-          if (!iterableChecker.isAssignableFromType(targetType)) return;
+      if ((propertyName != 'isNotEmpty') && (propertyName != 'isEmpty')) return;
 
-          reporter.reportErrorForNode(
-            code,
-            node,
-          );
-        }
-      }
+      final propertyAccessTarget = node.realTarget;
+      if (propertyAccessTarget is MethodInvocation && propertyAccessTarget.methodName.name == 'where') {
+        final target = propertyAccessTarget.realTarget;
+        final targetType = target?.staticType;
+        if (targetType == null) return;
 
-      if (propertyName == 'isEmpty') {
-        final propertyAccessTarget = node.realTarget;
-        if (propertyAccessTarget is MethodInvocation && propertyAccessTarget.methodName.name == 'where') {
-          final target = propertyAccessTarget.realTarget;
-          final targetType = target?.staticType;
-          if (targetType == null) return;
-          if (!iterableChecker.isAssignableFromType(targetType)) return;
+        if (!iterableChecker.isAssignableFromType(targetType)) return;
 
-          reporter.reportErrorForNode(
-            code,
-            node,
-          );
-        }
+        reporter.reportErrorForNode(
+          code,
+          node,
+        );
       }
     });
   }

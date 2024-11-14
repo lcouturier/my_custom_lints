@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_ignoring_return_values
 void fn() {
   final collection = [1, 2, 3, 4, 5];
 

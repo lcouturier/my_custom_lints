@@ -101,7 +101,7 @@ class _MyCustomLint extends PluginBase {
       const PreferIterableFirst(),
       const PreferIterableLast(),
       const NoBooleanLiteralCompareRule(),
-      const NoLengthInIndexExpression(),
+      const NoLengthInIndexExpressionRule(),
       UnusedParameterRule.createRule(configs),
       const MissingFieldInEquatablePropsRule(),
       const AlwaysCallSuperPropsRule(),

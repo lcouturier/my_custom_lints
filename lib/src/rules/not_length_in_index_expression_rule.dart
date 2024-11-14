@@ -9,8 +9,8 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 // ignore: unused_import
 import 'package:my_custom_lints/src/common/utils.dart';
 
-class NoLengthInIndexExpression extends DartLintRule {
-  const NoLengthInIndexExpression()
+class NoLengthInIndexExpressionRule extends DartLintRule {
+  const NoLengthInIndexExpressionRule()
       : super(
           code: const LintCode(
             name: 'no_length_in_index_expression',
@@ -26,27 +26,26 @@ class NoLengthInIndexExpression extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    // Register the visitor for index expressions
     context.registry.addIndexExpression((IndexExpression node) {
-      final targetType = node.realTarget.staticType;
-      if (targetType == null || !listChecker.isAssignableFromType(targetType)) {
-        return;
-      }
-
       if (node.index is BinaryExpression) return;
-      if (!node.toSource().contains('length')) return;
 
-      if (node.index is PrefixedIdentifier) {
-        reporter.reportErrorForNode(
-          code,
-          node,
-          [
-            '${node.realTarget.toSource()}[${node.realTarget.toSource()}.length]',
-            node.toSource(),
-            '${node.realTarget.toSource()}.last',
-          ],
-        );
-      }
+      final targetType = node.realTarget.staticType;
+      if (!(targetType?.isDartCoreList ?? false)) return;
+
+      if (node.index is! PrefixedIdentifier) return;
+
+      final prefix = node.index as PrefixedIdentifier;
+      if (prefix.identifier.name != 'length') return;
+
+      reporter.reportErrorForNode(
+        code,
+        node,
+        [
+          '${node.realTarget.toSource()}[${prefix.prefix.name}.${prefix.identifier.name}]',
+          node.toSource(),
+          '${node.realTarget.toSource()}.last',
+        ],
+      );
     });
 
     context.registry.addMethodInvocation((node) {
@@ -54,7 +53,8 @@ class NoLengthInIndexExpression extends DartLintRule {
       if (node.argumentList.arguments.length != 1) return;
 
       final argument = node.argumentList.arguments.first;
-      if (!argument.toString().endsWith('.length')) return;
+      if (argument is! PrefixedIdentifier) return;
+      if (argument.identifier.name != 'length') return;
 
       reporter.reportErrorForNode(
         code,
@@ -62,7 +62,7 @@ class NoLengthInIndexExpression extends DartLintRule {
         [
           'list.elementAt(0)',
           node.toSource(),
-          '${node.realTarget?.toSource()}.first',
+          '${node.realTarget?.toSource()}.last',
         ],
       );
     });

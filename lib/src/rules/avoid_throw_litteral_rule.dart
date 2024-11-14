@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
@@ -22,8 +20,6 @@ class AvoidThrowLiteral extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addThrowExpression((node) {
-      log(node.expression.runtimeType.toString());
-
       if (node.expression is! Literal) return;
       reporter.reportErrorForNode(code, node);
     });

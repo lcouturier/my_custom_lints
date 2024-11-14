@@ -1,6 +1,7 @@
+// ignore_for_file: unused_import
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
@@ -31,41 +32,38 @@ class PreferIterableIsEmptyRule extends BaseLintRule<PreferIterableIsAnyParamete
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addCompilationUnit((node) {
-      final visitor = _Visitor();
-      node.accept(visitor);
+    context.registry.addBinaryExpression((node) {
+      if ((node.leftOperand is! PropertyAccess) && (node.leftOperand is! PrefixedIdentifier)) return;
+      if (node.rightOperand is! IntegerLiteral) return;
 
-      for (final element in visitor.nodes) {
-        reporter.reportErrorForNode(code, element);
-      }
+      final propertyName = switch (node.leftOperand) {
+        PrefixedIdentifier prefixedIdentifier => prefixedIdentifier.identifier.name,
+        PropertyAccess propertyAccess => propertyAccess.propertyName.name,
+        _ => null,
+      };
+
+      if (propertyName != 'length') return;
+
+      final targetType = switch (node.leftOperand) {
+        PrefixedIdentifier prefixedIdentifier => prefixedIdentifier.prefix.staticType,
+        PropertyAccess propertyAccess => propertyAccess.realTarget.staticType,
+        _ => null,
+      };
+
+      if (targetType == null) return;
+      if (!iterableChecker.isAssignableFromType(targetType)) return;
+
+      if ((node.rightOperand as IntegerLiteral).value != 0) return;
+
+      reporter.reportErrorForNode(
+        code,
+        node.parent!,
+      );
     });
   }
 
   @override
   List<Fix> getFixes() => [_ReplaceWithIterablIsEmpty()];
-}
-
-class _Visitor extends RecursiveAstVisitor<void> {
-  final _nodes = <AstNode>[];
-
-  Iterable<AstNode> get nodes => _nodes;
-
-  @override
-  void visitBinaryExpression(BinaryExpression node) {
-    super.visitBinaryExpression(node);
-
-    final targetType = node.leftOperand.staticType;
-    if (targetType == null || !listChecker.isAssignableFromType(targetType)) {
-      return;
-    }
-
-    if (node.operator.type != TokenType.EQ_EQ) return;
-    if (!node.leftOperand.toString().contains('length')) return;
-    if (node.rightOperand is! IntegerLiteral) return;
-    if (node.rightOperand.toString() != '0') return;
-
-    _nodes.add(node);
-  }
 }
 
 class _ReplaceWithIterablIsEmpty extends DartFix {

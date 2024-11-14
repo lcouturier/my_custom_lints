@@ -19,8 +19,7 @@ class PreferIterableIsEmptyRule extends BaseLintRule<PreferIterableIsAnyParamete
       configs: configs,
       name: lintName,
       paramsParser: PreferIterableIsAnyParameters.fromJson,
-      problemMessage: (value) =>
-          'Using Iterable.length == 0 is more verbose than Iterable.isEmpty. Consider using Iterable.isEmpty for better readability.',
+      problemMessage: (value) => 'Prefer using `.isEmpty` over `.length == 0`.',
     );
 
     return PreferIterableIsEmptyRule._(rule);
@@ -47,11 +46,12 @@ class PreferIterableIsEmptyRule extends BaseLintRule<PreferIterableIsAnyParamete
       final targetType = switch (node.leftOperand) {
         PrefixedIdentifier prefixedIdentifier => prefixedIdentifier.prefix.staticType,
         PropertyAccess propertyAccess => propertyAccess.realTarget.staticType,
+        StringLiteral stringLiteral => stringLiteral.staticType,
         _ => null,
       };
 
       if (targetType == null) return;
-      if (!iterableChecker.isAssignableFromType(targetType)) return;
+      if (!targetType.isDartCoreString && !targetType.isDartCoreIterable) return;
 
       if ((node.rightOperand as IntegerLiteral).value != 0) return;
 

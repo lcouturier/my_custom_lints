@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
@@ -27,42 +26,22 @@ class NoBooleanLiteralCompareRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addCompilationUnit((node) {
-      final visitor = _Visitor();
-      node.accept(visitor);
+    context.registry.addBooleanLiteral((node) {
+      final parent = node.parent;
+      if (parent is! BinaryExpression) return;
+      if (parent.operator.type != TokenType.EQ_EQ && parent.operator.type != TokenType.BANG_EQ) return;
 
-      for (final element in visitor.nodes) {
-        reporter.reportErrorForNode(code, element);
+      if ((parent.leftOperand is BooleanLiteral && isBoolType(parent.rightOperand.staticType)) ||
+          (parent.rightOperand is BooleanLiteral && isBoolType(parent.leftOperand.staticType))) {
+        reporter.reportErrorForNode(code, parent);
       }
     });
   }
 
+  bool isBoolType(DartType? type) => type != null && type.isDartCoreBool && !isNullableType(type);
+
   @override
   List<Fix> getFixes() => [NoBooleanLiteralCompareFix()];
-}
-
-class _Visitor extends RecursiveAstVisitor<void> {
-  static const _scannedTokenTypes = {TokenType.EQ_EQ, TokenType.BANG_EQ};
-
-  final _nodes = <AstNode>[];
-
-  Iterable<AstNode> get nodes => _nodes;
-
-  @override
-  void visitBinaryExpression(BinaryExpression node) {
-    super.visitBinaryExpression(node);
-
-    if (!_scannedTokenTypes.contains(node.operator.type)) {
-      return;
-    }
-
-    if ((node.leftOperand is BooleanLiteral && _isTypeBoolean(node.rightOperand.staticType)) ||
-        (_isTypeBoolean(node.leftOperand.staticType) && node.rightOperand is BooleanLiteral)) {
-      _nodes.add(node);
-    }
-  }
-
-  bool _isTypeBoolean(DartType? type) => type != null && type.isDartCoreBool && !isNullableType(type);
 }
 
 class NoBooleanLiteralCompareFix extends DartFix {

@@ -74,6 +74,7 @@ import 'package:my_custom_lints/src/rules/prefer_multi_bloc_provider_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_named_bool_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_named_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_no_growable_list_rule.dart';
+import 'package:my_custom_lints/src/rules/prefer_null_aware_notation_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_of_over_current.dart';
 import 'package:my_custom_lints/src/rules/prefer_returning_condition_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_safe_firstwhere_rule.dart';
@@ -159,6 +160,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidNestedSwitchExpressionRule(),
       const AvoidThrowLiteral(),
       const CheckIsNotClosedAfterAsyncGapRule(),
+      const PreferNullAwareNotationRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

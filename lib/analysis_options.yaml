@@ -24,6 +24,9 @@ analyzer:
     unused_import: error
     unused_element: error
 
+
+
+
 custom_lint:
   debug: true # enable debug mode
   verbose: true # enable verbose mode
@@ -127,3 +130,25 @@ custom_lint:
           class_name: 'CachedNetworkImage'
           message: 'For testability, use ConfigurableNetworkImage instead.'
           severity: warning
+
+linter:
+  rules:    
+    avoid_field_initializers_in_const_classes: true
+    avoid_void_async: true
+    unawaited_futures: true
+    cast_nullable_to_non_nullable: true
+    use_super_parameters: true
+
+    avoid_function_literals_in_foreach_calls: false
+    constant_identifier_names: false
+    overridden_fields: false
+    depend_on_referenced_packages: false
+    library_private_types_in_public_api: false
+    use_build_context_synchronously: false # TODO regle importante a activer des que possible !
+    unnecessary_breaks: true
+    invalid_case_patterns: true
+    type_literal_in_constant_pattern: true
+    no_literal_bool_comparisons: true
+    prefer_const_declarations: true
+    prefer_const_constructors : true
+    always_use_package_imports: true

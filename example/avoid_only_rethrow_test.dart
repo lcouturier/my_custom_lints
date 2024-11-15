@@ -37,3 +37,9 @@ void throwLitteral() {
     throw 'error'; // LINT
   }
 }
+
+class MyError implements Exception {
+  MyError(this.message);
+
+  final String message;
+}

@@ -78,6 +78,7 @@ import 'package:my_custom_lints/src/rules/prefer_null_aware_notation_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_of_over_current.dart';
 import 'package:my_custom_lints/src/rules/prefer_returning_condition_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_safe_firstwhere_rule.dart';
+import 'package:my_custom_lints/src/rules/prefer_throw_exception_or_error_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_underscore_for_unused_callback_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_void_callback_rule.dart';
@@ -161,6 +162,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidThrowLiteral(),
       const CheckIsNotClosedAfterAsyncGapRule(),
       const PreferNullAwareNotationRule(),
+      const PreferThrowExceptionOrErrorRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

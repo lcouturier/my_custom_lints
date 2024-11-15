@@ -38,4 +38,9 @@ void withNullValue() {
   if (list?.isEmpty == true) {
     print(list);
   }
+
+  List<String>? another = null;
+  if (another?.isEmpty == false) {
+    print(list);
+  }
 }

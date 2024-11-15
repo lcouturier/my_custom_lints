@@ -11,7 +11,8 @@ class PreferNullAwareNotationRule extends DartLintRule {
       : super(
           code: const LintCode(
             name: 'prefer_null_aware_notation',
-            problemMessage: 'Prefer null-aware notation.',
+            problemMessage: 'Use null-aware operator (??) for null checks.',
+            correctionMessage: '{0}',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );
@@ -30,7 +31,17 @@ class PreferNullAwareNotationRule extends DartLintRule {
         final leftOperand = node.leftOperand as PropertyAccess;
         if (leftOperand.staticType != null && !leftOperand.staticType.isNullable) return;
 
-        reporter.reportErrorForNode(code, node);
+        final condition = node.toSource();
+        final isCheckingTrue = (node.rightOperand as BooleanLiteral).value;
+
+        final message =
+            'Use ${isCheckingTrue ? '$leftOperand ?? false' : '!($leftOperand ?? false)'} instead of $condition.';
+
+        reporter.reportErrorForNode(
+          code,
+          node,
+          [message],
+        );
       }
 
       if (node.leftOperand is SimpleIdentifier) {
@@ -40,7 +51,16 @@ class PreferNullAwareNotationRule extends DartLintRule {
         final leftOperand = node.leftOperand as SimpleIdentifier;
         if (leftOperand.staticType != null && !leftOperand.staticType.isNullable) return;
 
-        reporter.reportErrorForNode(code, node);
+        final condition = node.toSource();
+        final isCheckingTrue = (node.rightOperand as BooleanLiteral).value;
+        final message =
+            'Use ${isCheckingTrue ? '$leftOperand ?? false' : '!($leftOperand ?? false)'} instead of $condition.';
+
+        reporter.reportErrorForNode(
+          code,
+          node,
+          [message],
+        );
       }
     });
   }
@@ -66,12 +86,21 @@ class _PreferNullAwareNotationFix extends DartFix {
         priority: 80,
       );
 
+      final isCheckingTrue = (node.rightOperand as BooleanLiteral).value;
+
       changeBuilder.addDartFileEdit((builder) {
         const replacement = '?? false';
-        builder.addSimpleReplacement(
-          range.startEnd(node.operator, node.rightOperand),
-          replacement,
-        );
+        if (isCheckingTrue) {
+          builder.addSimpleReplacement(
+            range.startEnd(node.operator, node.rightOperand),
+            replacement,
+          );
+        } else {
+          builder.addSimpleReplacement(
+            range.node(node),
+            '!(${node.leftOperand} $replacement)',
+          );
+        }
       });
     });
   }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
@@ -28,10 +26,7 @@ class PreferThrowExceptionOrErrorRule extends DartLintRule {
       final isException = thrownType.isSubtypeOfType('Exception');
       final isError = thrownType.isSubtypeOfType('Error');
 
-      if (!isException && !isError) {
-        reporter.reportErrorForNode(code, node);
-      }
-
+      if (isException || isError) return;
       reporter.reportErrorForNode(code, node);
     });
 
@@ -39,14 +34,12 @@ class PreferThrowExceptionOrErrorRule extends DartLintRule {
       final currentType = node.declaredElement?.thisType;
       if (currentType == null) return;
 
-      log(currentType.toString());
-
       final isException = currentType.isSubtypeOfType('Exception');
       final isError = currentType.isSubtypeOfType('Error');
       if (!isException && !isError) return;
 
       final className = node.name.lexeme;
-      if (!className.endsWith('Exception') && (!className.contains('Error'))) return;
+      if (_rules.any((e) => e(className))) return;
 
       reporter.reportErrorForNode(
           const LintCode(
@@ -56,6 +49,11 @@ class PreferThrowExceptionOrErrorRule extends DartLintRule {
           node);
     });
   }
+
+  static final _rules = [
+    (String name) => name.endsWith('Exception'),
+    (String name) => name.endsWith('Error'),
+  ];
 }
 
 extension on DartType {

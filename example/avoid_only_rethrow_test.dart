@@ -25,8 +25,6 @@ void valid() {
     if (error is Exception) {
       return;
     }
-
-    rethrow;
   }
 }
 

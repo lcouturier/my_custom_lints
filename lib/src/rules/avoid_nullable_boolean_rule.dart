@@ -33,8 +33,7 @@ class AvoidNullableBooleanRule extends BaseLintRule<AvoidNullableBooleanParamete
 
   bool _hasToIgnore(NamedType node) {
     if (node.parent is! SimpleFormalParameter) return false;
-
-    final p = node.parent as SimpleFormalParameter;
+    final p = node.parent! as SimpleFormalParameter;
     final method = p.thisOrAncestorOfType<MethodDeclaration>();
     if (method == null) return false;
 
@@ -48,7 +47,7 @@ class AvoidNullableBooleanParameters {
 
   factory AvoidNullableBooleanParameters.fromJson(Map<String, Object?> map) {
     return AvoidNullableBooleanParameters(
-      ignoredNames: List<String>.from(map['ignored-names'] as YamlList),
+      ignoredNames: List<String>.from((map['ignored-names'] ?? []) as YamlList),
     );
   }
 

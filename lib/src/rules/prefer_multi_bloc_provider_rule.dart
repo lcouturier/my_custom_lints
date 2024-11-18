@@ -30,7 +30,7 @@ class PreferMultiBlocProviderRule extends DartLintRule {
       final (found, value) =
           node.argumentList.arguments.firstWhereOrNot((e) => e is NamedExpression && e.name.label.name == 'child');
       if (!found) return;
-      final childArgument = value as NamedExpression;
+      final childArgument = value! as NamedExpression;
 
       if (childArgument.expression is! InstanceCreationExpression) return;
       final childExpression = childArgument.expression as InstanceCreationExpression;

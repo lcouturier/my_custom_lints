@@ -35,7 +35,7 @@ class PreferContainsMethodRule extends DartLintRule {
       final targetType = node.realTarget?.staticType;
       if (targetType == null || !listChecker.isAssignableFromType(targetType)) return;
       if (node.parent is! BinaryExpression) return;
-      final expression = node.parent as BinaryExpression;
+      final expression = node.parent! as BinaryExpression;
       if ((expression.operator.type != TokenType.EQ_EQ) && (expression.operator.type != TokenType.BANG_EQ)) return;
       if (expression.rightOperand.toString() != '-1') return;
 

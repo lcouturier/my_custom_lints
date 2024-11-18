@@ -136,7 +136,7 @@ class UnusedParameters {
 
   factory UnusedParameters.fromJson(Map<String, Object?> map) {
     return UnusedParameters(
-      values: List<String>.from(map['parameters'] as YamlList),
+      values: List<String>.from((map['parameters'] ?? []) as YamlList),
     );
   }
 

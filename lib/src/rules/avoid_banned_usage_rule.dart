@@ -65,7 +65,7 @@ class AvoidBannedUsageParameters {
   final List<Entry> entries;
 
   factory AvoidBannedUsageParameters.fromJson(Map<String, Object?> map) {
-    final yamlEntries = map['entries'] as YamlList;
+    final yamlEntries = (map['entries'] ?? []) as YamlList;
 
     final entries = yamlEntries.map((e) {
       return Entry(

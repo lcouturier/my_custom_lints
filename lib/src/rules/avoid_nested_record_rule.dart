@@ -35,7 +35,9 @@ class AvoidNestedRecordRule extends DartLintRule {
     context.registry.addTypeAlias((node) {
       if (node is! GenericTypeAlias) return;
 
-      final element = node.declaredElement as TypeAliasElement;
+      if (node.declaredElement == null) return;
+
+      final element = node.declaredElement! as TypeAliasElement;
       if (element.aliasedType is! RecordType) return;
 
       final record = element.aliasedType as RecordType;

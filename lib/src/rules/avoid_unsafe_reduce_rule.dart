@@ -35,7 +35,7 @@ class AvoidUnsafeReduceRule extends DartLintRule {
       if (node.methodName.name != 'reduce') return;
 
       if (node.parent is ConditionalExpression) {
-        final expression = node.parent as ConditionalExpression;
+        final expression = node.parent! as ConditionalExpression;
         final thenExpr = expression.thenExpression;
         final elseExpr = expression.elseExpression;
         if (expression.condition is! PrefixedIdentifier) return;

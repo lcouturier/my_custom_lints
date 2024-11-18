@@ -29,7 +29,7 @@ class DoNotUseDatetimeNowRule extends DartLintRule {
       if (node.name2.lexeme != 'DateTime') return;
       if (node.parent is! ConstructorName) return;
 
-      final constructName = node.parent as ConstructorName;
+      final constructName = node.parent! as ConstructorName;
       if (constructName.name?.name != 'now') return;
 
       final m = node.thisOrAncestorOfType<MethodInvocation>();

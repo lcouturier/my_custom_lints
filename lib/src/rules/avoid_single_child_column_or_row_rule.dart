@@ -51,7 +51,7 @@ class AvoidSingleChildColumnOrRowParameters {
 
   factory AvoidSingleChildColumnOrRowParameters.fromJson(Map<String, Object?> map) {
     return AvoidSingleChildColumnOrRowParameters(
-      widgets: List<String>.from(map['widgets'] as YamlList),
+      widgets: List<String>.from((map['widgets'] ?? []) as YamlList),
     );
   }
 

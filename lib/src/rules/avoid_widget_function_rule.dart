@@ -44,28 +44,28 @@ class AvoidWidgetFunctionRule extends DartLintRule {
 
   Expression? _getNamedExpression(AstNode node) {
     if (node.parent is FunctionBody) {
-      final body = node.parent as FunctionBody;
+      final body = node.parent! as FunctionBody;
       if (body.parent is ExpressionFunctionBody) {
-        final expressionBody = body.parent as ExpressionFunctionBody;
+        final expressionBody = body.parent! as ExpressionFunctionBody;
         if (expressionBody.parent is FunctionExpression) {
-          final function = expressionBody.parent as FunctionExpression;
+          final function = expressionBody.parent! as FunctionExpression;
           if (function.parent is NamedExpression) {
-            return function.parent as NamedExpression;
+            return function.parent! as NamedExpression;
           }
         }
       }
     }
 
     if (node.parent is ReturnStatement) {
-      final returnExpression = node.parent as ReturnStatement;
+      final returnExpression = node.parent! as ReturnStatement;
       if (returnExpression.parent is Block) {
-        final block = returnExpression.parent as Block;
+        final block = returnExpression.parent! as Block;
         if (block.parent is BlockFunctionBody) {
-          final functionBody = block.parent as BlockFunctionBody;
+          final functionBody = block.parent! as BlockFunctionBody;
           if (functionBody.parent is FunctionExpression) {
-            final function = functionBody.parent as FunctionExpression;
+            final function = functionBody.parent! as FunctionExpression;
             if (function.parent is NamedExpression) {
-              return function.parent as NamedExpression;
+              return function.parent! as NamedExpression;
             }
           }
         }

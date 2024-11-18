@@ -54,7 +54,7 @@ class AvoidLongParameterListParameters {
     return AvoidLongParameterListParameters(
       maxParameters: map['max-parameters'] as int? ?? 7,
       ignoreOptional: map['ignore-optional'] as bool? ?? false,
-      ignoredNames: List<String>.from(map['ignored-names'] as YamlList),
+      ignoredNames: List<String>.from((map['ignored-names'] ?? []) as YamlList),
     );
   }
 

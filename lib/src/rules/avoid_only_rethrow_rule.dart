@@ -26,10 +26,12 @@ class AvoidOnlyRethrowRule extends DartLintRule {
   ) {
     context.registry.addCatchClause((node) {
       if (node.body.statements.length != 1) return;
-      if ((node.body.statements.first as ExpressionStatement).expression is! RethrowExpression) return;
-      final expr = (node.body.statements.first as ExpressionStatement).expression as RethrowExpression;
 
-      reporter.reportErrorForNode(code, expr);
+      final expr = node.body.statements.first;
+      if (expr is! ExpressionStatement) return;
+      if (expr.expression is! RethrowExpression) return;
+
+      reporter.reportErrorForNode(code, expr.expression);
     });
   }
 }

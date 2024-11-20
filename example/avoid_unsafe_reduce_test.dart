@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, avoid_unsafe_reduce
 
 void fn() {
   final list = <int>[];
@@ -14,5 +14,6 @@ void fn() {
 
 String sum() {
   final list = <String>[];
+  list.addAll(['a', 'b', 'c']);
   return list.reduce((a, b) => a + b);
 }

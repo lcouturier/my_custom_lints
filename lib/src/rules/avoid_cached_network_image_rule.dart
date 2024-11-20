@@ -2,7 +2,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-@Deprecated('Use avoid_banned_usage rule instead.')
+@Deprecated('Use avoid_banned_type rule instead.')
 class AvoidCachedNetworkImage extends DartLintRule {
   const AvoidCachedNetworkImage()
       : super(

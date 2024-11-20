@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import
+// ignore_for_file: unused_import, inference_failure_on_collection_literal
 
 import 'dart:developer';
 
@@ -31,19 +31,12 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addNamedType((node) {
-      final entry = config.parameters.entries.firstWhereOrNull((e) => e.className == node.name2.lexeme);
+    context.registry.addMethodInvocation((node) {
+      final entry = config.parameters.entries.firstWhereOrNull((e) => e.name == node.methodName.name);
       if (entry == null) return;
 
-      if (entry.package != null && node.type != null) {
-        final checker = TypeChecker.fromName(entry.className, packageName: '${entry.package}');
-        if (!checker.isAssignableFromType(node.type!)) return;
-      }
-
-      if (entry.paths.isNotEmpty) {
-        final filePath = resolver.source.fullName;
-        if (entry.paths.every((e) => !filePath.contains(e))) return;
-      }
+      final checker = TypeChecker.fromName(entry.type);
+      if (!checker.isAssignableFromType(node.realTarget!.staticType!)) return;
 
       reporter.reportErrorForNode(
         code.copyWith(
@@ -62,36 +55,64 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
 }
 
 class AvoidBannedUsageParameters {
-  final List<Entry> entries;
+  final List<FlattenEntry> entries;
 
   factory AvoidBannedUsageParameters.fromJson(Map<String, Object?> map) {
     final yamlEntries = (map['entries'] ?? []) as YamlList;
 
     final entries = yamlEntries.map((e) {
-      return Entry(
-        paths: List<String>.from(e['paths'] as YamlList),
-        className: e['class_name'] as String,
-        package: e['package'] as String?,
-        message: e['message'] as String,
-        severity: e['severity'] as String?,
+      return EntryType(
+        type: e['type'] as String,
+        entries: ((e['entries'] ?? []) as YamlList).map((e) {
+          return Entry(
+            names: List<String>.from(e['names'] as YamlList),
+            message: e['description'] as String,
+            severity: e['severity'] as String?,
+          );
+        }).toList(),
       );
-    }).toList();
-    return AvoidBannedUsageParameters._(entries);
+    }).expand(
+      (e) => e.entries.map((item) {
+        return (type: e.type, names: item.names, message: item.message, severity: item.severity);
+      }),
+    );
+    final result = entries
+        .expand((e) =>
+            e.names.map((name) => FlattenEntry(type: e.type, name: name, message: e.message, severity: e.severity)))
+        .toList();
+
+    return AvoidBannedUsageParameters._(result);
   }
 
   AvoidBannedUsageParameters._(this.entries);
 }
 
+class EntryType {
+  final String type;
+  final List<Entry> entries;
+
+  EntryType({required this.type, required this.entries}); // <String, Entry>
+}
+
 class Entry {
-  final List<String> paths;
-  final String className;
-  final String? package;
+  final List<String> names;
   final String message;
   final String? severity;
 
-  Entry({required this.paths, required this.className, required this.message, required this.package, this.severity});
+  Entry({required this.names, required this.message, required this.severity});
 
   @override
-  String toString() =>
-      'Entry(paths: $paths, types: $className, package: $package, message: $message, severity: $severity)';
+  String toString() => 'Entry(name: $names, message: $message, severity: $severity)';
+}
+
+class FlattenEntry {
+  final String type;
+  final String name;
+  final String message;
+  final String? severity;
+
+  FlattenEntry({required this.type, required this.name, required this.message, required this.severity});
+
+  @override
+  String toString() => 'FlattenEntry(type: $type, name: $name, message: $message, severity: $severity)';
 }

@@ -93,7 +93,7 @@ custom_lint:
     - avoid_nested_conditional_expressions:
       max-nesting-level: 2
     - avoid_nested_switch_expressions
-    - avoid_banned_usage:
+    - avoid_banned_type:
       entries:
         - paths: ['example']
           class_name: 'SomeType'
@@ -108,3 +108,19 @@ custom_lint:
           class_name: 'CachedNetworkImage'
           message: 'For testability, use ConfigurableNetworkImage instead.'
           severity: warning
+    - avoid_banned_usage:
+      entries:
+        - type: Iterable
+          entries:
+            - names: ['reduce']
+              description: Calling 'reduce' on an empty collection will throw an exception. Use 'fold' instead.
+            - names: ['filter']
+              description: Consider using where method instead.
+        - type: List
+          entries:
+            - names: ['remove', 'removeAt', 'addAll', 'remove']
+              description: Avoid collection methods that mutate the initial collection. Try creating a new collection with an updated value instead.
+            - names: ['sort']
+              description: Use "sorted" instead
+            
+

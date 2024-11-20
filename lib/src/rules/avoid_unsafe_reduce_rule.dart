@@ -11,6 +11,7 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
+@Deprecated('Use AvoidBannedUsageRule instead')
 class AvoidUnsafeReduceRule extends DartLintRule {
   static const ruleName = 'avoid_unsafe_reduce';
 

@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -33,36 +34,46 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
   ) {
     context.registry.addMethodInvocation((node) {
       final entry = config.parameters.entries.firstWhereOrNull((e) => e.name == node.methodName.name);
-      if (entry == null) return;
+      if (entry != null) {
+        final checker = TypeChecker.fromName(entry.type);
+        if (!checker.isAssignableFromType(node.realTarget!.staticType!)) return;
 
-      final checker = TypeChecker.fromName(entry.type);
-      if (!checker.isAssignableFromType(node.realTarget!.staticType!)) return;
+        reporter.reportErrorForNode(
+          code.copyWith(
+            errorSeverity: entry.severity == null
+                ? ErrorSeverity.WARNING
+                : ErrorSeverity.values.firstWhere(
+                    (e) => e.name == entry.severity!.toUpperCase(),
+                    orElse: () => ErrorSeverity.WARNING,
+                  ),
+          ),
+          node,
+          [entry.message],
+        );
+      }
 
-      reporter.reportErrorForNode(
-        code.copyWith(
-          errorSeverity: entry.severity == null
-              ? ErrorSeverity.WARNING
-              : ErrorSeverity.values.firstWhere(
-                  (e) => e.name == entry.severity!.toUpperCase(),
-                  orElse: () => ErrorSeverity.WARNING,
-                ),
-        ),
-        node,
-        [entry.message],
-      );
+      final names = config.parameters.names.firstWhereOrNull((e) => e.name == node.methodName.name);
+      if (names != null) {
+        final element = node.methodName.staticElement;
+        if (element is! FunctionElement) return;
+
+        reporter.reportErrorForNode(code, node, [names.description]);
+      }
     });
   }
 }
 
 class AvoidBannedUsageParameters {
   final List<FlattenEntry> entries;
+  final List<NameType> names;
 
   factory AvoidBannedUsageParameters.fromJson(Map<String, Object?> map) {
     final yamlEntries = (map['entries'] ?? []) as YamlList;
 
-    final entries = yamlEntries.map((e) {
+    final entries = yamlEntries.where((e) => e['type'] != null).map((e) {
       return EntryType(
         type: e['type'] as String,
+        namesType: [],
         entries: ((e['entries'] ?? []) as YamlList).map((e) {
           return Entry(
             names: List<String>.from(e['names'] as YamlList),
@@ -81,17 +92,23 @@ class AvoidBannedUsageParameters {
             e.names.map((name) => FlattenEntry(type: e.type, name: name, message: e.message, severity: e.severity)))
         .toList();
 
-    return AvoidBannedUsageParameters._(result);
+    final names = yamlEntries
+        .where((e) => e['name'] != null)
+        .map((e) => NameType(name: e['name'] as String, description: e['description'] as String))
+        .toList();
+
+    return AvoidBannedUsageParameters._(result, names);
   }
 
-  AvoidBannedUsageParameters._(this.entries);
+  AvoidBannedUsageParameters._(this.entries, this.names);
 }
 
 class EntryType {
   final String type;
   final List<Entry> entries;
+  final List<NameType> namesType;
 
-  EntryType({required this.type, required this.entries}); // <String, Entry>
+  EntryType({required this.type, required this.entries, required this.namesType}); // <String, Entry>
 }
 
 class Entry {
@@ -103,6 +120,16 @@ class Entry {
 
   @override
   String toString() => 'Entry(name: $names, message: $message, severity: $severity)';
+}
+
+class NameType {
+  final String name;
+  final String description;
+
+  NameType({required this.name, required this.description});
+
+  @override
+  String toString() => 'NameType(name: $name, description: $description)';
 }
 
 class FlattenEntry {

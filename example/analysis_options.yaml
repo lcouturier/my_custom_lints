@@ -122,5 +122,7 @@ custom_lint:
               description: Avoid collection methods that mutate the initial collection. Try creating a new collection with an updated value instead.
             - names: ['sort']
               description: Use "sorted" instead
+        - name: print
+          description: Avoid using print statements in production code. Consider using a logger instead.
             
 

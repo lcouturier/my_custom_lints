@@ -95,7 +95,6 @@ class _MyCustomLint extends PluginBase {
     return <LintRule>[
       AvoidLongParameterListRule.createRule(configs),
       const AvoidDynamicRule(),
-      const AvoidPrintRule(),
       const AvoidBangOperatorRule(),
       const AvoidWidgetFunctionRule(),
       const PreferReturningConditionRule(),
@@ -108,7 +107,6 @@ class _MyCustomLint extends PluginBase {
       const MissingFieldInEquatablePropsRule(),
       const AlwaysCallSuperPropsRule(),
       const AddCubitSuffixRule(),
-      
       const FirstInitStateRule(),
       const PreferOfOverCurrentRule(),
       const PreferNoGrowableListRule(),
@@ -146,7 +144,6 @@ class _MyCustomLint extends PluginBase {
       const AvoidNestedRecordRule(),
       const AvoidMixingNamedAndPositionalFieldsRule(),
       const PreferContainsMethodRule(),
-      
       const PreferSafeFirstWhereRule(),
       const UseJoinOnStringsRule(),
       const PreferMultiBlocProviderRule(),
@@ -159,7 +156,6 @@ class _MyCustomLint extends PluginBase {
       const DoNotUseDatetimeNowRule(),
       AvoidNestedConditionalExpressionsRule.createRule(configs),
       const AvoidNestedSwitchExpressionRule(),
-      const AvoidThrowLiteral(),
       const CheckIsNotClosedAfterAsyncGapRule(),
       const PreferNullAwareNotationRule(),
       const PreferThrowExceptionOrErrorRule(),

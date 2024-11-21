@@ -1,4 +1,4 @@
-// ignore_for_file: add_cubit_suffix_rule, unused_local_variable
+// ignore_for_file: add_cubit_suffix_rule, unused_local_variable, avoid_banned_usage, avoid_nullable_boolean, prefer_named_bool_parameters
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,13 +15,21 @@ class MyHomePage extends StatelessWidget {
     // LINT: Avoid using 'read' inside the 'build' method. Try rewriting the code to use 'watch' instead.
     final value = context.read<int>();
     return Scaffold(
-      body: Center(
-        child: Text(value.toString()),
-      ),
+      body: Checkbox(
+          value: true,
+          onChanged: (value) {
+            if (value ?? false) {
+              context.read<BlocA>().onChanged(value);
+            }
+          }),
     );
   }
 }
 
 class BlocA extends Cubit<int> {
   BlocA() : super(0);
+
+  void onChanged(bool? value) {
+    print(value);
+  }
 }

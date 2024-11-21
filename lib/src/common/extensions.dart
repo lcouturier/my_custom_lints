@@ -208,3 +208,28 @@ extension LintCodeExtension on LintCode {
     );
   }
 }
+
+extension AstNodeExtensions on AstNode {
+  /// Returns a tuple containing a boolean and an ancestor node of type [T].
+  ///
+  /// Traverses up the AST from the current node, checking each ancestor node
+  /// to see if it satisfies the given [predicate]. If a node of type [T]
+  /// that matches the [predicate] is found, returns `(true, node)`.
+  /// If no such node is found, returns `(false, null)`.
+  ///
+  /// - [predicate]: A function that evaluates whether a node of type [T]
+  ///   matches certain criteria.
+  ///
+  /// - Returns: A tuple `(true, node)` if an ancestor node of type [T]
+  ///   satisfying the [predicate] is found, otherwise `(false, null)`.
+  (bool, T?) getAncestor<T extends AstNode>(bool Function(T) predicate) {
+    AstNode? node = this;
+    while (node != null) {
+      if (node is T && predicate(node)) {
+        return (true, node);
+      }
+      node = node.parent;
+    }
+    return (false, null);
+  }
+}

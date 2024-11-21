@@ -48,16 +48,10 @@ class AvoidReadInsideBuildRule extends DartLintRule {
 
   bool _isEventHandler(AstNode? node) {
     if (node == null) return false;
-    if (node is NamedExpression) {
-      return node.toString().startsWith('on') && (node.expression.staticType?.isCallbackType ?? false);
-    }
 
-    AstNode? p = node.parent;
-    while (p != null && p is! NamedExpression) {
-      p = p.parent;
-    }
+    final (found, p) = node.getAncestor((e) => e is NamedExpression);
 
-    return (p is NamedExpression) &&
+    return (found && p is NamedExpression) &&
         p.name.label.name.startsWith('on') &&
         (p.expression.staticType?.isCallbackType ?? false);
   }

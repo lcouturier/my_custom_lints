@@ -70,11 +70,13 @@ class _Visitor extends RecursiveAstVisitor<void> {
   }
 
   bool _isEventHandler(AstNode? node) {
-    return node != null &&
-        node is NamedExpression &&
-        node.toString().startsWith('on') &&
-        (node.expression is FunctionExpression) &&
-        (node.expression as FunctionExpression).staticType.isCallbackType;
+    if (node == null) return false;
+
+    final (found, p) = node.getAncestor((e) => e is NamedExpression);
+
+    return (found && p is NamedExpression) &&
+        p.name.label.name.startsWith('on') &&
+        (p.expression.staticType?.isCallbackType ?? false);
   }
 }
 

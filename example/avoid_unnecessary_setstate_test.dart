@@ -59,29 +59,29 @@ class _MyWidgetState extends State<MyWidget> {
 
     myStateUpdateMethod(); // LINT: Avoid calling sync methods that call 'setState'. Try changing the state directly.
 
-    // return ElevatedButton(
-    //   onPressed: () => myStateUpdateMethod(),
-    //   onHover: (value) {
-    //     setState(() {
-    //       if (value) {
-    //         myString = 'data';
-    //       }
-    //     });
-    //   },
-    //   onLongPress: () {
-    //     setState(() {
-    //       myString = 'data';
-    //     });
-    //   },
-    //   child: Text('PRESS'),
-    // );
-    return MyTestWidget(onChange: () {
-      setState(
-        () {
+    return ElevatedButton(
+      onPressed: () => myStateUpdateMethod(),
+      onHover: (value) {
+        setState(() {
+          if (value) {
+            myString = 'data';
+          }
+        });
+      },
+      onLongPress: () {
+        setState(() {
           myString = 'data';
-        },
-      );
-    });
+        });
+      },
+      child: Text('PRESS'),
+    );
+    // return MyTestWidget(onChange: () {
+    //   setState(
+    //     () {
+    //       myString = 'data';
+    //     },
+    //   );
+    // });
   }
 }
 

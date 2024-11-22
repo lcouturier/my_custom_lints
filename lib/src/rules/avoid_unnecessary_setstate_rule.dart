@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import
+// ignore_for_file: unused_import, unused_element
 
 import 'dart:developer';
 
@@ -30,43 +30,21 @@ class AvoidUnnecessarySetStateRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addMethodDeclaration((node) {
-      if (!methods.contains(node.name.lexeme)) return;
-      final body = node.body;
-      if (body is! BlockFunctionBody) return;
+    context.registry.addMethodInvocation((node) {
+      if (node.methodName.name != 'setState') return;
+      final m = node.thisOrAncestorOfType<MethodDeclaration>();
+      if (!methods.contains((m?.name.lexeme ?? ''))) return;
 
-      final visitor = _Visitor(inBuildMethod: node.name.lexeme == 'build');
-      node.accept(visitor);
-
-      for (final element in visitor.nodes) {
-        reporter.reportErrorForNode(code, element);
-      }
-    });
-  }
-
-  @override
-  List<Fix> getFixes() => [_AvoidUnnecessarySetStateFix()];
-}
-
-class _Visitor extends RecursiveAstVisitor<void> {
-  final _nodes = <AstNode>[];
-  final bool inBuildMethod;
-
-  _Visitor({this.inBuildMethod = false});
-
-  Iterable<AstNode> get nodes => _nodes;
-  @override
-  void visitMethodInvocation(MethodInvocation node) {
-    super.visitMethodInvocation(node);
-    if (node.methodName.name == 'setState') {
-      if (inBuildMethod) {
-        if (_isEventHandler(node.thisOrAncestorOfType<FunctionExpression>()?.parent)) {
-          return;
+      if ((m?.name.lexeme ?? '') == 'build') {
+        log('AvoidUnnecessarySetStateRule : ${node.parent.runtimeType}');
+        if (node.parent is ExpressionStatement) {
+          final method = node.parent! as ExpressionStatement;
+          if (_isEventHandler(method.parent)) return;
         }
       }
 
-      _nodes.add(node);
-    }
+      reporter.reportErrorForNode(code, node);
+    });
   }
 
   bool _isEventHandler(AstNode? node) {
@@ -78,6 +56,9 @@ class _Visitor extends RecursiveAstVisitor<void> {
         p.name.label.name.startsWith('on') &&
         (p.expression.staticType?.isCallbackType ?? false);
   }
+
+  @override
+  List<Fix> getFixes() => [_AvoidUnnecessarySetStateFix()];
 }
 
 class _AvoidUnnecessarySetStateFix extends DartFix {

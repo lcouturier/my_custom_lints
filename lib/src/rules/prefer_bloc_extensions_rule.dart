@@ -1,12 +1,11 @@
 // ignore_for_file: unused_import
 
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/utils.dart';
 
 class PreferBlocExtensionsRule extends DartLintRule {
   const PreferBlocExtensionsRule()
@@ -28,7 +27,12 @@ class PreferBlocExtensionsRule extends DartLintRule {
     context.registry.addMethodInvocation((node) {
       if (node.methodName.name != 'of') return;
       if (node.realTarget?.toString() != 'BlocProvider') return;
-
+      final (found, named) = node.argumentList.arguments.firstWhereOrNot((e) => e.toString().startsWith('listen:'));
+      if (found) {
+        if (named is! NamedExpression) return;
+        if (named.name.label.name != 'listen') return;
+        if (named.expression is! BooleanLiteral) return;
+      }
       reporter.reportErrorForNode(code, node);
     });
   }
@@ -54,17 +58,13 @@ class _PreferBlocExtensionsFix extends DartFix {
         priority: 80,
       );
 
-      bool hasWatch = node.argumentList.arguments.any((e) => e.toString() == 'listen: true');
+      final hasWatch = node.argumentList.arguments.any((e) => e.toString() == 'listen: true');
       final context = node.argumentList.arguments.first as SimpleIdentifier;
-
-      log(node.typeArguments?.toString() ?? 'no type args');
+      final typeArguments = node.typeArguments?.toString() ?? '';
 
       changeBuilder.addDartFileEdit((builder) {
         builder.addSimpleReplacement(
-            range.node(node),
-            hasWatch
-                ? '${context.name}.watch${node.typeArguments?.toString() ?? ''}()'
-                : '${context.name}.read${node.typeArguments?.toString() ?? ''}()');
+            range.node(node), '${context.name}.${hasWatch ? 'watch' : 'read'}$typeArguments()');
       });
     });
   }

@@ -22,6 +22,11 @@ class MyHomePage extends StatelessWidget {
           }),
     );
   }
+
+  void MyMethod(BuildContext context, {bool listen = false}) {
+    final value = BlocProvider.of<BlocA>(context, listen: listen);
+    print(value);
+  }
 }
 
 class BlocA extends Cubit<int> {

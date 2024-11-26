@@ -124,5 +124,4 @@ custom_lint:
               description: Use "sorted" instead
         - name: print
           description: Avoid using print statements in production code. Consider using a logger instead.
-            
 

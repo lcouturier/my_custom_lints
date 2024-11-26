@@ -36,7 +36,6 @@ class AvoidUnnecessarySetStateRule extends DartLintRule {
       if (!methods.contains((m?.name.lexeme ?? ''))) return;
 
       if ((m?.name.lexeme ?? '') == 'build') {
-        log('AvoidUnnecessarySetStateRule : ${node.parent.runtimeType}');
         if (node.parent is ExpressionStatement) {
           final method = node.parent! as ExpressionStatement;
           if (_isEventHandler(method.parent)) return;

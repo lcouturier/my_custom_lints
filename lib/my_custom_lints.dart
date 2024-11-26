@@ -65,6 +65,7 @@ import 'package:my_custom_lints/src/rules/no_boolean_literal_compare_rule.dart';
 import 'package:my_custom_lints/src/rules/no_equal_then_else_rule.dart';
 import 'package:my_custom_lints/src/rules/not_length_in_index_expression_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_any_or_every_rule.dart';
+import 'package:my_custom_lints/src/rules/prefer_bloc_extensions_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_contains_method_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_enum_with_sentinel_value_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_first_rule.dart';
@@ -160,6 +161,7 @@ class _MyCustomLint extends PluginBase {
       const PreferNullAwareNotationRule(),
       const PreferThrowExceptionOrErrorRule(),
       const AvoidThrowInCatchBlockRule(),
+      const PreferBlocExtensionsRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

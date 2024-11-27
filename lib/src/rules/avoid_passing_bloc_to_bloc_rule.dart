@@ -5,10 +5,9 @@ import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 
 import 'package:analyzer_plugin/utilities/range_factory.dart';
+
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:my_custom_lints/src/common/copy_with_utils.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
-import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 /// https://bloclibrary.dev/architecture/#bloc-to-bloc-communication
@@ -32,15 +31,18 @@ class AvoidPassingblocToBlocRule extends DartLintRule {
   ) {
     context.registry.addClassDeclaration((node) {
       if (node.extendsClause == null) return;
-      if (!node.isCubit) return;
+      if ((!node.isCubit) && (!node.isBloc)) return;
 
       final fields =
           node.members.whereType<FieldDeclaration>().map((e) => e.fields.variables.toList()).expand((e) => e).toSet();
 
-      final (found, value) = fields.firstWhereOrNot((e) => cubitChecker.isAssignableFromType(e.declaredElement!.type));
-      if (!found) return;
+      final items = fields.where((e) =>
+          cubitChecker.isAssignableFromType(e.declaredElement!.type) ||
+          blocChecker.isAssignableFromType(e.declaredElement!.type));
 
-      reporter.reportErrorForNode(code, value!);
+      for (final item in items) {
+        reporter.reportErrorForNode(code, item);
+      }
     });
   }
 }

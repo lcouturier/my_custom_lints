@@ -105,6 +105,7 @@ extension ClassDeclarationExtensions on ClassDeclaration {
   bool get isEquatable => declaredElement != null && equatableChecker.isAssignableFromType(declaredElement!.thisType);
   bool get isWidget => declaredElement != null && widgetChecker.isAssignableFromType(declaredElement!.thisType);
   bool get isCubit => declaredElement != null && cubitChecker.isAssignableFromType(declaredElement!.thisType);
+  bool get isBloc => declaredElement != null && blocChecker.isAssignableFromType(declaredElement!.thisType);
 
   bool get hasCopyWithMethod =>
       members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith') != null;

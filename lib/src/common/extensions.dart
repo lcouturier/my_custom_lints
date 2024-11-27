@@ -233,3 +233,10 @@ extension AstNodeExtensions on AstNode {
     return (false, null);
   }
 }
+
+extension FormalParameterExtensions on FormalParameter {
+  bool get isBuildContext =>
+      this is SimpleFormalParameter &&
+      (this as SimpleFormalParameter).type != null &&
+      (this as SimpleFormalParameter).type.toString() == 'BuildContext';
+}

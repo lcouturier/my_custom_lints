@@ -39,6 +39,7 @@ import 'package:my_custom_lints/src/rules/avoid_nested_switch_expressions_rule.d
 import 'package:my_custom_lints/src/rules/avoid_nullable_boolean_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_only_rethrow_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_passing_build_context_to_blocs_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_plus_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_positional_record_field_access_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
@@ -162,6 +163,7 @@ class _MyCustomLint extends PluginBase {
       const PreferThrowExceptionOrErrorRule(),
       const AvoidThrowInCatchBlockRule(),
       const PreferBlocExtensionsRule(),
+      const AvoidPassingbuildContextToBlocsRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

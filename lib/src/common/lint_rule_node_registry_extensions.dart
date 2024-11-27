@@ -47,6 +47,18 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     });
   }
 
+  void addMethodeDeclarationCubit(void Function(MethodDeclaration node) listener) {
+    addMethodDeclaration((node) {
+      final parent = node.parent;
+      if (parent is! ClassDeclaration) return;
+
+      final isCubit = cubitChecker.isSuperOf(parent.declaredElement!);
+      if (!isCubit) return;
+
+      listener(node);
+    });
+  }
+
   void addVoidCallback(void Function(GenericFunctionType node) listener) {
     addGenericFunctionType((node) {
       final returnType = node.returnType?.type;

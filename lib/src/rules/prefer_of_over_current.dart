@@ -4,6 +4,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 class PreferOfOverCurrentRule extends DartLintRule with ContextName {
@@ -124,13 +125,6 @@ class _PreferOfOverCurrentFix extends DartFix with ContextName {
       });
     });
   }
-}
-
-extension on FormalParameter {
-  bool get isBuildContext =>
-      this is SimpleFormalParameter &&
-      (this as SimpleFormalParameter).type != null &&
-      (this as SimpleFormalParameter).type.toString() == 'BuildContext';
 }
 
 mixin ContextName {

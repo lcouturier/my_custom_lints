@@ -19,7 +19,9 @@ class BlocA extends Cubit<int> {
 }
 
 class BlocB extends Cubit<int> {
-  BlocB() : super(0);
+  final BlocA blocA;
+
+  BlocB(this.blocA) : super(0);
 }
 
 class BlocC extends Cubit<int> {

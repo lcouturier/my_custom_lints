@@ -59,6 +59,15 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     });
   }
 
+  void addClassDeclarationBlocAndCubit(void Function(ClassDeclaration node) listener) {
+    addClassDeclaration((node) {
+      if (node.extendsClause == null) return;
+      if ((!node.isCubit) && (!node.isBloc)) return;
+
+      listener(node);
+    });
+  }
+
   void addVoidCallback(void Function(GenericFunctionType node) listener) {
     addGenericFunctionType((node) {
       final returnType = node.returnType?.type;

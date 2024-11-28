@@ -8,6 +8,7 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
 /// https://bloclibrary.dev/architecture/#bloc-to-bloc-communication
@@ -17,7 +18,7 @@ class AvoidPassingblocToBlocRule extends DartLintRule {
           code: const LintCode(
             name: 'avoid_passing_bloc_to_bloc',
             problemMessage:
-                'Because blocs expose streams, it may be tempting to make a bloc which listens to another bloc. You should not do this.',
+                'Because blocs expose streams, it may be tempting to make a bloc which listens to another bloc. You should not do this. (https://bloclibrary.dev/architecture/#bloc-to-bloc-communication)',
             correctionMessage: '',
             errorSeverity: ErrorSeverity.WARNING,
           ),
@@ -29,10 +30,7 @@ class AvoidPassingblocToBlocRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      if (node.extendsClause == null) return;
-      if ((!node.isCubit) && (!node.isBloc)) return;
-
+    context.registry.addClassDeclarationBlocAndCubit((node) {
       final fields =
           node.members.whereType<FieldDeclaration>().map((e) => e.fields.variables.toList()).expand((e) => e).toSet();
 

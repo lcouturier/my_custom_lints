@@ -5,11 +5,14 @@ class MyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      // LINT
-      children: [
-        Container(),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        // LINT
+        children: [
+          Container(),
+        ],
+      ),
     );
   }
 }

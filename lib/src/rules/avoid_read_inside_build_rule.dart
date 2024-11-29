@@ -1,7 +1,5 @@
 // ignore_for_file: unused_import, unused_element
 
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
@@ -32,15 +30,10 @@ class AvoidReadInsideBuildRule extends DartLintRule {
       final m = node.thisOrAncestorOfType<MethodDeclaration>();
       if ((m?.name.lexeme ?? '') != 'build') return;
 
-      if (node.parent is PropertyAccess) {
-        final prop = node.parent! as PropertyAccess;
-        if (_isEventHandler(prop.parent)) return;
-      }
+      if (_isEventHandler(node)) return;
 
-      if (node.parent is MethodInvocation) {
-        final method = node.parent! as MethodInvocation;
-        if (_isEventHandler(method.parent)) return;
-      }
+      final (found, _) = node.getAncestor((e) => e is NamedExpression && e.name.label.name == 'listener');
+      if (found) return;
 
       reporter.reportErrorForNode(code, node);
     });

@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 final provider = BlocProvider<BlocA>(
   create: (context) => BlocA(),
   child: BlocProvider<BlocB>(
-    create: (context) => BlocB(),
+    create: (context) => BlocB(BlocA()),
     child: BlocProvider<BlocC>(
       create: (context) => BlocC(),
       child: Container(),

@@ -1,7 +1,7 @@
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 
 class PreferThrowExceptionOrErrorRule extends DartLintRule {
   const PreferThrowExceptionOrErrorRule()
@@ -54,11 +54,4 @@ class PreferThrowExceptionOrErrorRule extends DartLintRule {
     (String name) => name.endsWith('Exception'),
     (String name) => name.endsWith('Error'),
   ];
-}
-
-extension on DartType {
-  bool isSubtypeOfType(String typeName) {
-    return element?.displayName == typeName ||
-        ((this is InterfaceType) && (this as InterfaceType).allSupertypes.any((e) => e.element.name == typeName));
-  }
 }

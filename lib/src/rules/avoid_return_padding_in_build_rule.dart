@@ -25,6 +25,7 @@ class AvoidReturnPaddingRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addNamedType((node) {
+      /// TODO : Container with Padding
       if (node.name2.lexeme != 'Padding') return;
       final (found, p) = node.getAncestor((e) => e is ReturnStatement);
       if (!found) return;

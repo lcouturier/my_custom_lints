@@ -20,6 +20,20 @@ extension DartTypeExtensions on DartType {
 
     return predicates.every((e) => e());
   }
+
+  bool _isSubtypeOfType(String typeName) {
+    return element?.displayName == typeName ||
+        ((this is InterfaceType) && (this as InterfaceType).allSupertypes.any((e) => e.element.name == typeName));
+  }
+
+  bool Function(String) get isSubtypeOfType => _isSubtypeOfType.cache();
+}
+
+extension FunctionCacheExtensions<F, R> on R Function(F) {
+  R Function(F) cache() {
+    final cache = <F, R>{};
+    return (F key) => cache[key] ??= this(key);
+  }
 }
 
 extension RecordTypeExtensions on RecordType {

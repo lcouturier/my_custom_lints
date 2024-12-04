@@ -54,6 +54,7 @@ import 'package:my_custom_lints/src/rules/avoid_throw_litteral_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unnecessary_setstate_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
 import 'package:my_custom_lints/src/rules/avoid_useless_spread_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_using_buildcontext_after_await_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_watch_outside_build_rule.dart';
 import 'package:my_custom_lints/src/bloc/avoid_widget_function_rule.dart';
 import 'package:my_custom_lints/src/rules/binary_expression_operand_order_rule.dart';
@@ -168,6 +169,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidPassingbuildContextToBlocsRule(),
       const AvoidPassingblocToBlocRule(),
       const AvoidReturnPaddingRule(),
+      const AvoidUsingBuildContextAwaitRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

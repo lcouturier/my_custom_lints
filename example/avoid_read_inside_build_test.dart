@@ -1,4 +1,4 @@
-// ignore_for_file: add_cubit_suffix_rule, unused_local_variable, avoid_banned_usage, avoid_nullable_boolean, prefer_named_bool_parameters, prefer_underscore_for_unused_callback_parameters, avoid_empty_build_when
+// ignore_for_file: add_cubit_suffix_rule, unused_local_variable, avoid_banned_usage, avoid_nullable_boolean, prefer_named_bool_parameters, prefer_underscore_for_unused_callback_parameters, avoid_empty_build_when, avoid_ignoring_return_values
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,6 +31,11 @@ class MyHomePage extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<void> exampleFunction(BuildContext context) async {
+    await Future.delayed(Duration(seconds: 1));
+    Navigator.of(context).pushNamed('/new-page');
   }
 }
 

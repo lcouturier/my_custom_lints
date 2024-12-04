@@ -150,6 +150,21 @@ extension StringExtensions on String {
 }
 
 extension IterableExtensions<E> on Iterable<E> {
+  // ignore: strict_raw_type
+  Iterable<E> orderBy<K extends Comparable>(
+    K Function(E element) keySelector, {
+    bool ascending = true,
+  }) {
+    // Convert to a list for sorting
+    var sortedList = toList();
+    sortedList.sort((a, b) {
+      final keyA = keySelector(a);
+      final keyB = keySelector(b);
+      return ascending ? keyA.compareTo(keyB) : keyB.compareTo(keyA);
+    });
+    return sortedList;
+  }
+
   Iterable<R> joinWhere<S, R>(Iterable<S> others, bool Function(E, S) test, [R Function(E, S)? resultSelector]) {
     final selector = resultSelector ?? (x, y) => (x, y) as R;
 

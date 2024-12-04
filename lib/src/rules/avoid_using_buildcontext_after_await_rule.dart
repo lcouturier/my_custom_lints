@@ -44,7 +44,7 @@ class AvoidUsingBuildContextAwaitRule extends DartLintRule {
             final m = next!.expression as MethodInvocation;
             if (!m.toSource().contains(context.name?.lexeme ?? '')) return;
 
-            reporter.reportErrorForNode(code, next, [], [], next);
+            reporter.reportErrorForNode(code, next, [], [], (next, context));
           }
         }
       }
@@ -52,7 +52,37 @@ class AvoidUsingBuildContextAwaitRule extends DartLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [
-        /// TODO(add fix): add dart fix
-      ];
+  List<Fix> getFixes() => [_AvoidUsingBuildContextAwaitFix()];
+}
+
+class _AvoidUsingBuildContextAwaitFix extends DartFix {
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    context.registry.addFunctionBody((node) {
+      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
+
+      final (expression, context) = analysisError.data! as (ExpressionStatement, FormalParameter);
+
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Add mounted check',
+        priority: 80,
+      );
+
+      changeBuilder.addDartFileEdit((builder) {
+        builder.addReplacement(range.node(expression), (builder) {
+          builder
+            ..write('if (${context.name?.lexeme ?? ''}.mounted) {')
+            ..write('${expression.expression.toSource()};')
+            ..write('}');
+        });
+        builder.format(range.node(expression));
+      });
+    });
+  }
 }

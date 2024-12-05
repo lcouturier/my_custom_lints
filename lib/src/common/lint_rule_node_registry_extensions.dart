@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
@@ -126,6 +127,30 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       final hasSuperProps = values.elements.any((element) => element.toString().contains('super.props'));
 
       listener(values, watchableFields, missingFields, hasSuperProps);
+    });
+  }
+
+  void addNullAwareExpression(void Function(BinaryExpression node, bool isCheckingTrue) listener) {
+    addBinaryExpression((node) {
+      if (node.leftOperand is PropertyAccess) {
+        if ((node.operator.type != TokenType.EQ_EQ) && (node.operator.type != TokenType.BANG_EQ)) return;
+        if (node.rightOperand is! BooleanLiteral) return;
+        final leftOperand = node.leftOperand as PropertyAccess;
+        if (leftOperand.staticType != null && !leftOperand.staticType.isNullable) return;
+
+        final isCheckingTrue = (node.rightOperand as BooleanLiteral).value;
+        listener(node, isCheckingTrue);
+      }
+
+      if (node.leftOperand is SimpleIdentifier) {
+        if ((node.operator.type != TokenType.EQ_EQ) && (node.operator.type != TokenType.BANG_EQ)) return;
+        if (node.rightOperand is! BooleanLiteral) return;
+        final leftOperand = node.leftOperand as SimpleIdentifier;
+        if (leftOperand.staticType != null && !leftOperand.staticType.isNullable) return;
+
+        final isCheckingTrue = (node.rightOperand as BooleanLiteral).value;
+        listener(node, isCheckingTrue);
+      }
     });
   }
 }

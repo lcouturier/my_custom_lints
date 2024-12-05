@@ -1,24 +1,22 @@
-// ignore_for_file: avoid_print, avoid_nullable_boolean
-import 'package:flutter_test/flutter_test.dart';
-
+// ignore_for_file: avoid_nullable_boolean, avoid_banned_usage
 void fun() {
   bool isGoodResult = true;
-  if (isGoodResult == true) {
+  if (isGoodResult) {
     isGoodResult = false;
   }
 
-  if (isGoodResult == false) {
+  if (!isGoodResult) {
     isGoodResult = true;
   }
 }
 
 void funInvert() {
   bool isGoodResult = true;
-  if (true == isGoodResult) {
+  if (isGoodResult) {
     isGoodResult = false;
   }
 
-  if (false == isGoodResult) {
+  if (!isGoodResult) {
     isGoodResult = true;
   }
 }

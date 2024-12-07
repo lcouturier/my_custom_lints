@@ -22,8 +22,9 @@ void funInvert() {
 }
 
 void withNullValue() {
+  final int sum = 15;
   String? value = null;
-  if (value?.isEmpty != true) {
+  if (sum == 15 && value?.isEmpty != true) {
     print(value);
   }
 

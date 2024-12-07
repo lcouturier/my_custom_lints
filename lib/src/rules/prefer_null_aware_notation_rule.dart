@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -56,19 +57,15 @@ class _PreferNullAwareNotationFix extends DartFix {
         priority: 80,
       );
 
+      const replacement = '?? false';
+      final outputString = switch ((isCheckingTrue, node.beginToken.previous?.type)) {
+        (true, TokenType.OPEN_PAREN) => '${node.leftOperand} $replacement',
+        (true, _) => '(${node.leftOperand} $replacement)',
+        (false, _) => '!(${node.leftOperand} $replacement)',
+      };
+
       changeBuilder.addDartFileEdit((builder) {
-        const replacement = '?? false';
-        if (isCheckingTrue) {
-          builder.addSimpleReplacement(
-            range.startEnd(node.operator, node.rightOperand),
-            replacement,
-          );
-        } else {
-          builder.addSimpleReplacement(
-            range.node(node),
-            '!(${node.leftOperand} $replacement)',
-          );
-        }
+        builder.addSimpleReplacement(range.node(node), outputString);
       });
     });
   }

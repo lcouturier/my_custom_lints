@@ -47,6 +47,7 @@ import 'package:my_custom_lints/src/rules/avoid_print_rule.dart';
 import 'package:my_custom_lints/src/bloc/avoid_read_inside_build_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_return_padding_in_build_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_self_assignment_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_shadowed_extension_methods_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_shrink_wrap_in_lists_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_single_child_column_or_row_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_throw_in_catch_block_rule.dart';
@@ -170,6 +171,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidPassingblocToBlocRule(),
       const AvoidReturnPaddingRule(),
       const AvoidUsingBuildContextAwaitRule(),
+      const AvoidShadowedExtensionMethodsRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

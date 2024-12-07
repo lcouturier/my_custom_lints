@@ -13,8 +13,7 @@ class AvoidExtensionOnEnumRule extends DartLintRule {
       : super(
           code: const LintCode(
             name: 'avoid_extension_on_enum',
-            problemMessage: 'Avoid extension on enum.',
-            errorSeverity: ErrorSeverity.WARNING,
+            problemMessage: 'Extension target already declares a member with the same name. Try renaming this method.',
           ),
         );
 

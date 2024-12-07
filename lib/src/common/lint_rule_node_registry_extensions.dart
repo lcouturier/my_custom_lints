@@ -146,4 +146,11 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       listener(node, isCheckingTrue);
     });
   }
+
+  void addFactoryInvocation(void Function(InstanceCreationExpression node) listener) {
+    addInstanceCreationExpression((node) {
+      if (node.constructorName.type.name2.lexeme != 'Factory') return;
+      listener(node);
+    });
+  }
 }

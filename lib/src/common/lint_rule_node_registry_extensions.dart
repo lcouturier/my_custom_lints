@@ -147,10 +147,37 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     });
   }
 
-  void addFactoryInvocation(void Function(InstanceCreationExpression node) listener) {
-    addInstanceCreationExpression((node) {
-      if (node.constructorName.type.name2.lexeme != 'Factory') return;
-      listener(node);
+  void addLiteralSpreadItem(void Function(AstNode node, String name) listener) {
+    addListLiteral((node) {
+      for (var element in node.elements.whereType<SpreadElement>().where((e) => e.expression is BinaryExpression)) {
+        final binary = element.expression as BinaryExpression;
+        if ((binary.operator.type == TokenType.QUESTION_QUESTION) && (binary.rightOperand.toString() == '{}')) {
+          final id = binary.leftOperand as SimpleIdentifier;
+          listener(element, id.name);
+        }
+      }
+
+      for (var element
+          in node.elements.whereType<SpreadElement>().where((e) => e.expression is ConditionalExpression)) {
+        final conditional = element.expression as ConditionalExpression;
+        if (conditional.condition is BinaryExpression) {
+          final binary = conditional.condition as BinaryExpression;
+          if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand.toString() == 'null')) {
+            final id = binary.leftOperand as SimpleIdentifier;
+            listener(element, id.name);
+          }
+        }
+      }
+
+      for (var element in node.elements.whereType<IfElement>()) {
+        if ((element.expression is BinaryExpression) && (element.thenElement is SpreadElement)) {
+          final binary = element.expression as BinaryExpression;
+          if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand.toString() == 'null')) {
+            final id = binary.leftOperand as SimpleIdentifier;
+            listener(element, id.name);
+          }
+        }
+      }
     });
   }
 }

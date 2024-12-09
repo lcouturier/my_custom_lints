@@ -116,6 +116,8 @@ custom_lint:
               description: Calling 'reduce' on an empty collection will throw an exception. Use 'fold' instead.
             - names: ['filter']
               description: Consider using where method instead.
+            - names: ['from']
+              description: Consider using 'of' method instead.
         - type: List
           entries:
             - names: ['remove', 'removeAt', 'addAll', 'remove']

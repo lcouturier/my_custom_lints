@@ -76,11 +76,13 @@ import 'package:my_custom_lints/src/rules/prefer_enum_with_sentinel_value_rule.d
 import 'package:my_custom_lints/src/rules/prefer_iterable_first_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_isempty_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_last_rule.dart';
+import 'package:my_custom_lints/src/rules/prefer_iterable_of_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_multi_bloc_provider_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_named_bool_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_named_parameters_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_no_growable_list_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_null_aware_notation_rule.dart';
+import 'package:my_custom_lints/src/rules/prefer_null_aware_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_of_over_current.dart';
 import 'package:my_custom_lints/src/rules/prefer_returning_condition_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_safe_firstwhere_rule.dart';
@@ -172,6 +174,8 @@ class _MyCustomLint extends PluginBase {
       const AvoidReturnPaddingRule(),
       const AvoidUsingBuildContextAwaitRule(),
       const AvoidShadowedExtensionMethodsRule(),
+      const PreferIterableOfRule(),
+      const PreferNullAwareSpreadRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

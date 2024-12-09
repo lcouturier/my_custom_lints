@@ -41,11 +41,16 @@ extension RecordTypeExtensions on RecordType {
 }
 
 extension DartTypeNullableExtensions on DartType? {
+  bool get isIterableOrSubclass => isIterableOrSubclassCore(this);
   bool get isNullable => isNullableType(this);
   bool get isWidget => this?.getDisplayString(withNullability: false) == 'Widget';
 
   bool get isCallbackType {
     return toString().startsWith('Null') || _isCallbackType(this);
+  }
+
+  bool hasConstructor(String name) {
+    return (this is InterfaceType) && (this! as InterfaceType).constructors.any((e) => e.name == name);
   }
 
   bool _isCallbackType(DartType? type) {

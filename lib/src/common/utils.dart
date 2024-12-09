@@ -4,7 +4,7 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-bool isIterableOrSubclass(DartType? type) => _checkSelfOrSupertypes(type, (t) => t?.isDartCoreIterable ?? false);
+bool isIterableOrSubclassCore(DartType? type) => _checkSelfOrSupertypes(type, (t) => t?.isDartCoreIterable ?? false);
 
 bool isListOrSubclass(DartType? type) => _checkSelfOrSupertypes(type, (t) => t?.isDartCoreList ?? false);
 

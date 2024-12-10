@@ -151,9 +151,11 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     addListLiteral((node) {
       for (var element in node.elements.whereType<SpreadElement>().where((e) => e.expression is BinaryExpression)) {
         final binary = element.expression as BinaryExpression;
-        if ((binary.operator.type == TokenType.QUESTION_QUESTION) && (binary.rightOperand.toString() == '{}')) {
-          final id = binary.leftOperand as SimpleIdentifier;
-          listener(element, id.name);
+        if (binary.rightOperand is TypedLiteral) {
+          if (binary.operator.type == TokenType.QUESTION_QUESTION) {
+            final id = binary.leftOperand as SimpleIdentifier;
+            listener(element, id.name);
+          }
         }
       }
 
@@ -162,7 +164,8 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
         final conditional = element.expression as ConditionalExpression;
         if (conditional.condition is BinaryExpression) {
           final binary = conditional.condition as BinaryExpression;
-          if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand.toString() == 'null')) {
+
+          if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand is NullLiteral)) {
             final id = binary.leftOperand as SimpleIdentifier;
             listener(element, id.name);
           }
@@ -172,7 +175,7 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       for (var element in node.elements.whereType<IfElement>()) {
         if ((element.expression is BinaryExpression) && (element.thenElement is SpreadElement)) {
           final binary = element.expression as BinaryExpression;
-          if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand.toString() == 'null')) {
+          if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand is NullLiteral)) {
             final id = binary.leftOperand as SimpleIdentifier;
             listener(element, id.name);
           }

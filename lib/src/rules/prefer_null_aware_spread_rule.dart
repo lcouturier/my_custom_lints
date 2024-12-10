@@ -1,9 +1,3 @@
-// ignore_for_file: unused_import
-
-import 'dart:developer';
-
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -27,7 +21,6 @@ class PreferNullAwareSpreadRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addLiteralSpreadItem((node, name) {
-      log("addLiteralSpreadItem  : $name");
       reporter.reportErrorForNode(code, node);
     });
   }

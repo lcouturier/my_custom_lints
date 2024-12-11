@@ -1,4 +1,4 @@
-// ignore_for_file: add_cubit_suffix_rule, unused_local_variable, avoid_banned_usage, avoid_nullable_boolean, prefer_named_bool_parameters, prefer_underscore_for_unused_callback_parameters, avoid_empty_build_when, avoid_ignoring_return_values
+// ignore_for_file: add_cubit_suffix_rule, boolean_prefixes, prefer_named_bool_parameters, avoid_nullable_boolean
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,7 +42,8 @@ class MyHomePage extends StatelessWidget {
 class BlocA extends Cubit<int> {
   BlocA() : super(0);
 
-  void onChanged(bool? value) {
+  bool onChanged(bool? value) {
     print(value);
+    return value ?? false;
   }
 }

@@ -7,6 +7,7 @@ import 'package:my_custom_lints/src/assists/check_state_getter_assist.dart';
 import 'package:my_custom_lints/src/assists/copy_with_nullable_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_map_method_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_when_method_assist.dart';
+import 'package:my_custom_lints/src/bloc/avoid_returning_value_from_cubit_methods_rule.dart';
 import 'package:my_custom_lints/src/common/annotations.dart';
 import 'package:my_custom_lints/src/bloc/add_cubit_suffix_rule.dart';
 import 'package:my_custom_lints/src/rules/always_call_super_props_rule.dart';
@@ -176,6 +177,7 @@ class _MyCustomLint extends PluginBase {
       const AvoidShadowedExtensionMethodsRule(),
       const PreferIterableOfRule(),
       const PreferNullAwareSpreadRule(),
+      const AvoidReturningValueFromCubitMethodsRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

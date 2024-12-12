@@ -1,7 +1,6 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -13,7 +12,6 @@ class AvoidEqualExpressionsRule extends DartLintRule {
           code: const LintCode(
             name: 'avoid_equal_expressions',
             problemMessage: 'Avoid equal expressions.',
-            errorSeverity: ErrorSeverity.WARNING,
           ),
         );
 

@@ -19,6 +19,8 @@ void fn() {
     return;
   }
 
+  String value = (num != num) ? "then" : "else";
+
   final val1 = num << num; // LINT
   final val2 = num >> num; // LINT
   final val3 = 5 / 5; // LINT

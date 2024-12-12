@@ -175,6 +175,8 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       for (var element in node.elements.whereType<IfElement>()) {
         if ((element.expression is BinaryExpression) && (element.thenElement is SpreadElement)) {
           final binary = element.expression as BinaryExpression;
+          final left = binary.leftOperand as SimpleIdentifier;
+          if (left.staticType?.isDartCoreIterable ?? false) return;
           if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand is NullLiteral)) {
             final id = binary.leftOperand as SimpleIdentifier;
             listener(element, id.name);

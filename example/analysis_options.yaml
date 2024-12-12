@@ -66,7 +66,8 @@ custom_lint:
     - avoid_nullable_boolean: 
       ignored-names: ['copyWith']
     - avoid_local_function
-    - avoid_equal_expressions
+    - avoid_equal_expressions:
+      severity: error
     - avoid_getter_prefix
     - avoid_self_assignment
     - avoid_single_child_column_or_row:

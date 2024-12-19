@@ -16,3 +16,17 @@ class MyWidget extends StatelessWidget {
     );
   }
 }
+
+class MyWidgetColumn extends StatelessWidget {
+  const MyWidgetColumn({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      // LINT
+      children: [
+        ...List.of([Container(), Container()])
+      ],
+    );
+  }
+}

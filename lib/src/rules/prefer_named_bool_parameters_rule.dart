@@ -44,12 +44,12 @@ class PreferNamedBoolParametersRule extends BaseLintRule<PreferNamedBoolParamete
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addMethodDeclaration((MethodDeclaration node) {
+    context.registry.addMethodDeclaration((node) {
       if (node.parameters == null) return;
       _verify(node.parameters!, reporter);
     });
 
-    context.registry.addFunctionDeclaration((FunctionDeclaration node) {
+    context.registry.addFunctionDeclaration((node) {
       if (node.functionExpression.parameters == null) return;
       _verify(node.functionExpression.parameters!, reporter);
     });

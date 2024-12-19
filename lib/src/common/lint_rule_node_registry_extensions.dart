@@ -7,7 +7,7 @@ import 'package:my_custom_lints/src/common/utils.dart';
 
 extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
   void addGetterDeclaration(void Function(MethodDeclaration node) listener) {
-    addMethodDeclaration((MethodDeclaration node) {
+    addMethodDeclaration((node) {
       if (node.isGetter) {
         listener(node);
       }
@@ -36,15 +36,12 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     });
   }
 
-  void addClassCubitSuffix(void Function(ClassDeclaration node, String fileName) listener) {
+  void addCubitClassDeclaration(void Function(ClassDeclaration node) listener) {
     addClassDeclaration((node) {
-      final fileName = node.declaredElement?.source.fullName ?? '';
       final isCubit = cubitChecker.isSuperOf(node.declaredElement!);
-
       if (!isCubit) return;
-      if (node.name.lexeme.endsWith('Cubit')) return;
 
-      listener(node, fileName);
+      listener(node);
     });
   }
 
@@ -176,10 +173,11 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
         if ((element.expression is BinaryExpression) && (element.thenElement is SpreadElement)) {
           final binary = element.expression as BinaryExpression;
           final left = binary.leftOperand as SimpleIdentifier;
-          if (left.staticType?.isDartCoreIterable ?? false) return;
+          if ((element.thenElement as SpreadElement).expression is! SimpleIdentifier) return;
+          final then = ((element.thenElement as SpreadElement).expression as SimpleIdentifier);
+          if (left.name != then.name) return;
           if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand is NullLiteral)) {
-            final id = binary.leftOperand as SimpleIdentifier;
-            listener(element, id.name);
+            listener(element, left.name);
           }
         }
       }

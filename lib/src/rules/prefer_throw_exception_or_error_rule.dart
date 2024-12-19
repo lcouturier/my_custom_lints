@@ -50,8 +50,8 @@ class PreferThrowExceptionOrErrorRule extends DartLintRule {
     });
   }
 
-  static final _rules = [
-    (String name) => name.endsWith('Exception'),
-    (String name) => name.endsWith('Error'),
+  static final _rules = <bool Function(String)>[
+    (name) => name.endsWith('Exception'),
+    (name) => name.endsWith('Error'),
   ];
 }

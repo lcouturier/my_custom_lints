@@ -3,6 +3,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 
 class AvoidShadowedExtensionMethodsRule extends DartLintRule {
   const AvoidShadowedExtensionMethodsRule()
@@ -28,10 +29,9 @@ class AvoidShadowedExtensionMethodsRule extends DartLintRule {
         final methods = (annotation.type!.element! as ClassElement).methods;
         final extensionMethods = node.members.whereType<MethodDeclaration>();
 
-        for (final method in extensionMethods) {
-          if (methods.any((m) => m.name == method.name.lexeme)) {
-            reporter.reportErrorForNode(code, method);
-          }
+        final errors = extensionMethods.joinWhere(methods, (p0, p1) => p0.name.lexeme == p1.name, (p0, p1) => p0);
+        for (final error in errors) {
+          reporter.reportErrorForToken(code, error.name);
         }
       },
     );

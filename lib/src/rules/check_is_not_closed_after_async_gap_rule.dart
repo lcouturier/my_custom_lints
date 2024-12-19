@@ -17,9 +17,9 @@ class CheckIsNotClosedAfterAsyncGapRule extends DartLintRule {
           ),
         );
 
-  static final _types = [
-    (ClassElement e) => cubitChecker.isSuperOf(e),
-    (ClassElement e) => blocChecker.isSuperOf(e),
+  static final _types = <bool Function(ClassElement)>[
+    (e) => cubitChecker.isSuperOf(e),
+    (e) => blocChecker.isSuperOf(e),
   ];
 
   @override

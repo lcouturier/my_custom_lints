@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -23,7 +22,7 @@ class AvoidFilterRule extends DartLintRule {
     CustomLintContext context,
   ) {
     // Register a callback for each method invocation in the file.
-    context.registry.addMethodInvocation((MethodInvocation node) {
+    context.registry.addMethodInvocation((node) {
       if (node.methodName.name != 'filter') return;
 
       final target = node.realTarget;

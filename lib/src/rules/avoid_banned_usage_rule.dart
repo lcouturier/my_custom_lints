@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -20,11 +19,6 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
     );
 
     return AvoidBannedUsageRule._(rule);
-  }
-
-  // ignore: unused_element
-  bool _hasConstructorOf(DartType? type) {
-    return type is InterfaceType && type.constructors.any((element) => element.name == 'of');
   }
 
   @override

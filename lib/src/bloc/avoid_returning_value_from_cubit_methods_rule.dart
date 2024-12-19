@@ -10,7 +10,6 @@ class AvoidReturningValueFromCubitMethodsRule extends DartLintRule {
           code: const LintCode(
             name: 'avoid_returning_value_from_cubit_methods',
             problemMessage: 'Listen to a Cubit state change instead',
-            correctionMessage: '',
           ),
         );
 

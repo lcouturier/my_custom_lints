@@ -1,6 +1,3 @@
-// ignore_for_file: cascade_invocations
-
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
@@ -28,7 +25,7 @@ class AvoidLongRecordsRule extends BaseLintRule<AvoidLongRecordsParameters> {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addRecordLiteral((RecordLiteral node) {
+    context.registry.addRecordLiteral((node) {
       if (!config.enabled) return;
 
       if (node.fields.length > config.parameters.maxNumber) {

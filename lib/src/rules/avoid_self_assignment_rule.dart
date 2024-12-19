@@ -24,7 +24,7 @@ class AvoidSelfAssignmentRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addAssignmentExpression((AssignmentExpression node) {
+    context.registry.addAssignmentExpression((node) {
       if (node.operator.type != TokenType.EQ) return;
       if (node.leftHandSide.toString() != node.rightHandSide.toString()) return;
 

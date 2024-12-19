@@ -1,5 +1,3 @@
-// ignore_for_file: unused_element
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -51,10 +49,11 @@ class CopyWithNullableAssist extends DartAssist with CopyWithMixin {
     });
   }
 
+  // ignore: unused_element
   bool _isValidNode(ClassDeclaration node) {
-    final predicate = [
-      (ClassDeclaration node) => node.isEquatable,
-      (ClassDeclaration node) => node.isImmutable,
+    final predicate = <bool Function(ClassDeclaration)>[
+      (node) => node.isEquatable,
+      (node) => node.isImmutable,
     ];
 
     return predicate.any((p) => p(node));

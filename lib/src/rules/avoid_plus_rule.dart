@@ -23,7 +23,7 @@ class AvoidPlusRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addMethodInvocation((MethodInvocation node) {
+    context.registry.addMethodInvocation((node) {
       if (node.methodName.name != 'plus') return;
       if (node.argumentList.arguments.isEmpty) return;
       if (node.argumentList.arguments.whereType<NamedExpression>().any((e) => e.name.label.name != 'element')) return;

@@ -1,7 +1,6 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -24,6 +23,18 @@ class AvoidNestedIfRule extends BaseLintRule<AvoidNestedIfOptions> {
     return AvoidNestedIfRule._(rule);
   }
 
+  static int _calculateNestingDepth(AstNode node) {
+    int depth = 0;
+    AstNode? current = node;
+    while (current != null) {
+      if (current is IfStatement) {
+        depth++;
+      }
+      current = current.parent;
+    }
+    return depth;
+  }
+
   @override
   void run(
     CustomLintResolver resolver,
@@ -31,13 +42,9 @@ class AvoidNestedIfRule extends BaseLintRule<AvoidNestedIfOptions> {
     CustomLintContext context,
   ) {
     context.registry.addIfStatement((node) {
-      final ifStatements = <IfStatement>[];
-      final visitor = RecursiveIfStatementVisitor(
-        onVisitIfStatement: ifStatements.add,
-      );
-      node.thenStatement.visitChildren(visitor);
+      final depth = _calculateNestingDepth(node);
 
-      if (ifStatements.length >= config.parameters.numberOfLevel) {
+      if (depth > config.parameters.numberOfLevel) {
         reporter.reportErrorForNode(code, node);
       }
     });
@@ -53,19 +60,5 @@ class AvoidNestedIfOptions {
     return AvoidNestedIfOptions(
       numberOfLevel: map['number_of_level'] as int? ?? 2,
     );
-  }
-}
-
-class RecursiveIfStatementVisitor extends RecursiveAstVisitor<void> {
-  const RecursiveIfStatementVisitor({
-    required this.onVisitIfStatement,
-  });
-
-  final void Function(IfStatement node) onVisitIfStatement;
-
-  @override
-  void visitIfStatement(IfStatement node) {
-    onVisitIfStatement(node);
-    node.visitChildren(this);
   }
 }

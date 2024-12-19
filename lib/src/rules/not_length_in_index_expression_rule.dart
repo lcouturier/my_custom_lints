@@ -26,7 +26,7 @@ class NoLengthInIndexExpressionRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addIndexExpression((IndexExpression node) {
+    context.registry.addIndexExpression((node) {
       if (node.index is BinaryExpression) return;
 
       final targetType = node.realTarget.staticType;

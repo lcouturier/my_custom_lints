@@ -32,7 +32,7 @@ extension DartTypeExtensions on DartType {
 extension FunctionCacheExtensions<F, R> on R Function(F) {
   R Function(F) cache() {
     final cache = <F, R>{};
-    return (F key) => cache[key] ??= this(key);
+    return (key) => cache[key] ??= this(key);
   }
 }
 

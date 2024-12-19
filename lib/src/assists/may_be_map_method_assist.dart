@@ -1,14 +1,7 @@
-// ignore_for_file: cascade_invocations, unused_element, unused_import, no_leading_underscores_for_local_identifiers
-
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 

@@ -20,7 +20,6 @@ class PreferContainsMethodRule extends DartLintRule {
             name: ruleName,
             problemMessage:
                 'Suggests using .contains instead of .indexOf when checking for the presence of an element.',
-            errorSeverity: ErrorSeverity.INFO,
           ),
         );
 
@@ -58,6 +57,7 @@ class _PreferContainsMethodFix extends DartFix {
   ) {
     context.registry.addMethodInvocation((node) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
+      if (node.parent is! BinaryExpression) return;
 
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Replace with contains',
@@ -65,7 +65,7 @@ class _PreferContainsMethodFix extends DartFix {
       );
 
       changeBuilder.addDartFileEdit((builder) {
-        final expression = node.parent as BinaryExpression;
+        final expression = node.parent! as BinaryExpression;
         if (expression.operator.type == TokenType.EQ_EQ) {
           builder.addSimpleInsertion(node.offset, '!');
         }

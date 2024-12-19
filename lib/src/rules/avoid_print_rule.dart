@@ -1,10 +1,8 @@
 // ignore_for_file: cascade_invocations
 
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
-import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/names.dart';
 
@@ -25,7 +23,7 @@ class AvoidPrintRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addMethodInvocation((MethodInvocation node) {
+    context.registry.addMethodInvocation((node) {
       final element = node.methodName.staticElement;
       if (element is! FunctionElement) return;
       if (element.name != 'print') return;
@@ -49,7 +47,7 @@ class UseDeveloperLogFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addMethodInvocation((MethodInvocation node) {
+    context.registry.addMethodInvocation((node) {
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
@@ -57,7 +55,7 @@ class UseDeveloperLogFix extends DartFix {
         priority: 80,
       );
 
-      changeBuilder.addDartFileEdit((DartFileEditBuilder builder) {
+      changeBuilder.addDartFileEdit((builder) {
         final sourceRange = node.methodName.sourceRange;
 
         final result = builder.importLibraryElement(Uri.parse('dart:developer'));

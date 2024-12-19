@@ -55,6 +55,7 @@ import 'package:my_custom_lints/src/rules/avoid_throw_in_catch_block_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_throw_litteral_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unnecessary_setstate_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
+import 'package:my_custom_lints/src/rules/avoid_useless_column_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_useless_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_using_buildcontext_after_await_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_watch_outside_build_rule.dart';
@@ -158,7 +159,6 @@ class _MyCustomLint extends PluginBase {
       const PreferMultiBlocProviderRule(),
       const AvoidReadInsideBuildRule(),
       const AvoidWatchOutsideBuildRule(),
-      const AvoidIgnoringReturnValuesRule(),
       const BinaryExpressionOperandOrderRule(),
       const AvoidEmptyBuildWhenRule(),
       const AvoidMutatingParametersRule(),
@@ -178,6 +178,7 @@ class _MyCustomLint extends PluginBase {
       const PreferIterableOfRule(),
       const PreferNullAwareSpreadRule(),
       const AvoidReturningValueFromCubitMethodsRule(),
+      const AvoidUselessColumnRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

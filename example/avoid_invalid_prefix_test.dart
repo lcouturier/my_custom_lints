@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field
+// ignore_for_file: unused_field, prefer_enum_with_sentinel_value
 
 enum TripMotive {
   personal,
@@ -12,7 +12,6 @@ extension TripMotiveExtensions on TripMotive {
 enum DayChoiceState { DEFAULT, HOVER }
 
 enum HighlightPainterStyle {
-  none,
   highlightLeading,
   highlightTrailing,
   highlightAll,

@@ -19,11 +19,10 @@ class AddCubitSuffixRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addClassCubitSuffix((node, fileName) {
-      reporter.reportErrorForNode(
-        code,
-        node,
-      );
+    context.registry.addCubitClassDeclaration((node) {
+      if (node.name.lexeme.endsWith('Cubit')) return;
+
+      reporter.reportErrorForNode(code, node);
     });
   }
 }

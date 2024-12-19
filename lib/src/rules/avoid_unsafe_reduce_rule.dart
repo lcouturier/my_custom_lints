@@ -65,7 +65,7 @@ class _AvoidUnsafeReduceFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addMethodInvocation((MethodInvocation node) {
+    context.registry.addMethodInvocation((node) {
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
       final targetType = node.realTarget?.staticType;

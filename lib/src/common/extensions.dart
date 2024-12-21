@@ -268,6 +268,27 @@ extension AstNodeExtensions on AstNode {
     }
     return (false, null);
   }
+
+  /// Returns the depth of the current node in the AST tree, counted from
+  /// the root node, until an ancestor node of the current node satisfies
+  /// the given [predicate].
+  ///
+  /// - [predicate]: A function that evaluates whether a node satisfies
+  ///   certain criteria.
+  ///
+  /// - Returns: The depth of the first node that satisfies the [predicate], or
+  ///   the depth of the root node if no such node is found.
+  int depth(bool Function(AstNode) predicate) {
+    int depth = 0;
+    AstNode? current = this;
+    while (current != null) {
+      if (predicate(current)) {
+        depth++;
+      }
+      current = current.parent;
+    }
+    return depth;
+  }
 }
 
 extension FormalParameterExtensions on FormalParameter {

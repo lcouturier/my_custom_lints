@@ -1,4 +1,4 @@
-final str = '';
+const str = '';
 
 final twoLevels = str.isEmpty
     ? str.isEmpty
@@ -13,3 +13,9 @@ final threeLevels = str.isEmpty
             : '1'
         : '2'
     : '3';
+
+final twoAnotherLevels = (str == '')
+    ? str.isEmpty
+        ? 'hi'
+        : '1'
+    : '2';

@@ -1,10 +1,8 @@
-// ignore_for_file: lines_longer_than_80_chars
-
 import 'package:analyzer/dart/ast/ast.dart';
-
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 
 class AvoidNestedIfRule extends BaseLintRule<AvoidNestedIfOptions> {
   static const lintName = 'max_nesting_level';
@@ -23,18 +21,6 @@ class AvoidNestedIfRule extends BaseLintRule<AvoidNestedIfOptions> {
     return AvoidNestedIfRule._(rule);
   }
 
-  static int _calculateNestingDepth(AstNode node) {
-    int depth = 0;
-    AstNode? current = node;
-    while (current != null) {
-      if (current is IfStatement) {
-        depth++;
-      }
-      current = current.parent;
-    }
-    return depth;
-  }
-
   @override
   void run(
     CustomLintResolver resolver,
@@ -42,7 +28,7 @@ class AvoidNestedIfRule extends BaseLintRule<AvoidNestedIfOptions> {
     CustomLintContext context,
   ) {
     context.registry.addIfStatement((node) {
-      final depth = _calculateNestingDepth(node);
+      final depth = node.depth((e) => e is IfStatement);
 
       if (depth > config.parameters.numberOfLevel) {
         reporter.reportErrorForNode(code, node);

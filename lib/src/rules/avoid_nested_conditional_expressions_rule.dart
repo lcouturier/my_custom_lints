@@ -33,20 +33,23 @@ class AvoidNestedConditionalExpressionsRule extends BaseLintRule<AvoidNestedCond
     context.registry.addConditionalExpression((node) {
       if ((node.thenExpression is! ConditionalExpression) && (node.elseExpression is! ConditionalExpression)) return;
 
-      int count = _getNumberOfNestedConditionalExpressions(node);
+      int count = node.depth;
       if (count <= config.parameters.maxNestingLevel) return;
 
       reporter.reportErrorForNode(code, node);
     });
   }
+}
 
-  int _getNumberOfNestedConditionalExpressions(ConditionalExpression expression) {
+extension on ConditionalExpression {
+  int get depth {
     int count = 1;
-    if (expression.thenExpression is ConditionalExpression) {
-      count += _getNumberOfNestedConditionalExpressions(expression.thenExpression as ConditionalExpression);
-    }
-    if (expression.elseExpression is ConditionalExpression) {
-      count += _getNumberOfNestedConditionalExpressions(expression.elseExpression as ConditionalExpression);
+    var current = this;
+    while (current.thenExpression is ConditionalExpression || current.elseExpression is ConditionalExpression) {
+      current = current.thenExpression is ConditionalExpression
+          ? current.thenExpression as ConditionalExpression
+          : current.elseExpression as ConditionalExpression;
+      count++;
     }
     return count;
   }

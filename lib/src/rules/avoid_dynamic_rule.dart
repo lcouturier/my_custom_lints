@@ -16,7 +16,7 @@ class AvoidDynamicRule extends DartLintRule {
   const AvoidDynamicRule()
       : super(
           code: const LintCode(
-            name: ruleName,
+            name: 'avoid_dynamic',
             correctionMessage: 'Avoid using dynamic.',
             errorSeverity: ErrorSeverity.WARNING,
             problemMessage: 'Using dynamic is considered unsafe since it can easily result in runtime errors.',

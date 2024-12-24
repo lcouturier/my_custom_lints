@@ -3,6 +3,8 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 import 'package:yaml/yaml.dart';
 
 class AvoidLongParameterListRule extends BaseLintRule<AvoidLongParameterListParameters> {
@@ -28,16 +30,14 @@ class AvoidLongParameterListRule extends BaseLintRule<AvoidLongParameterListPara
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addMethodDeclaration((node) {
-      if (!config.enabled) return;
-
-      if (node.metadata.any((e) => e.name.name.startsWith('Deprecated'))) return;
-      if (node.parameters?.parameters.isEmpty ?? true) return;
+    context.registry.addMethodDeclarationWithParameters((node) {
       if (config.parameters.ignoredNames.isNotEmpty && config.parameters.ignoredNames.contains(node.name.lexeme)) {
         return;
       }
 
-      final count = node.parameters?.parameters.length ?? 0;
+      final count = config.parameters.ignoreOptional
+          ? node.parameters!.parameters.countBy((e) => !e.isOptional)
+          : node.parameters!.parameters.length;
       if (count > config.parameters.maxParameters) {
         reporter.reportErrorForNode(code, node);
       }
@@ -53,7 +53,7 @@ class AvoidLongParameterListParameters {
   factory AvoidLongParameterListParameters.fromJson(Map<String, Object?> map) {
     return AvoidLongParameterListParameters(
       maxParameters: map['max-parameters'] as int? ?? 7,
-      ignoreOptional: map['ignore-optional'] as bool? ?? false,
+      ignoreOptional: map['ignore-optional'] as bool? ?? true,
       ignoredNames: List<String>.from((map['ignored-names'] ?? []) as YamlList),
     );
   }

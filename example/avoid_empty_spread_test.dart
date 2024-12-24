@@ -13,3 +13,11 @@ void fn2(bool flag) {
     ...<String>['some', 'elements'],
   ];
 }
+
+void fn3(bool flag) {
+  final another = [
+    if (flag) ...{
+      'another',
+    },
+  ];
+}

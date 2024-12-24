@@ -5,6 +5,8 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
 import 'package:my_custom_lints/src/common/utils.dart';
 
+enum SpreadParentType { List, SetOrMap }
+
 extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
   void addGetterDeclaration(void Function(MethodDeclaration node) listener) {
     addMethodDeclaration((node) {
@@ -181,6 +183,36 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
           }
         }
       }
+    });
+  }
+
+  void addMethodDeclarationWithParameters(void Function(MethodDeclaration node) listener) {
+    addMethodDeclaration((node) {
+      if (node.metadata.any((e) => e.name.name.startsWith('Deprecated'))) return;
+      if (node.parameters?.parameters.isEmpty ?? true) return;
+    });
+  }
+
+  /// Finds all spread operators (e.g. `...`) that are not inside of a
+  /// collection literal (e.g. `[1, 2, ...rest]`) and have only one item
+  /// following the spread operator.
+  void addUselessSpreadOperator(
+      void Function(
+        TypedLiteral node,
+        NodeList<CollectionElement> elements,
+      ) listener) {
+    addTypedLiteral((node) {
+      if (node.beginToken.previous?.type != TokenType.PERIOD_PERIOD_PERIOD) return;
+
+      final elements = switch (node) {
+        ListLiteral() => node.elements,
+        SetOrMapLiteral() => node.elements,
+      };
+
+      bool hasFewItems = elements.length > 1;
+      if (hasFewItems) return;
+
+      listener(node, elements);
     });
   }
 }

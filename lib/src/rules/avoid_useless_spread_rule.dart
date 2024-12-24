@@ -3,13 +3,14 @@ import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class AvoidUselessSpreadRule extends DartLintRule {
   const AvoidUselessSpreadRule()
       : super(
           code: const LintCode(
             name: 'avoid_useless_spread',
-            problemMessage: 'Avoid useless spread.',
+            problemMessage: 'Useless spread operator.',
             errorSeverity: ErrorSeverity.WARNING,
           ),
         );
@@ -20,10 +21,7 @@ class AvoidUselessSpreadRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addListLiteral((node) {
-      if (node.beginToken.previous?.type != TokenType.PERIOD_PERIOD_PERIOD) return;
-      if (node.elements.length > 1) return;
-
+    context.registry.addUselessSpreadOperator((node, elements) {
       reporter.reportErrorForNode(code, node);
     });
   }
@@ -42,7 +40,7 @@ class _AvoidUselessSpreadFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addListLiteral((node) {
+    context.registry.addUselessSpreadOperator((node, elements) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
@@ -50,7 +48,7 @@ class _AvoidUselessSpreadFix extends DartFix {
         priority: 80,
       );
 
-      bool hasToDelete = node.elements.isEmpty && node.typeArguments != null;
+      bool hasToDelete = elements.isEmpty && node.typeArguments != null;
       if (hasToDelete) {
         changeBuilder.addDartFileEdit((builder) {
           builder.addDeletion(

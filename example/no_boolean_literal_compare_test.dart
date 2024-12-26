@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_nullable_boolean, avoid_banned_usage
 void fun() {
   bool isGoodResult = true;
-  if (isGoodResult) {
+  if (isGoodResult != true) {
     isGoodResult = false;
   }
 

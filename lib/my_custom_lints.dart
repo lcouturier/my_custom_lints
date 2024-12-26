@@ -75,6 +75,7 @@ import 'package:my_custom_lints/src/rules/prefer_any_or_every_rule.dart';
 import 'package:my_custom_lints/src/bloc/prefer_bloc_extensions_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_contains_method_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_enum_with_sentinel_value_rule.dart';
+import 'package:my_custom_lints/src/rules/prefer_immediate_return_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_first_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_isempty_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_iterable_last_rule.dart';
@@ -179,6 +180,7 @@ class _MyCustomLint extends PluginBase {
       const PreferNullAwareSpreadRule(),
       const AvoidReturningValueFromCubitMethodsRule(),
       const AvoidUselessColumnRule(),
+      const PreferImmediateReturnRule(),
       PreferNamedParametersRule.createRule(configs),
       AvoidLongRecordsRule.createRule(configs),
       PreferNamedBoolParametersRule.createRule(configs),

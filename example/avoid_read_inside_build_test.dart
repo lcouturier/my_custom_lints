@@ -1,4 +1,4 @@
-// ignore_for_file: add_cubit_suffix_rule, boolean_prefixes, prefer_named_bool_parameters, avoid_nullable_boolean
+// ignore_for_file: add_cubit_suffix_rule, boolean_prefixes, prefer_named_bool_parameters, avoid_nullable_boolean, unused_local_variable
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

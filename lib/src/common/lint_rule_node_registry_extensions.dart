@@ -215,4 +215,22 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       listener(node, elements);
     });
   }
+
+  void addIfStatementNullAssertion(
+      void Function(BinaryExpression condition, Identifier node, NodeList<Statement> statements) listener) {
+    addIfStatement((node) {
+      final condition = node.expression;
+
+      if (condition is! BinaryExpression) return;
+      if (condition.operator.type != TokenType.BANG_EQ) return;
+      if (condition.leftOperand is! Identifier) return;
+      if (condition.rightOperand is! NullLiteral) return;
+
+      final variable = condition.leftOperand as Identifier;
+      final thenBlock = node.thenStatement;
+      if (thenBlock is! Block) return;
+
+      listener(condition, variable, thenBlock.statements);
+    });
+  }
 }

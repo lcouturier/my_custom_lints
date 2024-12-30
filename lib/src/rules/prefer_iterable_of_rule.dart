@@ -26,122 +26,97 @@ class PreferIterableOfRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addInstanceCreationExpression((node) {
-      if (node.staticType.isIterableOrSubclass &&
-          node.constructorName.name?.name == 'from' &&
-          node.staticType.hasConstructor('of')) {
-        final arg = node.argumentList.arguments.first;
-        final argumentType = _getType(arg.staticType);
-        final castedType = _getType(node.staticType);
+      if (node.staticType == null) return;
+      if (!iterableChecker.isAssignableFromType(node.staticType!)) return;
+      if (!node.staticType.hasConstructor('of')) return;
+      if (node.constructorName.name?.name != 'from') return;
 
-        if (argumentType != null &&
-            !argumentType.isDartCoreObject &&
-            // ignore: deprecated_member_use
-            !argumentType.isDynamic &&
-            _isUnnecessaryTypeCheck(castedType, argumentType)) {
-          reporter.reportErrorForNode(code, node.constructorName);
-        }
-      }
+      final arg = node.argumentList.arguments.first;
+      final (foundArgumentType, argumentType) = typeOrNot(arg.staticType);
+      final (foundNodeType, nodeType) = typeOrNot(node.staticType);
+
+      bool hasToCheck = (foundArgumentType && !(argumentType!.isDartCoreObject) && argumentType is! DynamicType);
+      if (!hasToCheck) return;
+
+      if (!foundArgumentType || !foundNodeType) return;
+      if (argumentType != nodeType) return;
+      if (argumentType.isNullable && !nodeType.isNullable) return;
+      if (!argumentType.isFoundInObjectTypeHierarchy(nodeType!)) return;
+
+      reporter.reportErrorForNode(code, node.constructorName);
     });
   }
 
-  // final arg = node.argumentList.arguments.first;
+  (bool, DartType?) typeOrNot(DartType? type) {
+    return switch (type) {
+      _ when (type == null) => (false, null),
+      _ when (type is! InterfaceType) => (false, null),
+      _ when (type.typeArguments.firstOrNull == null) => (false, null),
+      _ => (true, type.typeArguments.firstOrNull),
+    };
+  }
 
-  // final argumentType = _getType(arg.staticType);
-  // final castedType = _getType(node.staticType);
-  // if (argumentType != null &&
-  //     !argumentType.isDartCoreObject &&
-  //     // ignore: deprecated_member_use
-  //     !argumentType.isDynamic &&
-  //     _isUnnecessaryTypeCheck(castedType, argumentType)) {
-  //   reporter.reportErrorForNode(code, node.constructorName);
+  // bool _isUnnecessaryTypeCheck(
+  //   DartType? argType,
+  //   DartType? castedType,
+  // ) {
+  //   if (argType == null || castedType == null) {
+  //     return false;
+  //   }
+
+  //   if (argType == castedType) {
+  //     return true;
+  //   }
+
+  //   if (_checkNullableCompatibility(argType, castedType)) {
+  //     return false;
+  //   }
+
+  //   final objectCastedType = _foundCastedTypeInObjectTypeHierarchy(argType, castedType);
+  //   if (objectCastedType == null) {
+  //     return true;
+  //   }
+
+  //   if (!_checkGenerics(objectCastedType, castedType)) {
+  //     return false;
+  //   }
+
+  //   return false;
   // }
 
-  DartType? _getType(DartType? type) {
-    if (type == null || type is! InterfaceType) {
-      return null;
-    }
+  // bool _checkNullableCompatibility(DartType objectType, DartType castedType) {
+  //   return objectType.isNullable && !castedType.isNullable;
+  // }
 
-    final typeArgument = type.typeArguments.firstOrNull;
-    if (typeArgument == null) {
-      return null;
-    }
+  // bool _checkGenerics(DartType objectType, DartType castedType) {
+  //   if (objectType is! ParameterizedType || castedType is! ParameterizedType) {
+  //     return false;
+  //   }
 
-    return typeArgument;
-  }
+  //   final length = objectType.typeArguments.length;
+  //   if (length != castedType.typeArguments.length) {
+  //     return false;
+  //   }
 
-  bool _isUnnecessaryTypeCheck(
-    DartType? objectType,
-    DartType? castedType,
-  ) {
-    if (objectType == null || castedType == null) {
-      return false;
-    }
+  //   for (var argumentIndex = 0; argumentIndex < length; argumentIndex++) {
+  //     if (!_isUnnecessaryTypeCheck(
+  //       objectType.typeArguments[argumentIndex],
+  //       castedType.typeArguments[argumentIndex],
+  //     )) {
+  //       return false;
+  //     }
+  //   }
 
-    if (objectType == castedType) {
-      return true;
-    }
+  //   return true;
+  // }
+}
 
-    if (_checkNullableCompatibility(objectType, castedType)) {
-      return false;
-    }
-
-    final objectCastedType = _foundCastedTypeInObjectTypeHierarchy(objectType, castedType);
-    if (objectCastedType == null) {
-      return true;
-    }
-
-    if (!_checkGenerics(objectCastedType, castedType)) {
-      return false;
-    }
-
-    return false;
-  }
-
-  bool _checkNullableCompatibility(DartType objectType, DartType castedType) {
-    final isObjectTypeNullable = isNullableType(objectType);
-    final isCastedTypeNullable = isNullableType(castedType);
-
-    // Only one case `Type? is Type` always valid assertion case.
-    return isObjectTypeNullable && !isCastedTypeNullable;
-  }
-
-  DartType? _foundCastedTypeInObjectTypeHierarchy(
-    DartType objectType,
-    DartType castedType,
-  ) {
-    // ignore: deprecated_member_use
-    if (objectType.element2 == castedType.element2) {
-      return objectType;
-    }
-
-    if (objectType is InterfaceType) {
-      return objectType.allSupertypes
-          // ignore: deprecated_member_use
-          .firstWhereOrNull((value) => value.element2 == castedType.element2);
-    }
-
-    return null;
-  }
-
-  bool _checkGenerics(DartType objectType, DartType castedType) {
-    if (objectType is! ParameterizedType || castedType is! ParameterizedType) {
-      return false;
-    }
-
-    final length = objectType.typeArguments.length;
-    if (length != castedType.typeArguments.length) {
-      return false;
-    }
-
-    for (var argumentIndex = 0; argumentIndex < length; argumentIndex++) {
-      if (!_isUnnecessaryTypeCheck(
-        objectType.typeArguments[argumentIndex],
-        castedType.typeArguments[argumentIndex],
-      )) {
-        return false;
-      }
-    }
-
-    return true;
+extension on DartType {
+  bool isFoundInObjectTypeHierarchy(DartType type) {
+    return switch ((element == type.element, this is InterfaceType)) {
+      (true, _) => true,
+      (false, true) => (this as InterfaceType).allSupertypes.any((value) => value.element == type.element),
+      _ => false,
+    };
   }
 }

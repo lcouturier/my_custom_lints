@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -21,8 +22,14 @@ class PreferThrowExceptionOrErrorRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addThrowExpression((node) {
+      if (node.expression is Literal) {
+        reporter.reportErrorForNode(code, node);
+        return;
+      }
+
       final thrownType = node.expression.staticType;
       if (thrownType == null) return;
+
       final isException = thrownType.isSubtypeOfType('Exception');
       final isError = thrownType.isSubtypeOfType('Error');
 

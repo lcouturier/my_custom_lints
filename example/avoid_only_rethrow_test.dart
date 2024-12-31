@@ -36,6 +36,14 @@ void throwLitteral() {
   }
 }
 
+void throwException() {
+  try {
+    print('valid');
+  } on Object catch (error) {
+    throw Exception('error'); // LINT
+  }
+}
+
 class MyError implements Exception {
   MyError(this.message);
 

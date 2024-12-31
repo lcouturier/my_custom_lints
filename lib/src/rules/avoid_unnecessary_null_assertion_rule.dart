@@ -39,7 +39,7 @@ class _AvoidUnnecessaryNullAssertionFix extends DartFix {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'If...case notation',
+        message: 'if...case notation',
         priority: 80,
       );
 

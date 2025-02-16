@@ -4,7 +4,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 
 /// Lint to add missing fields to equatable props
 class AlwaysCallSuperPropsRule extends DartLintRule {
@@ -54,8 +54,9 @@ class CallSuperInOverridedEquatableProps extends DartFix {
 
         // ignore: cascade_invocations
         changeBuilder.addDartFileEdit((builder) {
-          builder.addSimpleInsertion(node.beginToken.offset + 1, '...super.props,');
-          builder.format(range.node(node));
+          builder
+            ..addSimpleInsertion(node.beginToken.offset + 1, '...super.props,')
+            ..format(range.node(node));
         });
       },
     );

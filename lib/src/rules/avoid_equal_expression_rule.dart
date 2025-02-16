@@ -21,22 +21,22 @@ class AvoidEqualExpressionsRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addIfStatement((node) {
-      if (node.expression is! BinaryExpression) return;
+    context
+      ..registry.addIfStatement((node) => _hasToReportError(node, reporter))
+      ..registry.addVariableDeclaration((node) => _hasToReportError(node, reporter));
+  }
 
-      final binary = node.expression as BinaryExpression;
-      if (binary.leftOperand.toString() != binary.rightOperand.toString()) return;
+  void _hasToReportError(AstNode node, ErrorReporter reporter) {
+    final binary = switch (node) {
+      IfStatement() when node.expression is BinaryExpression => node.expression as BinaryExpression,
+      VariableDeclaration() when node.initializer is BinaryExpression => node.initializer! as BinaryExpression,
+      _ => null,
+    };
 
-      reporter.reportErrorForNode(code, node);
-    });
-
-    context.registry.addVariableDeclaration((node) {
-      if (node.initializer is! BinaryExpression) return;
-
-      final binary = node.initializer! as BinaryExpression;
-      if (binary.leftOperand.toString() != binary.rightOperand.toString()) return;
-
-      reporter.reportErrorForNode(code, node);
-    });
+    if (binary != null) {
+      if (binary.leftOperand.toString() == binary.rightOperand.toString()) {
+        reporter.reportErrorForNode(code, node);
+      }
+    }
   }
 }

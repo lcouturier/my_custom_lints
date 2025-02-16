@@ -4,7 +4,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 import 'package:yaml/yaml.dart';
 
 class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {

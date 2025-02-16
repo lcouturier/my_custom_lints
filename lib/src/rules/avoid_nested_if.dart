@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
 
@@ -10,6 +13,7 @@ class AvoidNestedIfRule extends BaseLintRule<AvoidNestedIfOptions> {
   AvoidNestedIfRule._(super.rule);
 
   factory AvoidNestedIfRule.createRule(CustomLintConfigs configs) {
+    log(("Create rule"));
     final rule = RuleConfig(
       configs: configs,
       name: lintName,
@@ -44,7 +48,7 @@ class AvoidNestedIfOptions {
 
   factory AvoidNestedIfOptions.fromJson(Map<String, Object?> map) {
     return AvoidNestedIfOptions(
-      numberOfLevel: map['number_of_level'] as int? ?? 2,
+      numberOfLevel: map['number_of_level'] as int? ?? 3,
     );
   }
 }

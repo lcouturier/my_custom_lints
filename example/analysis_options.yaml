@@ -135,7 +135,6 @@ linter:
     unawaited_futures: true
     cast_nullable_to_non_nullable: true
     use_super_parameters: true
-
     avoid_function_literals_in_foreach_calls: false
     constant_identifier_names: false
     overridden_fields: false

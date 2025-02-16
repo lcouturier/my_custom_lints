@@ -3,7 +3,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 
 enum SpreadParentType { List, SetOrMap }
 

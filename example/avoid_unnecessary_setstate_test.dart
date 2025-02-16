@@ -43,6 +43,14 @@ class _MyWidgetState extends State<MyWidget> {
     });
   }
 
+  Future<void> onPress() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (!mounted) return;
+    setState(() {
+      myString = 'data';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // LINT: Avoid calling unnecessary 'setState'. Try changing the state directly.
@@ -68,7 +76,9 @@ class _MyWidgetState extends State<MyWidget> {
           }
         });
       },
-      onLongPress: () {
+      onLongPress: () async {
+        await Future.delayed(const Duration(seconds: 1));
+        if (!mounted) return;
         setState(() {
           myString = 'data';
         });

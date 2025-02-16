@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 
 mixin CopyWithMixin {
   String generateCopyWithMethod(String className, List<FieldElement> fields, {bool isAllNamed = true}) {

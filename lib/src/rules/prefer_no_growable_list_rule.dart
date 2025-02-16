@@ -7,7 +7,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 
 /// See: https://medium.com/flutter-senior/always-use-non-growable-arrays-if-possible-4864a022a54a
 class PreferNoGrowableListRule extends DartLintRule {

@@ -8,7 +8,7 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/copy_with_utils.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 
 class AvoidIncompleteCopyWithRule extends DartLintRule {
   const AvoidIncompleteCopyWithRule()
@@ -22,56 +22,32 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
         );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
-    context.registry.addMethodDeclaration((node) {
-      if (node.name.lexeme != 'copyWith') return;
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
+    context.registry.addClassDeclaration((node) {
+      final (found, copyWithMethod) =
+          node.members.whereType<MethodDeclaration>().firstWhereOrNot((method) => method.name.lexeme == 'copyWith');
+      if (!found) return;
 
-      final parent = node.parent;
-      if (parent is! ClassDeclaration) return;
-
-      final copyWithMethod =
-          parent.members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith');
-      if (copyWithMethod == null) return;
-
-      if (copyWithMethod.body.hasReturnThis) {
-        reporter.reportErrorForNode(
-            code.copyWith(
-              problemMessage: 'return this in copyWith is an anti-pattern.',
-              errorSeverity: ErrorSeverity.ERROR,
-            ),
-            node);
-        return;
-      }
-
-      final fields = parent.members
+      final fields = node.members
           .whereType<FieldDeclaration>()
           .map((e) => e.fields.variables.map((variable) => variable.name.lexeme).toList())
           .expand((f) => f)
           .toSet();
       if (fields.isEmpty) return;
 
-      final parameters = copyWithMethod.parameters?.parameters.map((e) => e.name?.lexeme ?? '').toSet();
-      if (parameters?.isEmpty ?? true) return;
+      final body = copyWithMethod!.body.expression;
+      if (body == null) return;
 
-      final missingFields = fields.difference(parameters!);
-      if (missingFields.isEmpty) return;
+      if (body is! InstanceCreationExpression) return;
+      if (body.constructorName.type.name2.lexeme != node.declaredElement?.name) return;
+      if (body.argumentList.arguments.length == fields.length) return;
 
-      reporter.reportErrorForNode(
-        code,
-        node,
-        [missingFields.join(', ')],
-      );
+      reporter.reportErrorForNode(code, copyWithMethod);
     });
   }
-
-  @override
-  List<Fix> getFixes() => [_AvoidIncompleteCopyWithFix()];
 }
 
+// ignore: unused_element
 class _AvoidIncompleteCopyWithFix extends DartFix with CopyWithMixin {
   @override
   void run(

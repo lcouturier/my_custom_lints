@@ -1,12 +1,14 @@
 // ignore_for_file: unused_import
 
+import 'dart:developer';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 import 'package:yaml/yaml.dart';
 
 class AvoidSingleChildColumnOrRowRule extends BaseLintRule<AvoidSingleChildColumnOrRowParameters> {
@@ -40,6 +42,9 @@ class AvoidSingleChildColumnOrRowRule extends BaseLintRule<AvoidSingleChildColum
 
       if (p!.expression is! ListLiteral) return;
       if ((p.expression as ListLiteral).elements.length != 1) return;
+
+      final element = (p.expression as ListLiteral).elements.first;
+      if (element is SpreadElement) return;
 
       reporter.reportErrorForNode(code, node.constructorName);
     });

@@ -2,7 +2,7 @@
 
 void fnBad() {
   final Set<String>? localSet = <String>{};
-  final String? test = null;
+  const String? test = null;
 
   final collection = [
     if (localSet != null)

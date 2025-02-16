@@ -2,6 +2,7 @@
 
 void unconditional() {
   final list = <int>[];
+
   for (final item in list) {
     continue; // LINT: Avoid unconditional break statements. This loop is always interrupted after one iteration. Try removing this statement or call it conditionally.
   }

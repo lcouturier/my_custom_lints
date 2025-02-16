@@ -5,6 +5,8 @@ library my_custom_lints;
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/assists/check_state_getter_assist.dart';
 import 'package:my_custom_lints/src/assists/copy_with_nullable_assist.dart';
+import 'package:my_custom_lints/src/assists/enum_getter_assist.dart';
+import 'package:my_custom_lints/src/assists/enum_pattern_matching_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_map_method_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_when_method_assist.dart';
 import 'package:my_custom_lints/src/bloc/avoid_returning_value_from_cubit_methods_rule.dart';
@@ -16,6 +18,7 @@ import 'package:my_custom_lints/src/rules/avoid_bang_operator_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_banned_type_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_banned_usage_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_cached_network_image_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_continue_usage_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_dynamic_rule.dart';
 import 'package:my_custom_lints/src/bloc/avoid_empty_build_when_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_empty_set_state_rule.dart';
@@ -39,6 +42,7 @@ import 'package:my_custom_lints/src/rules/avoid_nested_record_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nested_switch_expressions_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_boolean_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
+import 'package:my_custom_lints/src/rules/avoid_numeric_literals_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_only_rethrow_rule.dart';
 import 'package:my_custom_lints/src/bloc/avoid_passing_bloc_to_bloc_rule.dart';
 import 'package:my_custom_lints/src/bloc/avoid_passing_build_context_to_blocs_rule.dart';
@@ -57,6 +61,7 @@ import 'package:my_custom_lints/src/rules/avoid_unconditional_break_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unnecessary_null_assertion_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unnecessary_setstate_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_unused_parameters.dart';
+import 'package:my_custom_lints/src/rules/avoid_useless_async_method_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_useless_column_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_useless_spread_rule.dart';
 import 'package:my_custom_lints/src/rules/avoid_using_buildcontext_after_await_rule.dart';
@@ -98,7 +103,9 @@ import 'package:my_custom_lints/src/rules/prefer_underscore_for_unused_callback_
 import 'package:my_custom_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_custom_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_custom_lints/src/bloc/remove_empty_listener_rule.dart';
+import 'package:my_custom_lints/src/rules/remove_nullable_attribute_rule.dart';
 import 'package:my_custom_lints/src/rules/use_join_string_list_rule.dart';
+import 'package:my_custom_lints/src/rules/use_setstate_synchronously_rule.dart';
 import 'package:my_custom_lints/src/rules/use_ternary_instead_of_ifelse_rule.dart';
 
 PluginBase createPlugin() => _MyCustomLint();
@@ -108,103 +115,110 @@ class _MyCustomLint extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) {
     return <LintRule>[
-      // AvoidLongParameterListRule.createRule(configs),
-      // const AvoidDynamicRule(),
-      // const AvoidBangOperatorRule(),
-      // const AvoidWidgetFunctionRule(),
-      // const PreferReturningConditionRule(),
-      // const NoEqualThenElseRule(),
-      // const PreferIterableFirst(),
-      // const PreferIterableLast(),
-      // const NoBooleanLiteralCompareRule(),
-      // const NoLengthInIndexExpressionRule(),
-      // UnusedParameterRule.createRule(configs),
-      // const MissingFieldInEquatablePropsRule(),
-      // const AlwaysCallSuperPropsRule(),
-      // const AddCubitSuffixRule(),
-      // const FirstInitStateRule(),
-      // const PreferOfOverCurrentRule(),
-      // const PreferNoGrowableListRule(),
-      // const PreferUnderscoreForUnusedCallbackParameters(),
-      // const RemoveEmptyListenerRule(),
-      // const AvoidIncompleteCopyWithRule(),
-      // const AvoidNullableListReturnTypeRule(),
-      // const AvoidLocalFunctionRule(),
-      // PreferVoidCallbackRule.createRule(configs),
-      // BooleanPrefixesRule.createRule(configs),
-      // PreferIterableIsEmptyRule.createRule(configs),
-      // CyclomaticComplexityRule.createRule(configs),
-      // AvoidNestedIfRule.createRule(configs),
-      // const AvoidPlusRule(),
-      // const AvoidUselessSpreadRule(),
-      // const AvoidInvertedBooleanChecksRule(),
-      // const AvoidMapKeysContainsRule(),
-      // const UseTernaryInsteadOfIfElse(),
-      // const AvoidExtensionOnEnumRule(),
-      // AvoidNullableBooleanRule.createRule(configs),
-      // const AvoidEqualExpressionsRule(),
-      // const AvoidSelfAssignmentRule(),
-      // const AvoidGetterPrefixRule(),
-      // const PreferEnumWithSentinelValueRule(),
-      // AvoidSingleChildColumnOrRowRule.createRule(configs),
-      // const AvoidPositionalRecordFieldAccessRule(),
-      // const AvoidAssignmentsAsConditionsRule(),
-      // const AvoidShrinkWrapInListRule(),
-      // const AvoidOnlyRethrowRule(),
-      // const AvoidInvalidPrefixRule(),
-      // const EnumConstantsOrderingRule(),
-      // const AvoidEmptySetStateRule(),
-      // const AvoidUnnecessarySetStateRule(),
-      // const AvoidMultiAssignmentRule(),
-      // const AvoidNestedRecordRule(),
-      // const AvoidMixingNamedAndPositionalFieldsRule(),
-      // const PreferContainsMethodRule(),
-      // const PreferSafeFirstWhereRule(),
-      // const UseJoinOnStringsRule(),
-      // const PreferMultiBlocProviderRule(),
-      // const AvoidReadInsideBuildRule(),
-      // const AvoidWatchOutsideBuildRule(),
-      // const BinaryExpressionOperandOrderRule(),
-      // const AvoidEmptyBuildWhenRule(),
-      // const AvoidMutatingParametersRule(),
-      // const DoNotUseDatetimeNowRule(),
-      // AvoidNestedConditionalExpressionsRule.createRule(configs),
-      // const AvoidNestedSwitchExpressionRule(),
-      // const CheckIsNotClosedAfterAsyncGapRule(),
-      // const PreferNullAwareNotationRule(),
+      AvoidLongParameterListRule.createRule(configs),
+      const AvoidDynamicRule(),
+      const AvoidBangOperatorRule(),
+      const AvoidWidgetFunctionRule(),
+      const PreferReturningConditionRule(),
+      const NoEqualThenElseRule(),
+      const PreferIterableFirst(),
+      const PreferIterableLast(),
+      const NoBooleanLiteralCompareRule(),
+      const NoLengthInIndexExpressionRule(),
+      UnusedParameterRule.createRule(configs),
+      const MissingFieldInEquatablePropsRule(),
+      const AlwaysCallSuperPropsRule(),
+      const AddCubitSuffixRule(),
+      const FirstInitStateRule(),
+      const PreferOfOverCurrentRule(),
+      const PreferNoGrowableListRule(),
+      const PreferUnderscoreForUnusedCallbackParameters(),
+      const RemoveEmptyListenerRule(),
+      const AvoidIncompleteCopyWithRule(),
+      const AvoidNullableListReturnTypeRule(),
+      const AvoidLocalFunctionRule(),
+      PreferVoidCallbackRule.createRule(configs),
+      BooleanPrefixesRule.createRule(configs),
+      PreferIterableIsEmptyRule.createRule(configs),
+      CyclomaticComplexityRule.createRule(configs),
+      AvoidNestedIfRule.createRule(configs),
+      const AvoidPlusRule(),
+      const AvoidUselessSpreadRule(),
+      const AvoidInvertedBooleanChecksRule(),
+      const AvoidMapKeysContainsRule(),
+      const UseTernaryInsteadOfIfElse(),
+      const AvoidExtensionOnEnumRule(),
+      AvoidNullableBooleanRule.createRule(configs),
+      const AvoidEqualExpressionsRule(),
+      const AvoidSelfAssignmentRule(),
+      const AvoidGetterPrefixRule(),
+      const PreferEnumWithSentinelValueRule(),
+      AvoidSingleChildColumnOrRowRule.createRule(configs),
+      const AvoidPositionalRecordFieldAccessRule(),
+      const AvoidAssignmentsAsConditionsRule(),
+      const AvoidShrinkWrapInListRule(),
+      const AvoidOnlyRethrowRule(),
+      const AvoidInvalidPrefixRule(),
+      const EnumConstantsOrderingRule(),
+      const AvoidEmptySetStateRule(),
+      const AvoidUnnecessarySetStateRule(),
+      const AvoidMultiAssignmentRule(),
+      const AvoidNestedRecordRule(),
+      const AvoidMixingNamedAndPositionalFieldsRule(),
+      const PreferContainsMethodRule(),
+      const PreferSafeFirstWhereRule(),
+      const UseJoinOnStringsRule(),
+      const PreferMultiBlocProviderRule(),
+      const AvoidReadInsideBuildRule(),
+      const AvoidWatchOutsideBuildRule(),
+      const BinaryExpressionOperandOrderRule(),
+      const AvoidEmptyBuildWhenRule(),
+      const AvoidMutatingParametersRule(),
+      const DoNotUseDatetimeNowRule(),
+      AvoidNestedConditionalExpressionsRule.createRule(configs),
+      const AvoidNestedSwitchExpressionRule(),
+      const CheckIsNotClosedAfterAsyncGapRule(),
+      const PreferNullAwareNotationRule(),
       const PreferThrowExceptionOrErrorRule(),
-      // const AvoidThrowInCatchBlockRule(),
-      // const PreferBlocExtensionsRule(),
-      // const AvoidPassingbuildContextToBlocsRule(),
-      // const AvoidPassingblocToBlocRule(),
-      // const AvoidReturnPaddingRule(),
-      // const AvoidUsingBuildContextAwaitRule(),
-      // const AvoidShadowedExtensionMethodsRule(),
-      // const PreferIterableOfRule(),
-      // const PreferNullAwareSpreadRule(),
-      // const AvoidReturningValueFromCubitMethodsRule(),
-      // const AvoidUselessColumnRule(),
-      // const PreferImmediateReturnRule(),
-      // const AvoidUnconditionalBreakRule(),
-      // const AvoidUnnecessaryNullAssertionRule(),
-      // const PreferThrowingExceptionFirstRule(),
-      // PreferNamedParametersRule.createRule(configs),
-      // AvoidLongRecordsRule.createRule(configs),
-      // PreferNamedBoolParametersRule.createRule(configs),
-      // PreferAnyOrEveryRule.createRule(configs),
-      // AvoidBannedTypeRule.createRule(configs),
-      // AvoidBannedUsageRule.createRule(configs),
-      // PreferCorrectCallbackFieldNBameRule.createRule(configs)
+      const AvoidNumericLiteralsRule(),
+      const AvoidThrowInCatchBlockRule(),
+      const PreferBlocExtensionsRule(),
+      const AvoidPassingbuildContextToBlocsRule(),
+      const AvoidPassingblocToBlocRule(),
+      const AvoidReturnPaddingRule(),
+      const AvoidUsingBuildContextAwaitRule(),
+      const AvoidShadowedExtensionMethodsRule(),
+      const PreferIterableOfRule(),
+      const PreferNullAwareSpreadRule(),
+      RemoveNullableAttributeRule(),
+      const AvoidUselessAsyncMethodRule(),
+      const AvoidContinueUsage(),
+      const AvoidReturningValueFromCubitMethodsRule(),
+      const AvoidUselessColumnRule(),
+      const PreferImmediateReturnRule(),
+      const AvoidUnconditionalBreakRule(),
+      const AvoidUnnecessaryNullAssertionRule(),
+      const PreferThrowingExceptionFirstRule(),
+      PreferNamedParametersRule.createRule(configs),
+      AvoidLongRecordsRule.createRule(configs),
+      PreferNamedBoolParametersRule.createRule(configs),
+      PreferAnyOrEveryRule.createRule(configs),
+      AvoidBannedTypeRule.createRule(configs),
+      AvoidBannedUsageRule.createRule(configs),
+      PreferCorrectCallbackFieldNBameRule.createRule(configs),
+      const UseSetStateSynchronouslyRule()
     ];
   }
 
   @override
   List<Assist> getAssists() {
     return <Assist>[
-      // CopyWithNullableAssist(),
-      // MaybeWhenMethodAssist(),
-      // MaybeMapMethodAssist(),
-      // CheckStateGetterAssist(),
+      EnumPredicateGettersAssist(),
+      EnumPatternMatchingAssist(),
+      CopyWithNullableAssist(),
+      MaybeWhenMethodAssist(),
+      MaybeMapMethodAssist(),
+      CheckStateGetterAssist(),
     ];
   }
 }

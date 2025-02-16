@@ -9,12 +9,12 @@ class MyWidget extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         // LINT
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8.0),
-          ),
-        ],
+        children: [..._items()],
       ),
     );
+  }
+
+  List<Widget> _items() {
+    return [Container()];
   }
 }

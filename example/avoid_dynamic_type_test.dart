@@ -24,14 +24,14 @@ class MyClass {
 
 class name extends StatelessWidget {
   // addGenericFunctionType
-  final Function(String) onRecentPlaceSelected;
-  final Function(String) onFavoritePlaceSelected;
+  final Function(String) recentPlaceSelected;
+  final Function(String) favoritePlaceSelected;
   final dynamic Function(String) onAddFavoritePlaceSelected;
 
   const name(
       {super.key,
-      required this.onRecentPlaceSelected,
-      required this.onFavoritePlaceSelected,
+      required this.recentPlaceSelected,
+      required this.favoritePlaceSelected,
       required this.onAddFavoritePlaceSelected,
       required this.value});
 

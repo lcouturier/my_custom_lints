@@ -7,7 +7,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 
 class PreferIterableIsEmptyRule extends BaseLintRule<PreferIterableIsAnyParameters> {
   static const lintName = 'prefer_iterable_isempty';

@@ -26,5 +26,5 @@ void main() {
   str.substring(5); // LINT: Strings are immutable and the return value should be handled
 
   final date = new DateTime(2018, 1, 13);
-  date.add(Duration(days: 1, hours: 23)); // LINT: Return value ignored, DateTime is immutable
+  date.add(const Duration(days: 1, hours: 23)); // LINT: Return value ignored, DateTime is immutable
 }

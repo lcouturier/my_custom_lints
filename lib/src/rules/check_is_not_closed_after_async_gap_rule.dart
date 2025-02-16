@@ -5,7 +5,8 @@ import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
+import 'package:my_custom_lints/src/common/extensions.dart';
 
 class CheckIsNotClosedAfterAsyncGapRule extends DartLintRule {
   const CheckIsNotClosedAfterAsyncGapRule()
@@ -13,7 +14,6 @@ class CheckIsNotClosedAfterAsyncGapRule extends DartLintRule {
           code: const LintCode(
             name: 'check_is_not_closed_after_async_gap',
             problemMessage: "Avoid emitting an event after an await point without checking 'isClosed'.",
-            errorSeverity: ErrorSeverity.WARNING,
           ),
         );
 
@@ -28,7 +28,7 @@ class CheckIsNotClosedAfterAsyncGapRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addFunctionBody((node) {
+    context.registry.addBlockFunctionBody((node) {
       if (node.parent is! MethodDeclaration) return;
       final classDeclaration = node.parent!.thisOrAncestorOfType<ClassDeclaration>();
       if (classDeclaration == null) return;
@@ -37,13 +37,11 @@ class CheckIsNotClosedAfterAsyncGapRule extends DartLintRule {
       final isBloc = _types.any((element) => element(declaredElement));
       if (!isBloc) return;
 
-      if (node is! BlockFunctionBody) return;
-
       final statements = node.block.statements.whereType<ExpressionStatement>();
 
-      for (final statement in statements.indexed) {
-        if (statement.$2.expression is AwaitExpression) {
-          final next = statements.elementAtOrNull(statement.$1 + 1);
+      for (final statement in statements.withIndex) {
+        if (statement.item.expression is AwaitExpression) {
+          final next = statements.elementAtOrNull(statement.index + 1);
           if (next?.expression is MethodInvocation) {
             final methodInvocation = next!.expression as MethodInvocation;
             if (methodInvocation.methodName.name == 'emit') {
@@ -68,25 +66,22 @@ class _CheckIsNotClosedAfterAsyncGapFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addFunctionBody((node) {
-      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
+    final expression = analysisError.data! as ExpressionStatement;
 
-      final expression = analysisError.data! as ExpressionStatement;
+    final changeBuilder = reporter.createChangeBuilder(
+      message: 'Add isClosed check',
+      priority: 80,
+    );
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Add isClosed check',
-        priority: 80,
-      );
-
-      changeBuilder.addDartFileEdit((builder) {
-        builder.addReplacement(range.node(expression), (builder) {
-          builder
-            ..write('if (!isClosed) {')
-            ..write('${expression.expression.toSource()};')
-            ..write('}');
-        });
-        builder.format(range.node(expression));
+    changeBuilder.addDartFileEdit((builder) {
+      builder.addReplacement(range.node(expression), (builder) {
+        builder
+          ..write('if (!isClosed) {')
+          ..write('${expression.expression.toSource()};')
+          ..write('}');
       });
+      builder.format(range.node(expression));
     });
+    // });
   }
 }

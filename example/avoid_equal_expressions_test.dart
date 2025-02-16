@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, prefer_const_declarations
 
 void fn() {
   final num = 1;

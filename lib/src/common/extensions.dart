@@ -8,7 +8,7 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:my_custom_lints/src/common/utils.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 
 extension DartTypeExtensions on DartType {
   bool get isNullableList {
@@ -133,6 +133,7 @@ extension ClassDeclarationExtensions on ClassDeclaration {
 extension StringExtensions on String {
   bool get isCamelCase => RegExp(r'(?<=[a-z])[A-Z]').hasMatch(this);
   bool get isPascalCase => RegExp(r'(?<=[A-Z])[a-z]').hasMatch(this);
+  String get firstUpper => substring(0, 1).toUpperCase() + substring(1);
 
   String removeAllSpaces() => replaceAll(' ', '');
   bool get containsOnlyUnderscores => switch (length) {
@@ -196,6 +197,13 @@ extension IterableExtensions<E> on Iterable<E> {
 
   E? get next => skip(1).firstOrNull;
   E? get previous => skip(-1).firstOrNull;
+
+  Iterable<({int index, E item})> get withIndex sync* {
+    var index = 0;
+    for (final element in this) {
+      yield (index: index++, item: element);
+    }
+  }
 }
 
 extension ListExtensions<E> on List<E> {

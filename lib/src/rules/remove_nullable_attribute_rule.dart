@@ -96,7 +96,6 @@ class _Verifier extends RecursiveAstVisitor<void> {
       return args.any((arg) => arg is NullLiteral);
     });
 
-    log(hasNullArgument.toString());
     if (hasNullArgument) return;
 
     reporter.reportErrorForNode(

@@ -19,7 +19,8 @@ class PreferIterableIsEmptyRule extends BaseLintRule<PreferIterableIsAnyParamete
       configs: configs,
       name: lintName,
       paramsParser: PreferIterableIsAnyParameters.fromJson,
-      problemMessage: (value) => 'Prefer using `.isEmpty` over `.length == 0`.',
+      problemMessage: (value) =>
+          'Prefer using `.isEmpty` over `.length == 0 or Prefer using `.isNotEmpty` over `.length != 0`.',
     );
 
     return PreferIterableIsEmptyRule._(rule);
@@ -55,9 +56,9 @@ class PreferIterableIsEmptyRule extends BaseLintRule<PreferIterableIsAnyParamete
 
       if ((node.rightOperand as IntegerLiteral).value != 0) return;
 
-      reporter.reportErrorForNode(
-        code,
+      reporter.atNode(
         node.parent!,
+        code,
       );
     });
   }
@@ -80,8 +81,7 @@ class _ReplaceWithIterablIsEmpty extends DartFix {
 
       final value = (node.rightOperand as IntegerLiteral).value.toString();
 
-      final useDirect = (node.operator.type == TokenType.EQ_EQ && value == '0') ||
-          (node.operator.type == TokenType.BANG_EQ && value == '0');
+      final useDirect = (node.operator.type == TokenType.EQ_EQ && value == '0');
 
       final changeBuilder = reporter.createChangeBuilder(
         message: useDirect ? 'Just use isEmpty' : 'Just use isNotEmpty',

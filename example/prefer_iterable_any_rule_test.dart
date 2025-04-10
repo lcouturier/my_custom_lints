@@ -14,7 +14,9 @@ void fn(Iterable<int> numbers) {
   numbers.any((n) => n > 0);
 
   final value = "";
-  final emptyStz = value.length != 0;
+  final emptyStz1 = value.length == 0;
+  final emptyStz2 = value.length != 0;
+  final emptyStz3 = value.length > 0;
 
   final result = numbers.where((n) => n == 0);
   print(result);

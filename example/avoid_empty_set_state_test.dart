@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_underscore_for_unused_callback_parameters
+// ignore_for_file: prefer_underscore_for_unused_callback_parameters, avoid_unconditional_break
 import 'package:flutter/widgets.dart';
 
 class FooState extends State<StatefulWidget> {

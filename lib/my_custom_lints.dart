@@ -10,6 +10,7 @@ import 'package:my_custom_lints/src/assists/enum_pattern_matching_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_map_method_assist.dart';
 import 'package:my_custom_lints/src/assists/may_be_when_method_assist.dart';
 import 'package:my_custom_lints/src/bloc/avoid_returning_value_from_cubit_methods_rule.dart';
+import 'package:my_custom_lints/src/bloc/check_is_not_closed_after_async_gap_rule.dart';
 import 'package:my_custom_lints/src/common/annotations.dart';
 import 'package:my_custom_lints/src/bloc/add_cubit_suffix_rule.dart';
 import 'package:my_custom_lints/src/rules/always_call_super_props_rule.dart';
@@ -69,7 +70,6 @@ import 'package:my_custom_lints/src/rules/avoid_watch_outside_build_rule.dart';
 import 'package:my_custom_lints/src/bloc/avoid_widget_function_rule.dart';
 import 'package:my_custom_lints/src/rules/binary_expression_operand_order_rule.dart';
 import 'package:my_custom_lints/src/rules/boolean_prefix_rule.dart';
-import 'package:my_custom_lints/src/rules/check_is_not_closed_after_async_gap_rule.dart';
 import 'package:my_custom_lints/src/rules/cyclomatic_complexity_rule.dart';
 import 'package:my_custom_lints/src/rules/do_not_use_datetime_now_rule.dart';
 import 'package:my_custom_lints/src/rules/enum_constants_ordering_rule.dart';
@@ -104,6 +104,7 @@ import 'package:my_custom_lints/src/rules/prefer_usage_of_value_getter_rule.dart
 import 'package:my_custom_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_custom_lints/src/bloc/remove_empty_listener_rule.dart';
 import 'package:my_custom_lints/src/rules/remove_nullable_attribute_rule.dart';
+import 'package:my_custom_lints/src/rules/unnecessary_to_list_rule.dart';
 import 'package:my_custom_lints/src/rules/use_join_string_list_rule.dart';
 import 'package:my_custom_lints/src/rules/use_setstate_synchronously_rule.dart';
 import 'package:my_custom_lints/src/rules/use_ternary_instead_of_ifelse_rule.dart';
@@ -177,7 +178,7 @@ class _MyCustomLint extends PluginBase {
       const DoNotUseDatetimeNowRule(),
       AvoidNestedConditionalExpressionsRule.createRule(configs),
       const AvoidNestedSwitchExpressionRule(),
-      const CheckIsNotClosedAfterAsyncGapRule(),
+      const CheckIsNotClosedAfterAsyncGapEmitRule(),
       const PreferNullAwareNotationRule(),
       const PreferThrowExceptionOrErrorRule(),
       const AvoidNumericLiteralsRule(),
@@ -206,7 +207,8 @@ class _MyCustomLint extends PluginBase {
       AvoidBannedTypeRule.createRule(configs),
       AvoidBannedUsageRule.createRule(configs),
       PreferCorrectCallbackFieldNBameRule.createRule(configs),
-      const UseSetStateSynchronouslyRule()
+      const UseSetStateSynchronouslyRule(),
+      const UnnecessaryToListRule()
     ];
   }
 

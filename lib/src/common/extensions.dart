@@ -204,7 +204,17 @@ extension IterableExtensions<E> on Iterable<E> {
       yield (index: index++, item: element);
     }
   }
+
+  Iterable<Pair<E>> zipWithNext() sync* {
+    if (length < 2) yield* [];
+
+    for (final e in indexed.takeWhile((e) => e.$1 < length - 1)) {
+      yield (current: e.$2, next: elementAt(e.$1 + 1));
+    }
+  }
 }
+
+typedef Pair<T> = ({T current, T next});
 
 extension ListExtensions<E> on List<E> {
   Map<T, List<E>> groupBy<T>(T Function(E) selector) {

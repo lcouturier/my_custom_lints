@@ -3,8 +3,7 @@ publish_to: none
 
 
 environment:
-  sdk: ^3.5.4
-  flutter: ^3.24.5
+  sdk: ^3.5.4  
 
 
 dependencies:
@@ -17,6 +16,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  custom_lint: ^0.6.8
+  custom_lint: 0.6.2
   my_custom_lints:
     path: ../

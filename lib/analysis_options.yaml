@@ -32,6 +32,7 @@ custom_lint:
   verbose: true # enable verbose mode
   rules:
     - no_equal_then_else
+    - unnecessary_to_list
     - prefer_returning_condition
     - avoid_print   
     - avoid_bang_operator: false 
@@ -68,6 +69,7 @@ custom_lint:
     - remove_empty_listener
     - avoid_dynamic
     - copy_with_method_field_check
+    - check_is_not_closed_after_async_gap_and_emit
     - avoid_cached_network_image: false
     - avoid_nullable_list_return_type
     - verify_autoroute_usage: false

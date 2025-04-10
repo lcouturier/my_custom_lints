@@ -1,13 +1,10 @@
-// ignore_for_file: unused_import
-
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
-
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:my_custom_lints/src/common/checker.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
 
 class UseSetStateSynchronouslyRule extends DartLintRule {
@@ -25,23 +22,35 @@ class UseSetStateSynchronouslyRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addBlockFunctionBody((node) {
-      final body = node.block;
+    context.registry.addClassDeclaration((node) {
+      final declaredElement = node.declaredElement!;
+      if (!stateChecker.isSuperOf(declaredElement)) return;
 
-      final hasCheckPoint = _hasCheckPoint(body);
-      if (hasCheckPoint) return;
+      for (var member in node.members.whereType<MethodDeclaration>().where((e) => e.body.isAsynchronous)) {
+        final methodBody = member.body;
+        if (methodBody is BlockFunctionBody) {
+          final blockVisitor = MethodBlockVisitor(this);
+          member.accept(blockVisitor);
 
-      final (found, next) = _findSetStateCall(body);
-      if (found) {
-        reporter.reportErrorForNode(code, next!, [], [], next);
+          for (final block in blockVisitor.blocks) {
+            final hasCheckPoint = _hasCheckPoint(block);
+            if (hasCheckPoint) return;
+
+            final (found, next) = _findSetStateCall(block);
+            if (found) {
+              reporter.atNode(next!, code, data: next);
+            }
+          }
+        }
       }
     });
   }
 
   bool _hasCheckPoint(Block body) {
-    for (var element in body.statements.withIndex) {
-      if ((element.item is IfStatement) && (element.item as IfStatement).expression.toSource().contains('!mounted')) {
-        final next = body.statements.elementAtOrNull(element.index + 1);
+    for (var element in body.statements.zipWithNext()) {
+      if ((element.current is IfStatement) &&
+          (element.current as IfStatement).expression.toSource().contains('!mounted')) {
+        final next = element.next;
         if (next is ExpressionStatement &&
             (next.expression is MethodInvocation) &&
             (next.expression as MethodInvocation).methodName.name == 'setState') {
@@ -70,6 +79,19 @@ class UseSetStateSynchronouslyRule extends DartLintRule {
 
   @override
   List<Fix> getFixes() => [_UseSetstateSynchronouslyRuleFix()];
+}
+
+class MethodBlockVisitor extends RecursiveAstVisitor<void> {
+  final LintRule rule;
+  final List<Block> blocks = [];
+
+  MethodBlockVisitor(this.rule);
+
+  @override
+  void visitBlock(Block node) {
+    blocks.add(node);
+    super.visitBlock(node);
+  }
 }
 
 class _UseSetstateSynchronouslyRuleFix extends DartFix {

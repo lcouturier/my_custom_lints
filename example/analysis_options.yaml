@@ -12,6 +12,7 @@ custom_lint:
   verbose: true # enable verbose mode
   rules:
     - no_equal_then_else
+    - unnecessary_to_list
     - prefer_returning_condition
     - avoid_print   
     - avoid_bang_operator: false 
@@ -94,6 +95,7 @@ custom_lint:
     - avoid_nested_conditional_expressions:
       max-nesting-level: 2
     - avoid_nested_switch_expressions
+    - check_is_not_closed_after_async_gap_and_emit
     - avoid_banned_type:
       entries:
         - paths: ['example']

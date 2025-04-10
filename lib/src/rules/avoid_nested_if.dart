@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -13,7 +11,6 @@ class AvoidNestedIfRule extends BaseLintRule<AvoidNestedIfOptions> {
   AvoidNestedIfRule._(super.rule);
 
   factory AvoidNestedIfRule.createRule(CustomLintConfigs configs) {
-    log(("Create rule"));
     final rule = RuleConfig(
       configs: configs,
       name: lintName,

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_underscore_for_unused_callback_parameters, avoid_dynamic
+// ignore_for_file: prefer_underscore_for_unused_callback_parameters, avoid_dynamic, avoid_unconditional_break
 import 'package:flutter/material.dart';
 
 class MyWidget extends StatefulWidget {
@@ -83,7 +83,7 @@ class _MyWidgetState extends State<MyWidget> {
           myString = 'data';
         });
       },
-      child: Text('PRESS'),
+      child: const Text('PRESS'),
     );
     // return MyTestWidget(onChange: () {
     //   setState(

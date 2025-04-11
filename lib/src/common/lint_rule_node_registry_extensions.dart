@@ -68,6 +68,16 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     });
   }
 
+  void addClassDeclarationStatefulWidget(void Function(ClassDeclaration node) listener) {
+    addClassDeclaration((node) {
+      if (node.extendsClause == null) return;
+      if (node.declaredElement == null) return;
+      if (!stateChecker.isAssignableFromType(node.declaredElement!.thisType)) return;
+
+      listener(node);
+    });
+  }
+
   void addVoidCallback(void Function(GenericFunctionType node) listener) {
     addGenericFunctionType((node) {
       final returnType = node.returnType?.type;

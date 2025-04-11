@@ -3,7 +3,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:my_custom_lints/src/common/checker.dart';
+import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class AvoidEmptySetStateRule extends DartLintRule {
   const AvoidEmptySetStateRule()
@@ -22,10 +22,7 @@ class AvoidEmptySetStateRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
-      final declaredElement = node.declaredElement!;
-      if (!stateChecker.isSuperOf(declaredElement)) return;
-
+    context.registry.addClassDeclarationStatefulWidget((node) {
       for (var member in node.members.whereType<MethodDeclaration>()) {
         final methodBody = member.body;
         if (methodBody is BlockFunctionBody) {

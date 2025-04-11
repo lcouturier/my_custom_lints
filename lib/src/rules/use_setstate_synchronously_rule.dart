@@ -6,6 +6,7 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/checker.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class UseSetStateSynchronouslyRule extends DartLintRule {
   const UseSetStateSynchronouslyRule()
@@ -22,7 +23,7 @@ class UseSetStateSynchronouslyRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addClassDeclaration((node) {
+    context.registry.addClassDeclarationStatefulWidget((node) {
       final declaredElement = node.declaredElement!;
       if (!stateChecker.isSuperOf(declaredElement)) return;
 

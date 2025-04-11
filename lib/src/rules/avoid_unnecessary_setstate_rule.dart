@@ -1,15 +1,9 @@
-// ignore_for_file: unused_import, unused_element
-
-import 'dart:developer';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
-import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:my_custom_lints/src/common/extensions.dart';
+import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class AvoidUnnecessarySetStateRule extends DartLintRule {
   const AvoidUnnecessarySetStateRule()
@@ -22,64 +16,113 @@ class AvoidUnnecessarySetStateRule extends DartLintRule {
           ),
         );
 
-  static const methods = ['initState', 'didUpdateWidget', 'build'];
-
   @override
   void run(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addMethodInvocation((node) {
-      if (node.methodName.name != 'setState') return;
-      final m = node.thisOrAncestorOfType<MethodDeclaration>();
-      if (!methods.contains((m?.name.lexeme ?? ''))) return;
+    context.registry.addClassDeclarationStatefulWidget((node) {
+      final callers = _SetStateCallers(node.name.lexeme);
+      node.accept(callers);
 
-      if ((m?.name.lexeme ?? '') == 'build') {
-        if (node.parent is ExpressionStatement) {
-          final method = node.parent! as ExpressionStatement;
-          if (_isEventHandler(method.parent)) return;
-        }
-      }
-
-      reporter.reportErrorForNode(code, node);
+      final visitor = _SetStateVisitor(code, reporter, callers.methodsWithSetState, node.name.lexeme);
+      node.accept(visitor);
     });
   }
-
-  bool _isEventHandler(AstNode? node) {
-    if (node == null) return false;
-
-    final (found, p) = node.getAncestor((e) => e is NamedExpression);
-
-    return (found && p is NamedExpression) &&
-        p.name.label.name.startsWith('on') &&
-        (p.expression.staticType?.isCallbackType ?? false);
-  }
-
-  @override
-  List<Fix> getFixes() => [_AvoidUnnecessarySetStateFix()];
 }
 
-class _AvoidUnnecessarySetStateFix extends DartFix {
+class _SetStateVisitor extends RecursiveAstVisitor<void> {
+  final LintCode code;
+  final ErrorReporter reporter;
+  final Set<String> methodsWithSetState;
+  final String className;
+
+  MethodDeclaration? currentMethod;
+  bool inBuildMethod = false;
+  int eventHandlerNestingLevel = 0;
+
+  static const methods = ['initState', 'didUpdateWidget', 'build', 'dispose'];
+
+  _SetStateVisitor(
+    this.code,
+    this.reporter,
+    this.methodsWithSetState,
+    this.className,
+  );
+
   @override
-  void run(
-    CustomLintResolver resolver,
-    ChangeReporter reporter,
-    CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
-  ) {
-    context.registry.addMethodInvocation((node) {
-      if (!analysisError.sourceRange.covers(node.sourceRange)) return;
+  void visitMethodDeclaration(MethodDeclaration node) {
+    final previousMethod = currentMethod;
+    final previousInBuildMethod = inBuildMethod;
+    currentMethod = node;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Remove unnecessary setState',
-        priority: 80,
-      );
+    inBuildMethod = node.name.lexeme == 'build';
+    super.visitMethodDeclaration(node);
 
-      changeBuilder.addDartFileEdit((builder) {
-        builder.addDeletion(range.startEnd(node.beginToken, node.endToken.next!));
-      });
-    });
+    currentMethod = previousMethod;
+    inBuildMethod = previousInBuildMethod;
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    if ((node.methodName.name == 'setState') && (eventHandlerNestingLevel == 0)) {
+      final methodName = currentMethod!.name.lexeme;
+      if (methods.any((e) => e == methodName)) {
+        reporter.atNode(node, code);
+      }
+    }
+
+    if ((node.methodName.name != 'setState') && (eventHandlerNestingLevel == 0) && inBuildMethod) {
+      final methodName = node.methodName.name;
+      final signature = '$className.$methodName';
+
+      if (methodsWithSetState.contains(signature)) {
+        reporter.atNode(node, code);
+      }
+    }
+
+    super.visitMethodInvocation(node);
+  }
+
+  @override
+  void visitNamedExpression(NamedExpression node) {
+    final name = node.name.label.name;
+
+    final isEventHandler = name.startsWith('on') && name.length > 2 && name[2].toUpperCase() == name[2];
+
+    if (isEventHandler) {
+      eventHandlerNestingLevel++;
+      super.visitNamedExpression(node);
+      eventHandlerNestingLevel--;
+    } else {
+      super.visitNamedExpression(node);
+    }
+  }
+}
+
+class _SetStateCallers extends RecursiveAstVisitor<void> {
+  final String className;
+  final Set<String> methodsWithSetState = {};
+  MethodDeclaration? currentMethod;
+
+  _SetStateCallers(this.className);
+
+  @override
+  void visitMethodDeclaration(MethodDeclaration node) {
+    final previousMethod = currentMethod;
+    currentMethod = node;
+    super.visitMethodDeclaration(node);
+    currentMethod = previousMethod;
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    if (node.methodName.name == 'setState' && currentMethod != null) {
+      final methodName = currentMethod!.name.lexeme;
+      methodsWithSetState.add('$className.$methodName');
+    }
+
+    super.visitMethodInvocation(node);
   }
 }

@@ -51,24 +51,40 @@ class _EnumConstantsOrderingFix extends DartFix {
     );
 
     final nodes = analysisError.data! as NodeList<EnumConstantDeclaration>;
-    bool hasArguments = nodes.every((e) => e.arguments != null);
-    final none = nodes.map((e) => e.name.lexeme).firstWhere((e) => e == 'none', orElse: () => '');
-    final constants = hasArguments
-        ? nodes
-            .map((e) => (e.name.lexeme, e.arguments.toString()))
-            .where((e) => e.$1 != 'none')
-            .toList()
-            .sortedBy((e) => e.$1)
-            .map((e) => '${e.$1}${e.$2}')
-            .join(', ')
-        : nodes.map((e) => e.name.lexeme).where((e) => e != 'none').toList().sorted().join(', ');
+
+    // Store constant data (name, arguments, original source)
+    final constantData = nodes.map((e) {
+      return (
+        name: e.name.lexeme,
+        arguments: e.arguments?.toSource(),
+        source: e.toSource(),
+      );
+    }).toList();
+
+    // Separate 'none' constant
+    final noneConstant = constantData.firstWhereOrNull((e) => e.name == 'none');
+    final otherConstants = constantData.where((e) => e.name != 'none').toList();
+
+    // Sort other constants alphabetically
+    otherConstants.sort((a, b) => a.name.compareTo(b.name));
+
+    // Reconstruct the enum constants string
+    final sortedConstantsString = otherConstants.map((c) {
+      return c.arguments != null ? '${c.name}${c.arguments}' : c.name;
+    }).join(', ');
+
+    // Prepend 'none' constant if it exists
+    final finalConstantsString = noneConstant != null
+        ? '${noneConstant.name}${noneConstant.arguments ?? ''}${otherConstants.isNotEmpty ? ', ' : ''}$sortedConstantsString'
+        : sortedConstantsString;
 
     changeBuilder.addDartFileEdit((builder) {
       builder
         ..addSimpleReplacement(
-            range.startEnd(nodes.beginToken!, nodes.endToken!), ' ${none.isNotEmpty ? 'none, ' : ''} $constants ')
+          range.startEnd(nodes.beginToken!, nodes.endToken!),
+          ' $finalConstantsString ',
+        )
         ..format(range.startEnd(nodes.beginToken!, nodes.endToken!));
     });
-    // });
   }
 }

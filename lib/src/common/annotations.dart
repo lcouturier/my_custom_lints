@@ -1,0 +1,3 @@
+class DataClass {
+  const DataClass();
+}

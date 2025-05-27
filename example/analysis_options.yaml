@@ -1,7 +1,153 @@
 
-include: package:my_custom_lints/my_custom_lints.yaml
+
 analyzer:
-  errors:
-    # Added to avoid warnings in tests
-    unused_element: ignore
-    unused_local_variable: ignore
+  plugins:
+    - custom_lint
+  exclude:
+    - sample
+    # - test/**.dart
+
+custom_lint:
+  debug: true # enable debug mode
+  verbose: true # enable verbose mode
+  rules:
+    - no_equal_then_else
+    - unnecessary_to_list
+    - use_setstate_synchronously
+    - prefer_returning_condition
+    - avoid_print   
+    - avoid_bang_operator: false 
+    - prefer_void_callback
+    - avoid_long_parameter_list:
+      max-parameters: 5
+      ignore-optional: true
+      ignored-names: ['copyWith']
+    - boolean_prefixes:
+      ignore-getters: false
+      ignore-fields: true
+      ignore-parameters: false
+      ignore-methods: true
+      ignored-names: ['stringify', 'selected', 'listen', 'value', 'enabled']
+      prefixes: ['is', 'are', 'was', 'were', 'has', 'have', 'had', 'can', 'will', 'do', 'does', 'did', 'should', 'with']
+    - cyclomatic_complexity: false
+      max_complexity: 10
+    - max_nesting_level:
+      number_of_level: 3
+    - prefer_iterable_first
+    - prefer_iterable_last
+    - no_boolean_literal_compare
+    - prefer_iterable_isempty
+    - no_length_in_index_expression
+    - unused_parameter:
+      parameters: ['state', 'event', 'context', 'router', 'response']
+    - equatable_props_check
+    - add_cubit_suffix_rule
+    - avoid_filter_usage
+    - first_init_state
+    - prefer_of_over_current
+    - prefer_no_growable_list
+    - prefer_underscore_for_unused_callback_parameters
+    - remove_empty_listener
+    - avoid_dynamic
+    - copy_with_method_field_check
+    - avoid_cached_network_image: false
+    - avoid_nullable_list_return_type
+    - verify_autoroute_usage: false
+    - avoid_plus_usage
+    - prefer_named_bool_parameters:
+      ignore-single: false
+      ignore-single-boolean: false
+    - prefer_any_or_every
+    - avoid_useless_spread
+    - avoid_inverted_boolean_checks
+    - avoid_map_keys_contains
+    - avoid_long_records:
+      max-number: 6
+    - use_ternary_instead_of_if_else
+    - avoid_extension_on_enum
+    - avoid_nullable_boolean: 
+      ignored-names: ['copyWith']
+    - avoid_local_function
+    - avoid_equal_expressions:
+      severity: error
+    - avoid_getter_prefix
+    - avoid_self_assignment
+    - avoid_single_child_column_or_row:
+      widgets: ['Column', 'Row', 'Flex', 'Wrap', 'SliverList', 'SliverMainAxisGroup', 'SliverCrossAxisGroup']
+    - avoid_positional_record_field_access
+    - avoid_ignoring_return_values
+    - prefer_usage_of_value_getter
+    - avoid_assignments_as_conditions
+    - avoid_shrink_wrap_in_lists
+    - avoid_only_rethrow
+    - avoid_invalid_prefix
+    - enum_constants_ordering
+    - avoid_empty_set_state
+    - avoid_unnecessary_setstate
+    - avoid_multi_assignment
+    - avoid_nested_record
+    - avoid_mixing_named_and_positional_fields_rule
+    - prefer_contains_method
+    - avoid_unsafe_reduce
+    - prefer_safe_first_where
+    - use_join_on_strings
+    - prefer_named_parameters
+    - do_not_use_datetime_now_in_tests
+    - avoid_nested_conditional_expressions:
+      max-nesting-level: 2
+    - avoid_nested_switch_expressions
+    - check_is_not_closed_after_async_gap_and_emit:
+    - avoid_banned_type:
+      entries:
+        - paths: ['example']
+          class_name: 'SomeType'
+          message: 'Do not use SomeType here.'
+          severity: warning
+        - paths: []
+          class_name: 'ChoiceChip'
+          package: 'flutter'
+          message: 'Do not use native ChoiceChip prefer ChoiceChip from Design system.'
+          severity: error
+        - paths: []
+          class_name: 'CachedNetworkImage'
+          message: 'For testability, use ConfigurableNetworkImage instead.'
+          severity: warning
+    - avoid_banned_usage:
+      entries:
+        - type: Iterable
+          entries:
+            - names: ['reduce']
+              description: Calling 'reduce' on an empty collection will throw an exception. Use 'fold' instead.
+            - names: ['filter']
+              description: Consider using where method instead.
+            - names: ['from']
+              description: Consider using 'of' method instead.
+        - type: List
+          entries:
+            - names: ['remove', 'removeAt', 'addAll', 'remove']
+              description: Avoid collection methods that mutate the initial collection. Try creating a new collection with an updated value instead.
+            - names: ['sort']
+              description: Use "sorted" instead
+        - name: print
+          description: Avoid using print statements in production code. Consider using a logger instead.
+
+linter:
+  rules:    
+    avoid_field_initializers_in_const_classes: true
+    avoid_void_async: true
+    unawaited_futures: true
+    cast_nullable_to_non_nullable: true
+    use_super_parameters: true
+    avoid_function_literals_in_foreach_calls: false
+    constant_identifier_names: false
+    overridden_fields: false
+    depend_on_referenced_packages: false
+    library_private_types_in_public_api: false    
+    unnecessary_breaks: true
+    invalid_case_patterns: true
+    type_literal_in_constant_pattern: true
+    no_literal_bool_comparisons: true
+    prefer_const_declarations: true
+    prefer_const_constructors : true
+    always_use_package_imports: true
+    avoid_returning_this: true

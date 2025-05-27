@@ -11,10 +11,11 @@ class PreferReturningConditionRule extends DartLintRule {
   const PreferReturningConditionRule()
       : super(
           code: const LintCode(
-              name: RuleNames.preferReturningCondition,
-              problemMessage: problem,
-              correctionMessage: correction,
-              errorSeverity: ErrorSeverity.WARNING),
+            name: RuleNames.preferReturningCondition,
+            problemMessage: problem,
+            correctionMessage: correction,
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
         );
 
   @override

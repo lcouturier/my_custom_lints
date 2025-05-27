@@ -1,16 +1,21 @@
 name: my_custom_lints_example
 publish_to: none
 
+
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: ^3.7.0
+  sdk: ^3.5.4  
 
 
 dependencies:
   flutter:
     sdk: flutter
+  equatable: ^2.0.5
+  flutter_bloc: ^9.0.0
 
 
 dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  custom_lint: 0.6.2
   my_custom_lints:
     path: ../

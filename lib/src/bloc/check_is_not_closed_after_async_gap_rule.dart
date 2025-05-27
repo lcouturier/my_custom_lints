@@ -5,7 +5,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:my_custom_lints/src/common/extensions.dart';
+
 import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class CheckIsNotClosedAfterAsyncGapEmitRule extends DartLintRule {
@@ -23,46 +23,116 @@ class CheckIsNotClosedAfterAsyncGapEmitRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addClassDeclarationBlocAndCubit((node) {
-      for (var member in node.members.whereType<MethodDeclaration>().where((e) => e.body.isAsynchronous)) {
-        final methodBody = member.body;
-        if (methodBody is BlockFunctionBody) {
-          final blockVisitor = MethodBlockVisitor(this);
-          member.accept(blockVisitor);
+    context.registry.addBlocAndCubitAsyncMethods((methods) {
+      for (var method in methods) {
+        final awaitFinder = _AwaitFinder();
+        method.accept(awaitFinder);
+        if (awaitFinder.awaitExpressions.isEmpty) return;
 
-          for (final block in blockVisitor.blocks) {
-            for (final item in block.statements.zipWithNext()) {
-              if (item.current is ExpressionStatement && item.next is ExpressionStatement) {
-                final current = item.current as ExpressionStatement;
-                final next = item.next as ExpressionStatement;
-                if (current.expression is AwaitExpression && next.expression is MethodInvocation) {
-                  final methodInvocation = next.expression as MethodInvocation;
-                  if (methodInvocation.methodName.name == 'emit') {
-                    reporter.atNode(next, code, data: next);
-                  }
-                }
-              }
+        final emitFinder = _EmitFinder();
+        method.accept(emitFinder);
+
+        for (final emitNode in emitFinder.emitInvocations) {
+          bool needToCheck = false;
+          for (final awaitExpr in awaitFinder.awaitExpressions) {
+            if (_hasToVerify(emitNode, awaitExpr)) {
+              needToCheck = true;
+              break;
             }
+          }
+
+          if (needToCheck && !_isEmitProtectedByClosedCheck(emitNode)) {
+            reporter.atNode(emitNode, code, data: emitNode);
           }
         }
       }
     });
   }
 
+  bool _isEmitProtectedByClosedCheck(MethodInvocation node) {
+    AstNode? currentNode = node.parent;
+
+    while (currentNode != null) {
+      if (currentNode is IfStatement) {
+        if (currentNode.expression is PrefixExpression && currentNode.expression.toSource().contains('isClosed')) {
+          return true;
+        }
+      }
+
+      if (currentNode is ExpressionStatement && currentNode.expression is AwaitExpression) {
+        return false;
+      }
+
+      if (currentNode is ReturnStatement || currentNode is BreakStatement || currentNode is ContinueStatement) {
+        return false;
+      }
+
+      if (currentNode is MethodDeclaration) {
+        return false;
+      }
+
+      currentNode = currentNode.parent;
+    }
+
+    return false;
+  }
+
+  bool _hasToVerify(MethodInvocation emitNode, AwaitExpression awaitExpr) {
+    if (emitNode.offset < awaitExpr.offset) {
+      return false;
+    }
+
+    final (emitFound, emitBranch) = _findContainingBranch(emitNode);
+    final (awaitFound, awaitBranch) = _findContainingBranch(awaitExpr);
+
+    return !(emitFound && awaitFound && emitBranch!.parent == awaitBranch!.parent && emitBranch != awaitBranch);
+  }
+
+  (bool, AstNode?) _findContainingBranch(AstNode node) {
+    AstNode? current = node;
+    while (current != null) {
+      if (current.parent is IfStatement) {
+        final ifStmt = current.parent! as IfStatement;
+        if (current == ifStmt.thenStatement) {
+          return (true, current);
+        } else if (current == ifStmt.elseStatement) {
+          return (true, current);
+        }
+      }
+
+      if (current is MethodDeclaration) {
+        break;
+      }
+
+      current = current.parent;
+    }
+
+    return (false, null);
+  }
+
   @override
   List<Fix> getFixes() => [_CheckIsNotClosedAfterAsyncGapFix()];
 }
 
-class MethodBlockVisitor extends RecursiveAstVisitor<void> {
-  final LintRule rule;
-  final List<Block> blocks = [];
-
-  MethodBlockVisitor(this.rule);
+class _AwaitFinder extends RecursiveAstVisitor<void> {
+  final List<AwaitExpression> awaitExpressions = [];
 
   @override
-  void visitBlock(Block node) {
-    blocks.add(node);
-    super.visitBlock(node);
+  void visitAwaitExpression(AwaitExpression node) {
+    awaitExpressions.add(node);
+    super.visitAwaitExpression(node);
+  }
+}
+
+class _EmitFinder extends RecursiveAstVisitor<void> {
+  final List<MethodInvocation> emitInvocations = [];
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    if (node.methodName.name == 'emit') {
+      emitInvocations.add(node);
+    }
+    super.visitMethodInvocation(node);
   }
 }
 
@@ -75,11 +145,11 @@ class _CheckIsNotClosedAfterAsyncGapFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    final expression = analysisError.data! as ExpressionStatement;
+    final expression = analysisError.data! as MethodInvocation;
 
     reporter.createChangeBuilder(message: 'Add isClosed check', priority: 80).addDartFileEdit((builder) {
       builder.addReplacement(range.node(expression), (builder) {
-        builder.write('if (!isClosed) {\n  ${expression.expression.toSource()};\n}');
+        builder.write('if (!isClosed) {\n  ${expression.toSource()};\n}');
       });
       builder.format(range.node(expression));
     });

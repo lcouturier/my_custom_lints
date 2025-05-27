@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
@@ -92,6 +94,7 @@ class _SetStateVisitor extends RecursiveAstVisitor<void> {
     final isEventHandler = name.startsWith('on') && name.length > 2 && name[2].toUpperCase() == name[2];
 
     if (isEventHandler) {
+      log('name : $name');
       eventHandlerNestingLevel++;
       super.visitNamedExpression(node);
       eventHandlerNestingLevel--;

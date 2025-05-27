@@ -2,6 +2,10 @@
 import 'package:flutter/material.dart';
 
 class MyWidget extends StatefulWidget {
+  final ScrollController controller;
+
+  const MyWidget({super.key, required this.controller});
+
   @override
   _MyWidgetState createState() => _MyWidgetState();
 }
@@ -26,6 +30,10 @@ class _MyWidgetState extends State<MyWidget> {
     }
 
     myStateUpdateMethod(); // LINT: Avoid calling sync methods that call 'setState'. Try changing the state directly.
+
+    widget.controller.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -44,8 +52,14 @@ class _MyWidgetState extends State<MyWidget> {
   }
 
   Future<void> onPress() async {
+    setState(() {
+      myString = 'data';
+    });
+
     await Future.delayed(const Duration(seconds: 1));
-    if (!mounted) return;
+    setState(() {
+      myString = 'data';
+    });
     setState(() {
       myString = 'data';
     });

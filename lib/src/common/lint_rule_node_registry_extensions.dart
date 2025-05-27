@@ -68,11 +68,30 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
     });
   }
 
+  void addBlocAndCubitAsyncMethods(void Function(List<MethodDeclaration>) listener) {
+    addClassDeclarationBlocAndCubit((node) {
+      final methods = node.members.whereType<MethodDeclaration>().where((e) => e.body.isAsynchronous).toList();
+      if (methods.isEmpty) return;
+
+      listener(methods);
+    });
+  }
+
   void addClassDeclarationStatefulWidget(void Function(ClassDeclaration node) listener) {
     addClassDeclaration((node) {
       if (node.extendsClause == null) return;
       if (node.declaredElement == null) return;
       if (!stateChecker.isAssignableFromType(node.declaredElement!.thisType)) return;
+
+      listener(node);
+    });
+  }
+
+  void addClassDeclarationWidget(void Function(ClassDeclaration node) listener) {
+    addClassDeclaration((node) {
+      if (node.extendsClause == null) return;
+      if (node.declaredElement == null) return;
+      if (!widgetChecker.isAssignableFromType(node.declaredElement!.thisType)) return;
 
       listener(node);
     });

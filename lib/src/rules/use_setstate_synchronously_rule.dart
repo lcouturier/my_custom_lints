@@ -1,11 +1,11 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:my_custom_lints/src/common/checker.dart';
-import 'package:my_custom_lints/src/common/extensions.dart';
+
 import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class UseSetStateSynchronouslyRule extends DartLintRule {
@@ -13,7 +13,7 @@ class UseSetStateSynchronouslyRule extends DartLintRule {
       : super(
           code: const LintCode(
             name: 'use_setstate_synchronously',
-            problemMessage: "Don't use setState asynchronously.",
+            problemMessage: "Avoid calling 'setState' past an await point without checking if the widget is mounted.",
           ),
         );
 
@@ -24,74 +24,131 @@ class UseSetStateSynchronouslyRule extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addClassDeclarationStatefulWidget((node) {
-      final declaredElement = node.declaredElement!;
-      if (!stateChecker.isSuperOf(declaredElement)) return;
+      for (var method in node.members.whereType<MethodDeclaration>().where((e) => e.body.isAsynchronous)) {
+        final awaitFinder = _AwaitFinder();
+        method.accept(awaitFinder);
+        if (awaitFinder.awaitExpressions.isEmpty) return;
 
-      for (var member in node.members.whereType<MethodDeclaration>().where((e) => e.body.isAsynchronous)) {
-        final methodBody = member.body;
-        if (methodBody is BlockFunctionBody) {
-          final blockVisitor = MethodBlockVisitor(this);
-          member.accept(blockVisitor);
+        final finder = _SetStateFinder();
+        method.accept(finder);
 
-          for (final block in blockVisitor.blocks) {
-            final hasCheckPoint = _hasCheckPoint(block);
-            if (hasCheckPoint) return;
-
-            final (found, next) = _findSetStateCall(block);
-            if (found) {
-              reporter.atNode(next!, code, data: next);
+        for (final setStateNode in finder.setStateInovacations) {
+          bool needToCheck = false;
+          for (final awaitExpr in awaitFinder.awaitExpressions) {
+            if (setStateNode.offset > awaitExpr.offset) {
+              needToCheck = true;
+              break;
             }
+          }
+
+          if (needToCheck && (!_isInvocationProtected(setStateNode)) && (!_isProtectedByEarlyReturn(setStateNode))) {
+            reporter.atNode(setStateNode, code, data: setStateNode);
           }
         }
       }
     });
   }
 
-  bool _hasCheckPoint(Block body) {
-    for (var element in body.statements.zipWithNext()) {
-      if ((element.current is IfStatement) &&
-          (element.current as IfStatement).expression.toSource().contains('!mounted')) {
-        final next = element.next;
-        if (next is ExpressionStatement &&
-            (next.expression is MethodInvocation) &&
-            (next.expression as MethodInvocation).methodName.name == 'setState') {
-          return true;
-        }
+  (bool, Block?) _findContainingBlock(AstNode node) {
+    AstNode? current = node;
+    while (current != null) {
+      if (current is Block) {
+        return (true, current);
       }
+      current = current.parent;
     }
-    return false;
+    return (false, null);
   }
 
-  (bool, ExpressionStatement?) _findSetStateCall(Block body) {
-    final statements = body.statements.whereType<ExpressionStatement>();
-    for (final statement in statements.withIndex) {
-      if (statement.item.expression is AwaitExpression) {
-        final next = statements.elementAtOrNull(statement.index + 1);
-        if (next?.expression is MethodInvocation) {
-          final method = next!.expression as MethodInvocation;
-          if (method.methodName.name == 'setState') {
-            return (true, next);
+  // ignore: unused_element
+  bool _isProtectedByEarlyReturn(AstNode setStateNode) {
+    final (found, containingBlock) = _findContainingBlock(setStateNode);
+    if (!found) return false;
+
+    List<Statement> statementsToCheck = [];
+    bool foundAwait = false;
+
+    for (final statement in containingBlock!.statements) {
+      if (statement.offset <= setStateNode.offset && setStateNode.end <= statement.end) {
+        break;
+      }
+
+      if (statement is ExpressionStatement && statement.expression is AwaitExpression) {
+        foundAwait = true;
+        statementsToCheck.clear();
+        continue;
+      }
+
+      if (foundAwait) {
+        statementsToCheck.add(statement);
+      }
+    }
+
+    for (final statement in statementsToCheck) {
+      if (statement is IfStatement) {
+        final condition = statement.expression;
+        if (condition is PrefixExpression && condition.operator.type == TokenType.BANG) {
+          if ((condition.operand is SimpleIdentifier) && (condition.operand as SimpleIdentifier).name == 'mounted') {
+            if (statement.thenStatement is ReturnStatement) {
+              return true;
+            }
           }
         }
       }
     }
-    return (false, null);
+
+    return false;
+  }
+
+  bool _isInvocationProtected(MethodInvocation node) {
+    AstNode? currentNode = node.parent;
+
+    while (currentNode != null) {
+      if ((currentNode is IfStatement) && (currentNode.expression.toSource().contains('mounted'))) {
+        return true;
+      }
+
+      if (currentNode is ExpressionStatement && currentNode.expression is AwaitExpression) {
+        return false;
+      }
+
+      if (currentNode is ReturnStatement || currentNode is BreakStatement || currentNode is ContinueStatement) {
+        return false;
+      }
+
+      if (currentNode is MethodDeclaration) {
+        return false;
+      }
+
+      currentNode = currentNode.parent;
+    }
+
+    return false;
   }
 
   @override
   List<Fix> getFixes() => [_UseSetstateSynchronouslyRuleFix()];
 }
 
-class MethodBlockVisitor extends RecursiveAstVisitor<void> {
-  final LintRule rule;
-  final List<Block> blocks = [];
-
-  MethodBlockVisitor(this.rule);
+class _AwaitFinder extends RecursiveAstVisitor<void> {
+  final List<AwaitExpression> awaitExpressions = [];
 
   @override
-  void visitBlock(Block node) {
-    blocks.add(node);
-    super.visitBlock(node);
+  void visitAwaitExpression(AwaitExpression node) {
+    awaitExpressions.add(node);
+    super.visitAwaitExpression(node);
+  }
+}
+
+class _SetStateFinder extends RecursiveAstVisitor<void> {
+  final List<MethodInvocation> setStateInovacations = [];
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    if (node.methodName.name == 'setState') {
+      setStateInovacations.add(node);
+    }
+    super.visitMethodInvocation(node);
   }
 }
 
@@ -104,17 +161,13 @@ class _UseSetstateSynchronouslyRuleFix extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    final expression = analysisError.data! as ExpressionStatement;
+    final expression = analysisError.data! as MethodInvocation;
 
-    final changeBuilder = reporter.createChangeBuilder(
-      message: 'Add mounted check',
-      priority: 80,
-    );
-
-    changeBuilder.addDartFileEdit((builder) {
-      builder
-        ..addSimpleInsertion(expression.offset, 'if (!mounted) return;')
-        ..format(range.node(expression));
+    reporter.createChangeBuilder(message: 'Add mounted check', priority: 80).addDartFileEdit((builder) {
+      builder.addReplacement(range.node(expression), (builder) {
+        builder.write('if (mounted) {\n  ${expression.toSource()};\n}\n');
+      });
+      builder.format(range.node(expression));
     });
   }
 }

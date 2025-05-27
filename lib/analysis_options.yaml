@@ -31,6 +31,7 @@ custom_lint:
   debug: true # enable debug mode
   verbose: true # enable verbose mode
   rules:
+    - use_setstate_synchronously
     - no_equal_then_else
     - unnecessary_to_list
     - prefer_returning_condition

@@ -11,6 +11,7 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/checker.dart';
 
 extension DartTypeExtensions on DartType {
+  // Checks if a DartType is a nullable list.
   bool get isNullableList {
     final predicates = [
       () => this is InterfaceType,
@@ -21,15 +22,18 @@ extension DartTypeExtensions on DartType {
     return predicates.every((e) => e());
   }
 
+  // Checks if a DartType is a subtype of a given type name.
   bool _isSubtypeOfType(String typeName) {
     return element?.displayName == typeName ||
         ((this is InterfaceType) && (this as InterfaceType).allSupertypes.any((e) => e.element.name == typeName));
   }
 
+  // Returns a cached version of the `_isSubtypeOfType` method.
   bool Function(String) get isSubtypeOfType => _isSubtypeOfType.cache();
 }
 
 extension FunctionCacheExtensions<F, R> on R Function(F) {
+  // Caches the results of a function call.
   R Function(F) cache() {
     final cache = <F, R>{};
     return (key) => cache[key] ??= this(key);
@@ -37,22 +41,29 @@ extension FunctionCacheExtensions<F, R> on R Function(F) {
 }
 
 extension RecordTypeExtensions on RecordType {
+  // Checks if a record type has both positional and named fields.
   bool get isMixed => positionalFields.isNotEmpty && namedFields.isNotEmpty;
 }
 
 extension DartTypeNullableExtensions on DartType? {
+  // Checks if a type is an Iterable or a subclass of Iterable.
   bool get isIterableOrSubclass => isIterableOrSubclassCore(this);
+  // Checks if a type is nullable.
   bool get isNullable => isNullableType(this);
+  // Checks if a type is a Widget.
   bool get isWidget => this?.getDisplayString(withNullability: false) == 'Widget';
 
+  // Checks if a type is a callback function.
   bool get isCallbackType {
     return toString().startsWith('Null') || _isCallbackType(this);
   }
 
+  // Checks if a type has a constructor with a given name.
   bool hasConstructor(String name) {
     return (this is InterfaceType) && (this! as InterfaceType).constructors.any((e) => e.name == name);
   }
 
+  // Checks if a DartType is a callback type.
   bool _isCallbackType(DartType? type) {
     return (type is FunctionType &&
         (type.returnType is VoidType || type.returnType is DynamicType || type.parameters.isEmpty));
@@ -60,16 +71,20 @@ extension DartTypeNullableExtensions on DartType? {
 }
 
 extension FormalParameterExtension on FormalParameter {
+  // Checks if a formal parameter is a boolean.
   bool get isBool =>
       this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isDartCoreBool ?? false);
 
+  // Checks if a formal parameter is nullable.
   bool get isNullable =>
       this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isNullable ?? false);
 
+  // Checks if a formal parameter is dynamic.
   bool get isDynamic => declaredElement?.type is DynamicType;
 }
 
 extension ExpressionExtensions on Expression {
+  // Extracts field names from a props list literal.
   List<String> getFieldsFromProps() {
     if (this is ListLiteral) {
       return (this as ListLiteral)
@@ -84,11 +99,13 @@ extension ExpressionExtensions on Expression {
 }
 
 extension FunctionBodyExtensions on FunctionBody {
+  // Returns the expression from a function body.
   Expression? get expression => switch (this) {
         BlockFunctionBody(:final block) => block.statements.whereType<ReturnStatement>().firstOrNull?.expression,
         ExpressionFunctionBody(:final expression) => expression,
         _ => null,
       };
+  // Checks if a function body has a return statement.
   bool get hasReturnStatement {
     return switch (this) {
       final BlockFunctionBody b => b.block.statements.any((e) => e is ReturnStatement),
@@ -97,6 +114,7 @@ extension FunctionBodyExtensions on FunctionBody {
     };
   }
 
+  // Checks if a function body returns `this`.
   bool get hasReturnThis {
     return switch (this) {
       BlockFunctionBody b => b.block.statements.whereType<ReturnStatement>().first.expression is ThisExpression,
@@ -107,11 +125,13 @@ extension FunctionBodyExtensions on FunctionBody {
 }
 
 extension ClassDeclarationExtensions on ClassDeclaration {
+  // Returns a list of non-static, non-synthetic fields of a class.
   List<FieldElement> get fields => declaredElement!.fields
       .where((field) => !field.isStatic)
       .where((field) => !field.isSynthetic)
       .toList(growable: false);
 
+  // Returns the expression from the `props` getter of a class.
   ({bool found, Expression? expression}) propsReturnExpression() {
     final member =
         members.whereType<MethodDeclaration>().where((e) => e.name.lexeme == 'props' && e.isGetter).firstOrNull;
@@ -120,22 +140,33 @@ extension ClassDeclarationExtensions on ClassDeclaration {
     return (found: true, expression: member.body.expression);
   }
 
+  // Checks if a class is annotated with `@immutable`.
   bool get isImmutable => metadata.any((e) => e.name.name.startsWith('immutable'));
+  // Checks if a class extends `Equatable`.
   bool get isEquatable => declaredElement != null && equatableChecker.isAssignableFromType(declaredElement!.thisType);
+  // Checks if a class is a `Widget`.
   bool get isWidget => declaredElement != null && widgetChecker.isAssignableFromType(declaredElement!.thisType);
+  // Checks if a class is a `Cubit`.
   bool get isCubit => declaredElement != null && cubitChecker.isAssignableFromType(declaredElement!.thisType);
+  // Checks if a class is a `Bloc`.
   bool get isBloc => declaredElement != null && blocChecker.isAssignableFromType(declaredElement!.thisType);
 
+  // Checks if a class has a `copyWith` method.
   bool get hasCopyWithMethod =>
       members.whereType<MethodDeclaration>().firstWhereOrNull((e) => e.name.lexeme == 'copyWith') != null;
 }
 
 extension StringExtensions on String {
+  // Checks if a string is in camelCase.
   bool get isCamelCase => RegExp(r'(?<=[a-z])[A-Z]').hasMatch(this);
+  // Checks if a string is in PascalCase.
   bool get isPascalCase => RegExp(r'(?<=[A-Z])[a-z]').hasMatch(this);
+  // Converts the first letter of a string to uppercase.
   String get firstUpper => substring(0, 1).toUpperCase() + substring(1);
 
+  // Removes all spaces from a string.
   String removeAllSpaces() => replaceAll(' ', '');
+  // Checks if a string contains only underscores.
   bool get containsOnlyUnderscores => switch (length) {
         0 => false,
         1 => this == '_',
@@ -144,6 +175,7 @@ extension StringExtensions on String {
         _ => RegExp(r'^_+$').hasMatch(this),
       };
 
+  // Removes a prefix from a string (defaults to "get").
   String removePrefix([String prefix = 'get']) {
     if (startsWith(prefix)) {
       return substring(prefix.length);
@@ -151,7 +183,9 @@ extension StringExtensions on String {
     return this;
   }
 
+  // Converts the first letter of a string to lowercase.
   String get firstLowerCase => substring(0, 1).toLowerCase() + substring(1);
+  // Splits a string on uppercase letters.
   List<String> splitOnUppercase() => split(RegExp(r'(?=[A-Z])'));
 }
 

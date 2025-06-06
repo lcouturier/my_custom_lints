@@ -29,9 +29,7 @@ class AvoidNestedIfRule extends BaseLintRule<AvoidNestedIfOptions> {
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     LintCacheManager.cleanIfNeeded();
 
-    final source = resolver.source;
-    final content = source.contents.data;
-    final cacheKey = LintCacheManager.generateHash(content);
+    final cacheKey = LintCacheManager.generateHash(resolver.source.contents.data);
 
     // Vérification du cache
     final cachedResult = LintCacheManager.get(cacheKey);

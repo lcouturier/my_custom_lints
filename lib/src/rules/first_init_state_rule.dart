@@ -1,26 +1,22 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/checker.dart';
 
 class FirstInitStateRule extends DartLintRule {
   const FirstInitStateRule()
-      : super(
-          code: const LintCode(
-            name: 'first_init_state',
-            problemMessage: 'super.initState() should be called at the start of the initState method.',
-            correctionMessage: 'Try placing super.initState() at the start of the initState method.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'first_init_state',
+          problemMessage: 'super.initState() should be called at the start of the initState method.',
+          correctionMessage: 'Try placing super.initState() at the start of the initState method.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addClassDeclaration((node) {
       final extendsClause = node.extendsClause;
       if (extendsClause == null) return;
@@ -81,22 +77,14 @@ class _PlaceSuperInitStateAtTheStart extends DartFix {
 
       // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {
-        final superInitStateStatementIndex = statements.indexOf(
-          superInitStateStatement,
-        );
+        final superInitStateStatementIndex = statements.indexOf(superInitStateStatement);
         final firstStatement = statements.first;
 
         for (var i = superInitStateStatementIndex; i > 0; i--) {
-          builder.addSimpleReplacement(
-            statements[i].sourceRange,
-            statements[i - 1].toSource(),
-          );
+          builder.addSimpleReplacement(statements[i].sourceRange, statements[i - 1].toSource());
         }
 
-        builder.addSimpleReplacement(
-          firstStatement.sourceRange,
-          superInitStateStatement.toSource(),
-        );
+        builder.addSimpleReplacement(firstStatement.sourceRange, superInitStateStatement.toSource());
       });
     });
   }

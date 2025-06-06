@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -10,21 +10,17 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 /// Les utiliser ailleurs peut causer des comportements inattendus.
 class WatchOnlyInBuildRule extends DartLintRule {
   const WatchOnlyInBuildRule()
-      : super(
-          code: const LintCode(
-            name: 'watch_only_in_build',
-            problemMessage: 'La méthode watch() ne devrait être utilisée que dans des méthodes de build',
-            correctionMessage: 'Utilisez ref.read() pour un accès ponctuel ou ref.listen() pour réagir aux changements',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'watch_only_in_build',
+          problemMessage: 'La méthode watch() ne devrait être utilisée que dans des méthodes de build',
+          correctionMessage: 'Utilisez ref.read() pour un accès ponctuel ou ref.listen() pour réagir aux changements',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodInvocation((node) {
       if (node.methodName.name != 'watch') return;
 
@@ -57,13 +53,7 @@ class WatchOnlyInBuildRule extends DartLintRule {
     final methodName = method.name.lexeme;
 
     // Liste des noms de méthodes qui sont considérées comme des builders
-    final builderNames = [
-      'build',
-      'buildWidget',
-      'buildConsumer',
-      'buildWhen',
-      'builder',
-    ];
+    final builderNames = ['build', 'buildWidget', 'buildConsumer', 'buildWhen', 'builder'];
 
     // Vérifie si le nom de la méthode contient "build" ou est dans la liste des builders
     if (builderNames.contains(methodName) || methodName.contains('build')) {

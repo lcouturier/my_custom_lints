@@ -2,28 +2,24 @@
 
 // ignore: unused_import
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 class AvoidOnlyRethrowRule extends DartLintRule {
   const AvoidOnlyRethrowRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_only_rethrow',
-            problemMessage:
-                'Catch clauses with only the rethrow expression should either have some additional code to handle some type of exceptions or can be simply removed since they are redundant.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_only_rethrow',
+          problemMessage:
+              'Catch clauses with only the rethrow expression should either have some additional code to handle some type of exceptions or can be simply removed since they are redundant.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addCatchClause((node) {
       if (node.body.statements.length != 1) return;
 
@@ -56,10 +52,7 @@ class _AvoidOnlyRethrowFix extends DartFix {
       if (clause.body.statements.length != 1) return;
       if (clause.body.statements.first.toSource() != 'rethrow;') return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Remove the try catch bloc',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Remove the try catch bloc', priority: 80);
 
       changeBuilder.addDartFileEdit((builder) {
         builder

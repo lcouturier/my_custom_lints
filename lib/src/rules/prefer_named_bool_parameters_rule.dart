@@ -1,7 +1,7 @@
 // ignore_for_file: cascade_invocations, unused_element
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -16,17 +16,15 @@ class PreferNamedBoolParametersRule extends BaseLintRule<PreferNamedBoolParamete
       configs: configs,
       name: 'prefer_named_bool_parameters',
       paramsParser: PreferNamedBoolParameters.fromJson,
-      problemMessage: (value) =>
-          'Converting positional boolean parameters to named parameters helps you avoid situations with a wrong value passed to the parameter.',
+      problemMessage:
+          (value) =>
+              'Converting positional boolean parameters to named parameters helps you avoid situations with a wrong value passed to the parameter.',
     );
 
     return PreferNamedBoolParametersRule._(rule);
   }
 
-  void _verify(
-    FormalParameterList parameters,
-    ErrorReporter reporter,
-  ) {
+  void _verify(FormalParameterList parameters, ErrorReporter reporter) {
     if (parameters.parameters.isEmpty) return;
     if ((config.parameters.ignoreSingle) && (parameters.length == 1)) return;
     if ((config.parameters.ignoreSingleBoolean) && _onlyOne(parameters.parameters)) return;
@@ -39,11 +37,7 @@ class PreferNamedBoolParametersRule extends BaseLintRule<PreferNamedBoolParamete
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodDeclaration((node) {
       if (node.parameters == null) return;
       _verify(node.parameters!, reporter);
@@ -87,54 +81,45 @@ class _PreferNamedBoolParametersFix extends DartFix {
   }
 
   void update(ChangeReporter reporter, FormalParameterList parameters) {
-    final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to named parameters',
-      priority: 80,
-    );
+    final changeBuilder = reporter.createChangeBuilder(message: 'Convert to named parameters', priority: 80);
 
     changeBuilder.addDartFileEdit((builder) {
-      builder.addReplacement(
-        range.startEnd(parameters.beginToken.next!, parameters.endToken.previous!),
-        (builder) {
-          for (final p in parameters.parameters
-              .whereType<SimpleFormalParameter>()
-              .where((e) => !e.isNamed)
-              .where((e) => !e.isBool)) {
-            builder.writeParameter(
-              p.name?.lexeme ?? 'unamed',
-              type: p.type?.type,
-            );
-            builder.writeln(', ');
-          }
+      builder.addReplacement(range.startEnd(parameters.beginToken.next!, parameters.endToken.previous!), (builder) {
+        for (final p in parameters.parameters
+            .whereType<SimpleFormalParameter>()
+            .where((e) => !e.isNamed)
+            .where((e) => !e.isBool)) {
+          builder.writeParameter(p.name?.lexeme ?? 'unamed', type: p.type?.type);
+          builder.writeln(', ');
+        }
 
-          builder.write('{');
-          for (final p in parameters.parameters
-              .whereType<SimpleFormalParameter>()
-              .where((e) => e.isNamed)
-              .where((e) => !e.isBool)) {
-            builder.writeParameter(
-              p.name?.lexeme ?? 'unamed',
-              isRequiredType: p.isRequired,
-              isRequiredNamed: p.isRequired,
-              type: p.type?.type,
-            );
-            builder.writeln(', ');
-          }
-          for (final p in parameters.parameters
-              .whereType<SimpleFormalParameter>()
-              .where((e) => !e.isNamed)
-              .where((e) => e.isBool)) {
-            builder.writeParameter(
-              p.name?.lexeme ?? 'unamed',
-              isRequiredType: true,
-              isRequiredNamed: true,
-              type: p.type?.type,
-            );
-            builder.writeln(', ');
-          }
-          builder.write('}');
-        },
-      );
+        builder.write('{');
+        for (final p in parameters.parameters
+            .whereType<SimpleFormalParameter>()
+            .where((e) => e.isNamed)
+            .where((e) => !e.isBool)) {
+          builder.writeParameter(
+            p.name?.lexeme ?? 'unamed',
+            isRequiredType: p.isRequired,
+            isRequiredNamed: p.isRequired,
+            type: p.type?.type,
+          );
+          builder.writeln(', ');
+        }
+        for (final p in parameters.parameters
+            .whereType<SimpleFormalParameter>()
+            .where((e) => !e.isNamed)
+            .where((e) => e.isBool)) {
+          builder.writeParameter(
+            p.name?.lexeme ?? 'unamed',
+            isRequiredType: true,
+            isRequiredNamed: true,
+            type: p.type?.type,
+          );
+          builder.writeln(', ');
+        }
+        builder.write('}');
+      });
       builder.format(range.node(parameters));
     });
   }

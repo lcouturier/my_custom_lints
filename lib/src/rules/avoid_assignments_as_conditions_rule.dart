@@ -4,7 +4,7 @@ import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -14,20 +14,16 @@ class AvoidAssignmentsAsConditionsRule extends DartLintRule {
   static const lintName = 'avoid_assignments_as_conditions';
 
   const AvoidAssignmentsAsConditionsRule()
-      : super(
-          code: const LintCode(
-            name: lintName,
-            problemMessage: 'Avoid an assignment inside a condition.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: lintName,
+          problemMessage: 'Avoid an assignment inside a condition.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addIfStatement((node) {
       if (node.expression is! AssignmentExpression) return;
 
@@ -60,13 +56,15 @@ class _AvoidAssignmentsAsConditionsFix extends DartFix {
       final assignmentExpression = node.expression as AssignmentExpression;
       final rightEntity = assignmentExpression.rightHandSide;
       final operator = assignmentExpression.operator;
-      final flag = bloc.statements
-          .whereType<VariableDeclarationStatement>()
-          .where(
-            (e) => e.variables.variables
-                .any((v) => v.name.lexeme == (assignmentExpression.leftHandSide as SimpleIdentifier).name),
-          )
-          .firstOrNull;
+      final flag =
+          bloc.statements
+              .whereType<VariableDeclarationStatement>()
+              .where(
+                (e) => e.variables.variables.any(
+                  (v) => v.name.lexeme == (assignmentExpression.leftHandSide as SimpleIdentifier).name,
+                ),
+              )
+              .firstOrNull;
       if (flag == null) return;
 
       changeBuilder.addDartFileEdit((builder) {

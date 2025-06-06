@@ -1,4 +1,4 @@
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 
@@ -7,21 +7,17 @@ import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.da
 
 class MissingFieldInEquatablePropsRule extends DartLintRule {
   const MissingFieldInEquatablePropsRule()
-      : super(
-          code: const LintCode(
-            name: 'equatable_props_check',
-            problemMessage: 'All fields of an Equatable class should be included in the props getter.',
-            errorSeverity: ErrorSeverity.WARNING,
-            correctionMessage: 'Add {0} to props getter.',
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'equatable_props_check',
+          problemMessage: 'All fields of an Equatable class should be included in the props getter.',
+          errorSeverity: ErrorSeverity.WARNING,
+          correctionMessage: 'Add {0} to props getter.',
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addEquatableProps((node, watchableFields, missingFields, hasSuperProps) {
       reporter.reportErrorForNode(code, node, [missingFields.join(', ')]);
     });

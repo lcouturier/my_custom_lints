@@ -1,25 +1,21 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 class AvoidLocalFunctionRule extends DartLintRule {
   const AvoidLocalFunctionRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_local_function',
-            problemMessage: 'Avoid local function.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_local_function',
+          problemMessage: 'Avoid local function.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addBlockFunctionBody((node) {
       final statements = node.block.statements;
       for (final statement in statements.whereType<FunctionDeclarationStatement>()) {
@@ -46,10 +42,7 @@ class _AvoidLocalFunctionFix extends DartFix {
       if (body is! BlockFunctionBody) return;
 
       for (final statement in body.block.statements.whereType<FunctionDeclarationStatement>()) {
-        final changeBuilder = reporter.createChangeBuilder(
-          message: 'Move local function below',
-          priority: 80,
-        );
+        final changeBuilder = reporter.createChangeBuilder(message: 'Move local function below', priority: 80);
 
         // ignore: cascade_invocations
         changeBuilder.addDartFileEdit((builder) {
@@ -61,10 +54,7 @@ class _AvoidLocalFunctionFix extends DartFix {
               builder.write('\n${statement.toSource()}');
             })
             ..addDeletion(
-              range.startEnd(
-                statement.beginToken.precedingComments ?? statement.beginToken,
-                statement.endToken,
-              ),
+              range.startEnd(statement.beginToken.precedingComments ?? statement.beginToken, statement.endToken),
             );
         });
       }

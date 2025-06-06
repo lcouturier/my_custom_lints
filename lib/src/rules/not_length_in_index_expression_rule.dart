@@ -2,7 +2,7 @@
 // ignore_for_file: cascade_invocations
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -11,21 +11,17 @@ import 'package:my_custom_lints/src/common/checker.dart';
 
 class NoLengthInIndexExpressionRule extends DartLintRule {
   const NoLengthInIndexExpressionRule()
-      : super(
-          code: const LintCode(
-            name: 'no_length_in_index_expression',
-            problemMessage: '{0} is an error.',
-            correctionMessage: 'Consider replacing {1} with {2}.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'no_length_in_index_expression',
+          problemMessage: '{0} is an error.',
+          correctionMessage: 'Consider replacing {1} with {2}.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addIndexExpression((node) {
       if (node.index is BinaryExpression) return;
 
@@ -37,15 +33,11 @@ class NoLengthInIndexExpressionRule extends DartLintRule {
       final prefix = node.index as PrefixedIdentifier;
       if (prefix.identifier.name != 'length') return;
 
-      reporter.reportErrorForNode(
-        code,
-        node,
-        [
-          '${node.realTarget.toSource()}[${prefix.prefix.name}.${prefix.identifier.name}]',
-          node.toSource(),
-          '${node.realTarget.toSource()}.last',
-        ],
-      );
+      reporter.reportErrorForNode(code, node, [
+        '${node.realTarget.toSource()}[${prefix.prefix.name}.${prefix.identifier.name}]',
+        node.toSource(),
+        '${node.realTarget.toSource()}.last',
+      ]);
     });
 
     context.registry.addMethodInvocation((node) {
@@ -56,15 +48,11 @@ class NoLengthInIndexExpressionRule extends DartLintRule {
       if (argument is! PrefixedIdentifier) return;
       if (argument.identifier.name != 'length') return;
 
-      reporter.reportErrorForNode(
-        code,
-        node,
-        [
-          'list.elementAt(0)',
-          node.toSource(),
-          '${node.realTarget?.toSource()}.last',
-        ],
-      );
+      reporter.reportErrorForNode(code, node, [
+        'list.elementAt(0)',
+        node.toSource(),
+        '${node.realTarget?.toSource()}.last',
+      ]);
     });
   }
 
@@ -84,33 +72,21 @@ class NoLengthInIndexExpressionFix extends DartFix {
     context.registry.addIndexExpression((node) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Replace with iterable.last',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Replace with iterable.last', priority: 80);
 
       changeBuilder.addDartFileEdit((builder) {
         final replacement = node.isCascaded ? 'last' : '.last';
-        builder.addSimpleReplacement(
-          range.startEnd(node.leftBracket, node.rightBracket),
-          replacement,
-        );
+        builder.addSimpleReplacement(range.startEnd(node.leftBracket, node.rightBracket), replacement);
       });
     });
 
     context.registry.addMethodInvocation((node) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Replace with iterable.last',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Replace with iterable.last', priority: 80);
 
       changeBuilder.addDartFileEdit((builder) {
-        builder.addSimpleReplacement(
-          range.startEnd(node.methodName, node.argumentList),
-          'last',
-        );
+        builder.addSimpleReplacement(range.startEnd(node.methodName, node.argumentList), 'last');
       });
     });
   }

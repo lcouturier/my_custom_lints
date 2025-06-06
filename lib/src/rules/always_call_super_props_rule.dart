@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -11,20 +11,16 @@ class AlwaysCallSuperPropsRule extends DartLintRule {
   /// [AlwaysCallSuperPropsRule] constructor
 
   const AlwaysCallSuperPropsRule()
-      : super(
-          code: const LintCode(
-            name: 'always_call_super_props_when_overriding_equatable_props',
-            problemMessage: 'Dont forget to call super.props when overriding equatable props.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'always_call_super_props_when_overriding_equatable_props',
+          problemMessage: 'Dont forget to call super.props when overriding equatable props.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addEquatableSuperClassDeclaration((node) {
       reporter.reportErrorForNode(code, node, ['super.props']);
     });
@@ -43,31 +39,23 @@ class CallSuperInOverridedEquatableProps extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addEquatableSuperClassDeclaration(
-      (node) {
-        if (!analysisError.sourceRange.covers(node.sourceRange)) return;
+    context.registry.addEquatableSuperClassDeclaration((node) {
+      if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
-        final changeBuilder = reporter.createChangeBuilder(
-          message: 'Add ...super.props to props getter',
-          priority: 80,
-        );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Add ...super.props to props getter', priority: 80);
 
-        // ignore: cascade_invocations
-        changeBuilder.addDartFileEdit((builder) {
-          builder
-            ..addSimpleInsertion(node.beginToken.offset + 1, '...super.props,')
-            ..format(range.node(node));
-        });
-      },
-    );
+      // ignore: cascade_invocations
+      changeBuilder.addDartFileEdit((builder) {
+        builder
+          ..addSimpleInsertion(node.beginToken.offset + 1, '...super.props,')
+          ..format(range.node(node));
+      });
+    });
   }
 }
 
 extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
-  void addEquatableSuperClassDeclaration(
-      void Function(
-        ListLiteral node,
-      ) listener) {
+  void addEquatableSuperClassDeclaration(void Function(ListLiteral node) listener) {
     addClassDeclaration((node) {
       final classSuperTypeElement = node.declaredElement?.supertype?.element;
       if (classSuperTypeElement == null) return;

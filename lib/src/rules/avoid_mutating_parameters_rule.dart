@@ -1,24 +1,20 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 class AvoidMutatingParametersRule extends DartLintRule {
   const AvoidMutatingParametersRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_mutating_parameters',
-            problemMessage: "a parameter's field or setter is reassigned.",
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_mutating_parameters',
+          problemMessage: "a parameter's field or setter is reassigned.",
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addFunctionDeclaration((node) {
       final parameters = node.functionExpression.parameters?.parameters.map((e) => e.name?.lexeme ?? '') ?? [];
       if (parameters.isEmpty) return;

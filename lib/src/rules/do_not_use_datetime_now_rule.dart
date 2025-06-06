@@ -4,27 +4,23 @@ import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/checker.dart';
 
 class DoNotUseDatetimeNowRule extends DartLintRule {
   const DoNotUseDatetimeNowRule()
-      : super(
-          code: const LintCode(
-            name: 'do_not_use_datetime_now_in_tests',
-            problemMessage: 'Do not use DateTime.now() in tests.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'do_not_use_datetime_now_in_tests',
+          problemMessage: 'Do not use DateTime.now() in tests.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addNamedType((node) {
       if (node.name2.lexeme != 'DateTime') return;
       if (node.parent is! ConstructorName) return;

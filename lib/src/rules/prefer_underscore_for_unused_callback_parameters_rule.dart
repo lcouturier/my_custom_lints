@@ -1,7 +1,7 @@
 // ignore_for_file: unused_element
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -10,21 +10,17 @@ import 'package:my_custom_lints/src/common/checker.dart';
 
 class PreferUnderscoreForUnusedCallbackParameters extends DartLintRule {
   const PreferUnderscoreForUnusedCallbackParameters()
-      : super(
-          code: const LintCode(
-            name: 'prefer_underscore_for_unused_callback_parameters',
-            problemMessage: 'The callback parameter is not used.',
-            correctionMessage: 'Consider using underscores for the unused parameter.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'prefer_underscore_for_unused_callback_parameters',
+          problemMessage: 'The callback parameter is not used.',
+          correctionMessage: 'Consider using underscores for the unused parameter.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addFunctionExpression((node) {
       final parent = node.parent;
       if (parent is FunctionDeclaration) return;
@@ -33,9 +29,7 @@ class PreferUnderscoreForUnusedCallbackParameters extends DartLintRule {
       if (parameters == null || parameters.isEmpty) return;
 
       final simpleIdentifiers = <SimpleIdentifier>[];
-      final visitor = RecursiveSimpleIdentifierVisitor(
-        onVisitSimpleIdentifier: simpleIdentifiers.add,
-      );
+      final visitor = RecursiveSimpleIdentifierVisitor(onVisitSimpleIdentifier: simpleIdentifiers.add);
       node.body.accept(visitor);
 
       final items = parameters

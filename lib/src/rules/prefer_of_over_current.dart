@@ -1,7 +1,7 @@
 // ignore_for_file: pattern_never_matches_value_type, unused_element
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
@@ -13,21 +13,17 @@ class PreferOfOverCurrentRule extends DartLintRule with ContextName {
   static const String goodWay = 'I18n.of(context).';
 
   const PreferOfOverCurrentRule()
-      : super(
-          code: const LintCode(
-            name: lintName,
-            problemMessage: 'Do not use anymore $badWay',
-            correctionMessage: 'Prefer {0}.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: lintName,
+          problemMessage: 'Do not use anymore $badWay',
+          correctionMessage: 'Prefer {0}.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodInvocation((node) {
       final expression = node.toString();
       if (!expression.startsWith(badWay)) return;
@@ -40,11 +36,7 @@ class PreferOfOverCurrentRule extends DartLintRule with ContextName {
       if (!hasFix) return;
 
       final replacement = node.toString().replaceFirst(badWay, 'I18n.of($name).');
-      reporter.reportErrorForNode(
-        code,
-        node,
-        [node.toString().replaceFirst(badWay, replacement)],
-      );
+      reporter.reportErrorForNode(code, node, [node.toString().replaceFirst(badWay, replacement)]);
     });
     context.registry.addPropertyAccess((node) {
       final expression = node.toString();
@@ -57,11 +49,7 @@ class PreferOfOverCurrentRule extends DartLintRule with ContextName {
       if (!hasFix) return;
 
       final replacement = node.toString().replaceFirst(badWay, 'I18n.of($name).');
-      reporter.reportErrorForNode(
-        code,
-        node,
-        [node.toString().replaceFirst(badWay, replacement)],
-      );
+      reporter.reportErrorForNode(code, node, [node.toString().replaceFirst(badWay, replacement)]);
     });
   }
 
@@ -92,10 +80,7 @@ class _PreferOfOverCurrentFix extends DartFix with ContextName {
 
       final replacement = node.toString().replaceFirst(badWay, 'I18n.of($paramName).');
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Replace $node by $replacement',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Replace $node by $replacement', priority: 80);
 
       // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {
@@ -114,10 +99,7 @@ class _PreferOfOverCurrentFix extends DartFix with ContextName {
 
       final replacement = node.toString().replaceFirst(badWay, 'I18n.of($paramName).');
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Replace $node by $replacement',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Replace $node by $replacement', priority: 80);
 
       // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {
@@ -128,10 +110,7 @@ class _PreferOfOverCurrentFix extends DartFix with ContextName {
 }
 
 mixin ContextName {
-  (bool, String) getContextName(
-    MethodDeclaration? Function() getMethod,
-    FunctionDeclaration? Function() getFunction,
-  ) {
+  (bool, String) getContextName(MethodDeclaration? Function() getMethod, FunctionDeclaration? Function() getFunction) {
     final method = getMethod();
 
     if (method != null) {

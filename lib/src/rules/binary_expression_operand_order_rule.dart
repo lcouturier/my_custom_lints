@@ -2,7 +2,7 @@
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -11,13 +11,13 @@ class BinaryExpressionOperandOrderRule extends DartLintRule {
   static const ruleName = 'binary_expression_operand_order';
 
   const BinaryExpressionOperandOrderRule()
-      : super(
-          code: const LintCode(
-            name: ruleName,
-            problemMessage: '{0} is on the left-hand side in binary expressions.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: ruleName,
+          problemMessage: '{0} is on the left-hand side in binary expressions.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   static final _operators = [
     TokenType.PLUS,
@@ -30,11 +30,7 @@ class BinaryExpressionOperandOrderRule extends DartLintRule {
   ];
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addBinaryExpression((node) {
       if (node.leftOperand is! IntegerLiteral || node.leftOperand is DoubleLiteral) return;
       if (node.rightOperand is! Identifier) return;
@@ -60,10 +56,7 @@ class _BinaryExpressionOperandOrderRule extends DartFix {
     context.registry.addBinaryExpression((node) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Invert expression order',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Invert expression order', priority: 80);
 
       changeBuilder.addDartFileEdit((builder) {
         builder.addReplacement(range.node(node), (builder) {

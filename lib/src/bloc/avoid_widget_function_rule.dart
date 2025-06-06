@@ -4,7 +4,7 @@ import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -14,21 +14,17 @@ import 'package:my_custom_lints/src/names.dart';
 
 class AvoidWidgetFunctionRule extends DartLintRule {
   const AvoidWidgetFunctionRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_widget_function',
-            problemMessage: 'Avoid building widgets with functions.',
-            correctionMessage: 'Wrap this call by a builder.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_widget_function',
+          problemMessage: 'Avoid building widgets with functions.',
+          correctionMessage: 'Wrap this call by a builder.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodInvocation((node) {
       final returnType = node.staticType;
 
@@ -90,22 +86,16 @@ class _AvoidWidgetFunctionFix extends DartFix {
     context.registry.addMethodInvocation((node) {
       if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Wrap with Builder widget',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Wrap with Builder widget', priority: 80);
 
       changeBuilder.addDartFileEdit((builder) {
         builder
-          ..addReplacement(
-            range.node(node),
-            (builder) {
-              builder
-                ..write('Builder(')
-                ..write('builder: (context) => ' + node.toSource() + ',')
-                ..write(')');
-            },
-          )
+          ..addReplacement(range.node(node), (builder) {
+            builder
+              ..write('Builder(')
+              ..write('builder: (context) => ' + node.toSource() + ',')
+              ..write(')');
+          })
           ..format(range.node(node));
       });
     });

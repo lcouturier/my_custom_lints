@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -7,20 +7,16 @@ import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.da
 
 class AvoidUselessSpreadRule extends DartLintRule {
   const AvoidUselessSpreadRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_useless_spread',
-            problemMessage: 'Useless spread operator.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_useless_spread',
+          problemMessage: 'Useless spread operator.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addUselessSpreadOperator((node, elements) {
       reporter.reportErrorForNode(code, node);
     });
@@ -43,17 +39,16 @@ class _AvoidUselessSpreadFix extends DartFix {
     context.registry.addUselessSpreadOperator((node, elements) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Remove spread operator',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Remove spread operator', priority: 80);
 
       bool hasToDelete = elements.isEmpty && node.typeArguments != null;
       if (hasToDelete) {
         changeBuilder.addDartFileEdit((builder) {
           builder.addDeletion(
-            range.startEnd(node.beginToken.previous!,
-                (node.endToken.next?.type == TokenType.COMMA) ? node.endToken.next! : node.endToken),
+            range.startEnd(
+              node.beginToken.previous!,
+              (node.endToken.next?.type == TokenType.COMMA) ? node.endToken.next! : node.endToken,
+            ),
           );
         });
       } else {

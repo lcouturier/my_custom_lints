@@ -2,7 +2,7 @@
 
 import 'package:analyzer/dart/ast/ast.dart';
 
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -26,20 +26,14 @@ class UnusedParameterRule extends BaseLintRule<UnusedParameters> {
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addFunctionDeclaration((node) {
       if (node.metadata.any((e) => e.name.name.startsWith('Deprecated'))) return;
       final parameters = node.functionExpression.parameters?.parameters;
       if (parameters == null || parameters.isEmpty) return;
 
       final simpleIdentifiers = <SimpleIdentifier>[];
-      final visitor = RecursiveSimpleIdentifierVisitor(
-        onVisitSimpleIdentifier: simpleIdentifiers.add,
-      );
+      final visitor = RecursiveSimpleIdentifierVisitor(onVisitSimpleIdentifier: simpleIdentifiers.add);
       node.functionExpression.body.accept(visitor);
 
       final items = parameters
@@ -67,9 +61,7 @@ class UnusedParameterRule extends BaseLintRule<UnusedParameters> {
       if (parameters == null || parameters.isEmpty) return;
 
       final simpleIdentifiers = <SimpleIdentifier>[];
-      final visitor = RecursiveSimpleIdentifierVisitor(
-        onVisitSimpleIdentifier: simpleIdentifiers.add,
-      );
+      final visitor = RecursiveSimpleIdentifierVisitor(onVisitSimpleIdentifier: simpleIdentifiers.add);
       node.body.accept(visitor);
 
       final items = parameters
@@ -135,9 +127,7 @@ class UnusedParameters {
   final List<String> values;
 
   factory UnusedParameters.fromJson(Map<String, Object?> map) {
-    return UnusedParameters(
-      values: List<String>.from((map['parameters'] ?? []) as YamlList),
-    );
+    return UnusedParameters(values: List<String>.from((map['parameters'] ?? []) as YamlList));
   }
 
   UnusedParameters({required this.values});

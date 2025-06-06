@@ -3,7 +3,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -11,20 +11,16 @@ class AvoidMixingNamedAndPositionalFieldsRule extends DartLintRule {
   static const lintName = 'avoid_mixing_named_and_positional_fields_rule';
 
   const AvoidMixingNamedAndPositionalFieldsRule()
-      : super(
-          code: const LintCode(
-            name: lintName,
-            problemMessage: 'Avoid mixing named and positional fields in record literals.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: lintName,
+          problemMessage: 'Avoid mixing named and positional fields in record literals.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addRecordLiteral((node) {
       bool isMixed = node.fields.any((e) => e is NamedExpression) && node.fields.any((e) => e is! NamedExpression);
       if (!isMixed) return;

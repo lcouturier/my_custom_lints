@@ -3,7 +3,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -21,19 +21,16 @@ class PreferAnyOrEveryRule extends BaseLintRule<PreferAnyOrEveryParameters> {
       configs: configs,
       name: lintName,
       paramsParser: PreferAnyOrEveryParameters.fromJson,
-      problemMessage: (value) =>
-          'Using .any() or .every() helps to abort the calculation when the condition is true (or false) the first time, resulting in more performant code.',
+      problemMessage:
+          (value) =>
+              'Using .any() or .every() helps to abort the calculation when the condition is true (or false) the first time, resulting in more performant code.',
     );
 
     return PreferAnyOrEveryRule._(rule);
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addPropertyAccess((node) {
       final propertyName = node.propertyName.name;
       if ((propertyName != 'isNotEmpty') && (propertyName != 'isEmpty')) return;
@@ -46,10 +43,7 @@ class PreferAnyOrEveryRule extends BaseLintRule<PreferAnyOrEveryParameters> {
 
         if (!iterableChecker.isAssignableFromType(targetType)) return;
 
-        reporter.reportErrorForNode(
-          code,
-          node,
-        );
+        reporter.reportErrorForNode(code, node);
       }
     });
   }
@@ -75,10 +69,7 @@ class _PreferAnyOrEveryFix extends DartFix {
         final target = node.realTarget;
         if (target is! MethodInvocation) return;
 
-        final changeBuilder = reporter.createChangeBuilder(
-          message: 'Replace with Iterable.any',
-          priority: 80,
-        );
+        final changeBuilder = reporter.createChangeBuilder(message: 'Replace with Iterable.any', priority: 80);
 
         changeBuilder.addDartFileEdit((builder) {
           builder

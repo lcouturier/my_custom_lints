@@ -3,28 +3,24 @@
 import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 class AvoidMapKeysContainsRule extends DartLintRule {
   const AvoidMapKeysContainsRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_map_keys_contains',
-            problemMessage: 'Avoid using keys.contains for map key checks.',
-            correctionMessage: 'Use map.containsKey instead for better performance.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_map_keys_contains',
+          problemMessage: 'Avoid using keys.contains for map key checks.',
+          correctionMessage: 'Use map.containsKey instead for better performance.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodInvocation((node) {
       if (node.methodName.name != 'contains') return;
 
@@ -53,10 +49,7 @@ class _AvoidMapKeysContainsFix extends DartFix {
     context.registry.addMethodInvocation((node) {
       if (!analysisError.sourceRange.covers(node.sourceRange)) return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Replace with Map.containsKey',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Replace with Map.containsKey', priority: 80);
 
       // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {

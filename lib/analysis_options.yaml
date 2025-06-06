@@ -13,6 +13,7 @@ analyzer:
     # - test/**/*.dart'
     - lib/generated_plugin_registrant.dart
     - lib/firebase_options.dart
+  
 
   language:
     strict-casts: true
@@ -20,6 +21,7 @@ analyzer:
     strict-raw-types: true
 
   errors:
+    deprecated_member_use: ignore
     dead_code: error
     unused_import: error
     unused_element: error
@@ -149,7 +151,7 @@ custom_lint:
               description: Use "sorted" instead
 
 linter:
-  rules:    
+  rules:
     avoid_field_initializers_in_const_classes: true
     avoid_void_async: true
     unawaited_futures: true

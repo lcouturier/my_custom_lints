@@ -1,28 +1,24 @@
 // ignore_for_file: cascade_invocations
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/names.dart';
 
 class AvoidPrintRule extends DartLintRule {
   const AvoidPrintRule()
-      : super(
-          code: const LintCode(
-            name: RuleNames.avoidPrint,
-            problemMessage: 'Avoid using print statements in production code.',
-            correctionMessage: 'Consider using a logger instead.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: RuleNames.avoidPrint,
+          problemMessage: 'Avoid using print statements in production code.',
+          correctionMessage: 'Consider using a logger instead.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodInvocation((node) {
       final element = node.methodName.staticElement;
       if (element is! FunctionElement) return;
@@ -50,10 +46,7 @@ class UseDeveloperLogFix extends DartFix {
     context.registry.addMethodInvocation((node) {
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Use log from dart:developer instead.',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Use log from dart:developer instead.', priority: 80);
 
       changeBuilder.addDartFileEdit((builder) {
         final sourceRange = node.methodName.sourceRange;

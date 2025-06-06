@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/names.dart';
@@ -9,21 +9,17 @@ class PreferReturningConditionRule extends DartLintRule {
   static const correction = 'Prefer return condition itself.';
 
   const PreferReturningConditionRule()
-      : super(
-          code: const LintCode(
-            name: RuleNames.preferReturningCondition,
-            problemMessage: problem,
-            correctionMessage: correction,
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: RuleNames.preferReturningCondition,
+          problemMessage: problem,
+          correctionMessage: correction,
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addIfStatement((node) {
       final thenStatement = node.thenStatement;
       final elseStatement = node.elseStatement;

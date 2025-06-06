@@ -2,28 +2,24 @@ import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class AvoidUnnecessarySetStateRule extends DartLintRule {
   const AvoidUnnecessarySetStateRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_unnecessary_setstate',
-            problemMessage:
-                "Warns when setState is called inside initState, didUpdateWidget or build methods and when it's called from a sync method that is called inside those methods.",
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_unnecessary_setstate',
+          problemMessage:
+              "Warns when setState is called inside initState, didUpdateWidget or build methods and when it's called from a sync method that is called inside those methods.",
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addClassDeclarationStatefulWidget((node) {
       final callers = _SetStateCallers(node.name.lexeme);
       node.accept(callers);
@@ -46,12 +42,7 @@ class _SetStateVisitor extends RecursiveAstVisitor<void> {
 
   static const methods = ['initState', 'didUpdateWidget', 'build', 'dispose'];
 
-  _SetStateVisitor(
-    this.code,
-    this.reporter,
-    this.methodsWithSetState,
-    this.className,
-  );
+  _SetStateVisitor(this.code, this.reporter, this.methodsWithSetState, this.className);
 
   @override
   void visitMethodDeclaration(MethodDeclaration node) {

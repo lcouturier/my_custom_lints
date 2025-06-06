@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -15,20 +15,16 @@ import 'package:my_custom_lints/src/common/checker.dart';
 
 class AvoidUsingBuildContextAwaitRule extends DartLintRule {
   const AvoidUsingBuildContextAwaitRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_using_buildcontext_after_await',
-            problemMessage: 'Avoid using BuildContext after an await in async functions.',
-            correctionMessage: 'Using BuildContext after await can lead to accessing an unmounted widget.',
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_using_buildcontext_after_await',
+          problemMessage: 'Avoid using BuildContext after an await in async functions.',
+          correctionMessage: 'Using BuildContext after await can lead to accessing an unmounted widget.',
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodDeclaration((node) {
       final body = node.body;
       if (body is! BlockFunctionBody) return;
@@ -68,10 +64,7 @@ class _AvoidUsingBuildContextAwaitFix extends DartFix {
 
       final (expression, context) = analysisError.data! as (ExpressionStatement, FormalParameter);
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Add mounted check',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Add mounted check', priority: 80);
 
       changeBuilder.addDartFileEdit((builder) {
         builder.addReplacement(range.node(expression), (builder) {

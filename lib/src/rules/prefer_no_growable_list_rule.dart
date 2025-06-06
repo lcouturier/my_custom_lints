@@ -4,7 +4,7 @@ import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
 
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/checker.dart';
@@ -14,19 +14,10 @@ class PreferNoGrowableListRule extends DartLintRule {
   static const ruleName = 'prefer_no_growable_list';
 
   const PreferNoGrowableListRule()
-      : super(
-          code: const LintCode(
-            name: ruleName,
-            problemMessage: 'Always use non-growable arrays if possible.',
-          ),
-        );
+    : super(code: const LintCode(name: ruleName, problemMessage: 'Always use non-growable arrays if possible.'));
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodInvocation((node) {
       final targetType = node.realTarget?.staticType;
       if (targetType == null || !iterableChecker.isAssignableFromType(targetType)) return;
@@ -76,10 +67,7 @@ class _PreferNoGrowableListFix extends DartFix {
     context.registry.addMethodInvocation((node) {
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Add growable: false to toList()',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Add growable: false to toList()', priority: 80);
 
       changeBuilder.addDartFileEdit((builder) {
         builder.addSimpleInsertion(node.methodName.end + 1, 'growable: false');

@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -10,19 +10,15 @@ import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.da
 
 class UseSetStateSynchronouslyRule extends DartLintRule {
   const UseSetStateSynchronouslyRule()
-      : super(
-          code: const LintCode(
-            name: 'use_setstate_synchronously',
-            problemMessage: "Avoid calling 'setState' past an await point without checking if the widget is mounted.",
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'use_setstate_synchronously',
+          problemMessage: "Avoid calling 'setState' past an await point without checking if the widget is mounted.",
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addClassDeclarationStatefulWidget((node) {
       for (var method in node.members.whereType<MethodDeclaration>().where((e) => e.body.isAsynchronous)) {
         final awaitFinder = _AwaitFinder();

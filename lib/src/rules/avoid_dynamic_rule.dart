@@ -4,7 +4,7 @@ import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/extensions.dart';
@@ -14,14 +14,14 @@ class AvoidDynamicRule extends DartLintRule {
   static const ruleName = 'avoid_dynamic';
 
   const AvoidDynamicRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_dynamic',
-            correctionMessage: 'Avoid using dynamic.',
-            errorSeverity: ErrorSeverity.WARNING,
-            problemMessage: 'Using dynamic is considered unsafe since it can easily result in runtime errors.',
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_dynamic',
+          correctionMessage: 'Avoid using dynamic.',
+          errorSeverity: ErrorSeverity.WARNING,
+          problemMessage: 'Using dynamic is considered unsafe since it can easily result in runtime errors.',
+        ),
+      );
 
   static final List<bool Function(NamedType node)> _rules = [
     (e) => e.type == null,
@@ -31,11 +31,7 @@ class AvoidDynamicRule extends DartLintRule {
   ];
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addNamedType((node) {
       if (!_rules.any((element) => element(node))) return;
 
@@ -46,12 +42,9 @@ class AvoidDynamicRule extends DartLintRule {
       if (node != null) return;
 
       reporter.reportErrorForNode(
-          const LintCode(
-            name: ruleName,
-            errorSeverity: ErrorSeverity.WARNING,
-            problemMessage: 'Add void type.',
-          ),
-          parent);
+        const LintCode(name: ruleName, errorSeverity: ErrorSeverity.WARNING, problemMessage: 'Add void type.'),
+        parent,
+      );
     });
   }
 
@@ -71,10 +64,7 @@ class _AvoidDynamicFix extends DartFix {
     context.registry.addReturnType((node, parent) {
       if (!analysisError.sourceRange.covers(parent.sourceRange)) return;
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Add void keyword',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Add void keyword', priority: 80);
 
       changeBuilder.addDartFileEdit((builder) {
         builder.addSimpleInsertion(parent.offset, 'void ');

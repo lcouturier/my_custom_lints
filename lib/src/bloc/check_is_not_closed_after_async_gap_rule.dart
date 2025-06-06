@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 
@@ -10,19 +10,15 @@ import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.da
 
 class CheckIsNotClosedAfterAsyncGapEmitRule extends DartLintRule {
   const CheckIsNotClosedAfterAsyncGapEmitRule()
-      : super(
-          code: const LintCode(
-            name: 'check_is_not_closed_after_async_gap_and_emit',
-            problemMessage: "Avoid emitting an event after an await point without checking 'isClosed'.",
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'check_is_not_closed_after_async_gap_and_emit',
+          problemMessage: "Avoid emitting an event after an await point without checking 'isClosed'.",
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addBlocAndCubitAsyncMethods((methods) {
       for (var method in methods) {
         final awaitFinder = _AwaitFinder();

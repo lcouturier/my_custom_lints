@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -10,22 +10,18 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 /// Utilisez `watch()` à la place pour garantir que l'UI se met à jour quand les données changent.
 class ReadNotInBuildRule extends DartLintRule {
   const ReadNotInBuildRule()
-      : super(
-          code: const LintCode(
-            name: 'read_not_in_build',
-            problemMessage: 'La méthode read() ne devrait pas être utilisée dans des méthodes de build',
-            correctionMessage:
-                'Utilisez ref.watch() pour observer les changements et reconstruire le widget automatiquement',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'read_not_in_build',
+          problemMessage: 'La méthode read() ne devrait pas être utilisée dans des méthodes de build',
+          correctionMessage:
+              'Utilisez ref.watch() pour observer les changements et reconstruire le widget automatiquement',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodInvocation((node) {
       if (node.methodName.name != 'read') return;
 
@@ -60,13 +56,7 @@ class ReadNotInBuildRule extends DartLintRule {
     final methodName = method.name.lexeme;
 
     // Liste des noms de méthodes qui sont considérées comme des builders
-    final builderNames = [
-      'build',
-      'buildWidget',
-      'buildConsumer',
-      'buildWhen',
-      'builder',
-    ];
+    final builderNames = ['build', 'buildWidget', 'buildConsumer', 'buildWhen', 'builder'];
 
     // Vérifie si le nom de la méthode contient "build" ou est dans la liste des builders
     if (builderNames.contains(methodName) || methodName.contains('build')) {

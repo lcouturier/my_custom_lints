@@ -3,7 +3,7 @@
 import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
@@ -26,11 +26,7 @@ class AvoidBannedTypeRule extends BaseLintRule<AvoidBannedTypeParameters> {
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addNamedType((node) {
       final entry = config.parameters.entries.firstWhereOrNull((e) => e.className == node.name2.lexeme);
       if (entry == null) return;
@@ -47,12 +43,13 @@ class AvoidBannedTypeRule extends BaseLintRule<AvoidBannedTypeParameters> {
 
       reporter.reportErrorForNode(
         code.copyWith(
-          errorSeverity: entry.severity == null
-              ? ErrorSeverity.WARNING
-              : ErrorSeverity.values.firstWhere(
-                  (e) => e.name == entry.severity!.toUpperCase(),
-                  orElse: () => ErrorSeverity.WARNING,
-                ),
+          errorSeverity:
+              entry.severity == null
+                  ? ErrorSeverity.WARNING
+                  : ErrorSeverity.values.firstWhere(
+                    (e) => e.name == entry.severity!.toUpperCase(),
+                    orElse: () => ErrorSeverity.WARNING,
+                  ),
         ),
         node,
         [entry.message],
@@ -67,15 +64,16 @@ class AvoidBannedTypeParameters {
   factory AvoidBannedTypeParameters.fromJson(Map<String, Object?> map) {
     final yamlEntries = (map['entries'] ?? []) as YamlList;
 
-    final entries = yamlEntries.map((e) {
-      return Entry(
-        paths: List<String>.from(e['paths'] as YamlList),
-        className: e['class_name'] as String,
-        package: e['package'] as String?,
-        message: e['message'] as String,
-        severity: e['severity'] as String?,
-      );
-    }).toList();
+    final entries =
+        yamlEntries.map((e) {
+          return Entry(
+            paths: List<String>.from(e['paths'] as YamlList),
+            className: e['class_name'] as String,
+            package: e['package'] as String?,
+            message: e['message'] as String,
+            severity: e['severity'] as String?,
+          );
+        }).toList();
     return AvoidBannedTypeParameters._(entries);
   }
 

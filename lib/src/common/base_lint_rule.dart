@@ -1,6 +1,6 @@
 // ignore_for_file: lines_longer_than_80_chars
 
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 typedef RuleProblemFactory<T> = String Function(T value);
@@ -12,9 +12,9 @@ class RuleConfig<T extends Object?> {
     required CustomLintConfigs configs,
     required RuleProblemFactory<T> problemMessage,
     RuleParameterParser<T>? paramsParser,
-  })  : enabled = configs.rules[name]?.enabled ?? false,
-        parameters = paramsParser?.call(configs.rules[name]?.json ?? {}) as T,
-        _problemMessageFactory = problemMessage;
+  }) : enabled = configs.rules[name]?.enabled ?? false,
+       parameters = paramsParser?.call(configs.rules[name]?.json ?? {}) as T,
+       _problemMessageFactory = problemMessage;
 
   final String name;
 
@@ -24,11 +24,8 @@ class RuleConfig<T extends Object?> {
 
   final RuleProblemFactory<T> _problemMessageFactory;
 
-  LintCode get lintCode => LintCode(
-        name: name,
-        errorSeverity: ErrorSeverity.WARNING,
-        problemMessage: _problemMessageFactory(parameters),
-      );
+  LintCode get lintCode =>
+      LintCode(name: name, errorSeverity: ErrorSeverity.WARNING, problemMessage: _problemMessageFactory(parameters));
 }
 
 abstract class BaseLintRule<T extends Object?> extends DartLintRule {

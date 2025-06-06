@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/checker.dart';
@@ -11,21 +11,17 @@ class NoBooleanLiteralCompareRule extends DartLintRule {
       'Comparing boolean values to boolean literals is unnecessary, as those expressions will result in booleans too. Just use the boolean values directly or negate them.';
 
   const NoBooleanLiteralCompareRule()
-      : super(
-          code: const LintCode(
-            name: 'no_boolean_literal_compare',
-            problemMessage: problem,
-            correctionMessage: problem,
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'no_boolean_literal_compare',
+          problemMessage: problem,
+          correctionMessage: problem,
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addBooleanLiteral((node) {
       final parent = node.parent;
       if (parent is! BinaryExpression) return;
@@ -58,7 +54,8 @@ class NoBooleanLiteralCompareFix extends DartFix {
 
       final leftOperandBooleanLiteral = node.leftOperand is BooleanLiteral;
       final booleanLiteralOperand = (leftOperandBooleanLiteral ? node.leftOperand : node.rightOperand).toString();
-      final useDirect = (node.operator.type == TokenType.EQ_EQ && booleanLiteralOperand == 'true') ||
+      final useDirect =
+          (node.operator.type == TokenType.EQ_EQ && booleanLiteralOperand == 'true') ||
           (node.operator.type == TokenType.BANG_EQ && booleanLiteralOperand == 'false');
 
       final changeBuilder = reporter.createChangeBuilder(
@@ -71,10 +68,7 @@ class NoBooleanLiteralCompareFix extends DartFix {
       final range = node.sourceRange;
       changeBuilder.addDartFileEdit((builder) {
         final replacement = useDirect ? correction : '!$correction';
-        builder.addSimpleReplacement(
-          range,
-          replacement,
-        );
+        builder.addSimpleReplacement(range, replacement);
       });
     });
   }

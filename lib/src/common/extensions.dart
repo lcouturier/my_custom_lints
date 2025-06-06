@@ -4,9 +4,9 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
-
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/error/error.dart';
+
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/checker.dart';
 
@@ -87,8 +87,7 @@ extension ExpressionExtensions on Expression {
   // Extracts field names from a props list literal.
   List<String> getFieldsFromProps() {
     if (this is ListLiteral) {
-      return (this as ListLiteral)
-          .elements
+      return (this as ListLiteral).elements
           .whereType<SimpleIdentifier>()
           .map((id) => id.staticElement)
           .map((e) => e?.displayName ?? '')
@@ -101,10 +100,10 @@ extension ExpressionExtensions on Expression {
 extension FunctionBodyExtensions on FunctionBody {
   // Returns the expression from a function body.
   Expression? get expression => switch (this) {
-        BlockFunctionBody(:final block) => block.statements.whereType<ReturnStatement>().firstOrNull?.expression,
-        ExpressionFunctionBody(:final expression) => expression,
-        _ => null,
-      };
+    BlockFunctionBody(:final block) => block.statements.whereType<ReturnStatement>().firstOrNull?.expression,
+    ExpressionFunctionBody(:final expression) => expression,
+    _ => null,
+  };
   // Checks if a function body has a return statement.
   bool get hasReturnStatement {
     return switch (this) {
@@ -168,12 +167,12 @@ extension StringExtensions on String {
   String removeAllSpaces() => replaceAll(' ', '');
   // Checks if a string contains only underscores.
   bool get containsOnlyUnderscores => switch (length) {
-        0 => false,
-        1 => this == '_',
-        2 => this == '__',
-        3 => this == '___',
-        _ => RegExp(r'^_+$').hasMatch(this),
-      };
+    0 => false,
+    1 => this == '_',
+    2 => this == '__',
+    3 => this == '___',
+    _ => RegExp(r'^_+$').hasMatch(this),
+  };
 
   // Removes a prefix from a string (defaults to "get").
   String removePrefix([String prefix = 'get']) {
@@ -191,10 +190,7 @@ extension StringExtensions on String {
 
 extension IterableExtensions<E> on Iterable<E> {
   // ignore: strict_raw_type
-  Iterable<E> orderBy<K extends Comparable>(
-    K Function(E element) keySelector, {
-    bool ascending = true,
-  }) {
+  Iterable<E> orderBy<K extends Comparable>(K Function(E element) keySelector, {bool ascending = true}) {
     // Convert to a list for sorting
     var sortedList = toList();
     sortedList.sort((a, b) {

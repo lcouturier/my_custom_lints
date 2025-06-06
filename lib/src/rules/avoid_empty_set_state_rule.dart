@@ -1,27 +1,23 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/lint_rule_node_registry_extensions.dart';
 
 class AvoidEmptySetStateRule extends DartLintRule {
   const AvoidEmptySetStateRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_empty_set_state',
-            problemMessage:
-                'Calling setState with an empty callback will still cause the widget to be re-rendered, but since it does not change the state, an empty callback is usually a sign of a bug.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_empty_set_state',
+          problemMessage:
+              'Calling setState with an empty callback will still cause the widget to be re-rendered, but since it does not change the state, an empty callback is usually a sign of a bug.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addClassDeclarationStatefulWidget((node) {
       for (var member in node.members.whereType<MethodDeclaration>()) {
         final methodBody = member.body;

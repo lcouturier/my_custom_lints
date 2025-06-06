@@ -1,25 +1,21 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 class PreferImmediateReturnRule extends DartLintRule {
   const PreferImmediateReturnRule()
-      : super(
-          code: const LintCode(
-            name: 'prefer_immediate_return',
-            problemMessage:
-                'Prefer returning the result immediately instead of declaring an intermediate variable right before the return statement.',
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'prefer_immediate_return',
+          problemMessage:
+              'Prefer returning the result immediately instead of declaring an intermediate variable right before the return statement.',
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addFunctionBody((node) {
       if (node is! BlockFunctionBody) return;
 
@@ -57,10 +53,7 @@ class _PreferImmediateReturnFix extends DartFix {
     final node = analysisError.data! as Block;
     if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
-    final changeBuilder = reporter.createChangeBuilder(
-      message: 'Prefer immediate return',
-      priority: 80,
-    );
+    final changeBuilder = reporter.createChangeBuilder(message: 'Prefer immediate return', priority: 80);
 
     final length = node.statements.length;
     if (length < 2) return;

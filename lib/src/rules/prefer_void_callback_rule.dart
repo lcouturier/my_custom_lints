@@ -1,4 +1,4 @@
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
@@ -21,11 +21,7 @@ class PreferVoidCallbackRule extends BaseLintRule<PreferVoidCallbackParameters> 
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addVoidCallback((node) {
       reporter.reportErrorForNode(code, node);
     });
@@ -48,17 +44,11 @@ class _ReplaceWithVoidCallBackFix extends DartFix {
       if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
 
       final replacement = node.question == null ? 'VoidCallback' : 'VoidCallback?';
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Replace with $replacement',
-        priority: 80,
-      );
+      final changeBuilder = reporter.createChangeBuilder(message: 'Replace with $replacement', priority: 80);
 
       // ignore: cascade_invocations
       changeBuilder.addDartFileEdit((builder) {
-        builder.addSimpleReplacement(
-          node.sourceRange,
-          replacement,
-        );
+        builder.addSimpleReplacement(node.sourceRange, replacement);
       });
     });
   }

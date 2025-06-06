@@ -3,7 +3,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -11,20 +11,16 @@ class AvoidNestedRecordRule extends DartLintRule {
   static const lintName = 'avoid_nested_record';
 
   const AvoidNestedRecordRule()
-      : super(
-          code: const LintCode(
-            name: lintName,
-            problemMessage: 'Nesting multiple records can significantly reduce readability.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: lintName,
+          problemMessage: 'Nesting multiple records can significantly reduce readability.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addRecordLiteral((node) {
       bool hasNestedRecord = node.fields.any((e) => e is RecordLiteral);
       if (hasNestedRecord) {
@@ -41,7 +37,8 @@ class AvoidNestedRecordRule extends DartLintRule {
       if (element.aliasedType is! RecordType) return;
 
       final record = element.aliasedType as RecordType;
-      bool isNested = record.positionalFields.any((e) => e.type is RecordType) ||
+      bool isNested =
+          record.positionalFields.any((e) => e.type is RecordType) ||
           record.namedFields.any((e) => e.type is RecordType);
       if (!isNested) return;
 

@@ -3,7 +3,7 @@
 import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
@@ -26,18 +26,14 @@ class AvoidSingleChildColumnOrRowRule extends BaseLintRule<AvoidSingleChildColum
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addInstanceCreationExpression((node) {
       if (!config.parameters.widgets.contains(node.constructorName.type.name2.lexeme)) return;
       if (node.argumentList.arguments.isEmpty) return;
 
-      final (found, p) = node.argumentList.arguments
-          .whereType<NamedExpression>()
-          .firstWhereOrNot((e) => e.name.label.name == 'children');
+      final (found, p) = node.argumentList.arguments.whereType<NamedExpression>().firstWhereOrNot(
+        (e) => e.name.label.name == 'children',
+      );
       if (!found) return;
 
       if (p!.expression is! ListLiteral) return;
@@ -55,9 +51,7 @@ class AvoidSingleChildColumnOrRowParameters {
   final List<String> widgets;
 
   factory AvoidSingleChildColumnOrRowParameters.fromJson(Map<String, Object?> map) {
-    return AvoidSingleChildColumnOrRowParameters(
-      widgets: List<String>.from((map['widgets'] ?? []) as YamlList),
-    );
+    return AvoidSingleChildColumnOrRowParameters(widgets: List<String>.from((map['widgets'] ?? []) as YamlList));
   }
 
   AvoidSingleChildColumnOrRowParameters({required this.widgets});

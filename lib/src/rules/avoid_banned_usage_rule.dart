@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
@@ -22,11 +22,7 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodInvocation((node) {
       final entry = config.parameters.entries.firstWhereOrNull((e) => e.name == node.methodName.name);
       if (entry == null) return;
@@ -36,12 +32,13 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
 
       reporter.reportErrorForNode(
         code.copyWith(
-          errorSeverity: entry.severity == null
-              ? ErrorSeverity.WARNING
-              : ErrorSeverity.values.firstWhere(
-                  (e) => e.name == entry.severity!.toUpperCase(),
-                  orElse: () => ErrorSeverity.WARNING,
-                ),
+          errorSeverity:
+              entry.severity == null
+                  ? ErrorSeverity.WARNING
+                  : ErrorSeverity.values.firstWhere(
+                    (e) => e.name == entry.severity!.toUpperCase(),
+                    orElse: () => ErrorSeverity.WARNING,
+                  ),
         ),
         node,
         [entry.message],
@@ -65,32 +62,41 @@ class AvoidBannedUsageParameters {
   factory AvoidBannedUsageParameters.fromJson(Map<String, Object?> map) {
     final yamlEntries = (map['entries'] ?? []) as YamlList;
 
-    final entries = yamlEntries.where((e) => e['type'] != null).map((e) {
-      return EntryType(
-        type: e['type'] as String,
-        namesType: [],
-        entries: ((e['entries'] ?? <Entry>[]) as YamlList).map((e) {
-          return Entry(
-            names: List<String>.from(e['names'] as YamlList),
-            message: e['description'] as String,
-            severity: e['severity'] as String?,
+    final entries = yamlEntries
+        .where((e) => e['type'] != null)
+        .map((e) {
+          return EntryType(
+            type: e['type'] as String,
+            namesType: [],
+            entries:
+                ((e['entries'] ?? <Entry>[]) as YamlList).map((e) {
+                  return Entry(
+                    names: List<String>.from(e['names'] as YamlList),
+                    message: e['description'] as String,
+                    severity: e['severity'] as String?,
+                  );
+                }).toList(),
           );
-        }).toList(),
-      );
-    }).expand(
-      (e) => e.entries.map((item) {
-        return (type: e.type, names: item.names, message: item.message, severity: item.severity);
-      }),
-    );
-    final result = entries
-        .expand((e) =>
-            e.names.map((name) => FlattenEntry(type: e.type, name: name, message: e.message, severity: e.severity)))
-        .toList();
+        })
+        .expand(
+          (e) => e.entries.map((item) {
+            return (type: e.type, names: item.names, message: item.message, severity: item.severity);
+          }),
+        );
+    final result =
+        entries
+            .expand(
+              (e) => e.names.map(
+                (name) => FlattenEntry(type: e.type, name: name, message: e.message, severity: e.severity),
+              ),
+            )
+            .toList();
 
-    final names = yamlEntries
-        .where((e) => e['name'] != null)
-        .map((e) => NameType(name: e['name'] as String, description: e['description'] as String))
-        .toList();
+    final names =
+        yamlEntries
+            .where((e) => e['name'] != null)
+            .map((e) => NameType(name: e['name'] as String, description: e['description'] as String))
+            .toList();
 
     return AvoidBannedUsageParameters._(result, names);
   }

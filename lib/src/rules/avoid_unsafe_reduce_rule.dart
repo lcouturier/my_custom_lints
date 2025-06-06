@@ -4,7 +4,7 @@ import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -16,20 +16,16 @@ class AvoidUnsafeReduceRule extends DartLintRule {
   static const ruleName = 'avoid_unsafe_reduce';
 
   const AvoidUnsafeReduceRule()
-      : super(
-          code: const LintCode(
-            name: ruleName,
-            problemMessage: 'Calling .reduce on an empty collection will result in a runtime exception.',
-            errorSeverity: ErrorSeverity.WARNING,
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: ruleName,
+          problemMessage: 'Calling .reduce on an empty collection will result in a runtime exception.',
+          errorSeverity: ErrorSeverity.WARNING,
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodInvocation((node) {
       final targetType = node.realTarget?.staticType;
       if (targetType == null || !iterableChecker.isAssignableFromType(targetType)) return;
@@ -81,12 +77,9 @@ class _AvoidUnsafeReduceFix extends DartFix {
       changeBuilder.addDartFileEdit((builder) {
         builder
           ..addSimpleReplacement(node.methodName.sourceRange, 'fold')
-          ..addInsertion(
-            node.methodName.sourceRange.end + 1,
-            (builder) {
-              builder.write('$defaultValue,');
-            },
-          )
+          ..addInsertion(node.methodName.sourceRange.end + 1, (builder) {
+            builder.write('$defaultValue,');
+          })
           ..format(node.sourceRange);
       });
     });

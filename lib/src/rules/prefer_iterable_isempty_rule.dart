@@ -3,7 +3,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:my_custom_lints/src/common/base_lint_rule.dart';
@@ -19,19 +19,15 @@ class PreferIterableIsEmptyRule extends BaseLintRule<PreferIterableIsAnyParamete
       configs: configs,
       name: lintName,
       paramsParser: PreferIterableIsAnyParameters.fromJson,
-      problemMessage: (value) =>
-          'Prefer using `.isEmpty` over `.length == 0 or Prefer using `.isNotEmpty` over `.length != 0`.',
+      problemMessage:
+          (value) => 'Prefer using `.isEmpty` over `.length == 0 or Prefer using `.isNotEmpty` over `.length != 0`.',
     );
 
     return PreferIterableIsEmptyRule._(rule);
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addBinaryExpression((node) {
       if ((node.leftOperand is! PropertyAccess) && (node.leftOperand is! PrefixedIdentifier)) return;
       if (node.rightOperand is! IntegerLiteral) return;
@@ -56,10 +52,7 @@ class PreferIterableIsEmptyRule extends BaseLintRule<PreferIterableIsAnyParamete
 
       if ((node.rightOperand as IntegerLiteral).value != 0) return;
 
-      reporter.atNode(
-        node.parent!,
-        code,
-      );
+      reporter.atNode(node.parent!, code);
     });
   }
 
@@ -91,10 +84,7 @@ class _ReplaceWithIterablIsEmpty extends DartFix {
       final range = node.sourceRange;
       changeBuilder.addDartFileEdit((builder) {
         final replacement = node.leftOperand.toString().replaceFirst('.length', useDirect ? '.isEmpty' : '.isNotEmpty');
-        builder.addSimpleReplacement(
-          range,
-          replacement,
-        );
+        builder.addSimpleReplacement(range, replacement);
       });
     });
   }

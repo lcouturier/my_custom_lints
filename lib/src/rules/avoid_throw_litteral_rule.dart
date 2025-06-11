@@ -18,7 +18,7 @@ class AvoidThrowLiteral extends DartLintRule {
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addThrowExpression((node) {
       if (node.expression is! Literal) return;
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

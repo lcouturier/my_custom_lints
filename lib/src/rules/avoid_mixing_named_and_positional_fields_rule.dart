@@ -25,7 +25,7 @@ class AvoidMixingNamedAndPositionalFieldsRule extends DartLintRule {
       bool isMixed = node.fields.any((e) => e is NamedExpression) && node.fields.any((e) => e is! NamedExpression);
       if (!isMixed) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

@@ -37,25 +37,23 @@ class CyclomaticComplexityRule extends BaseLintRule<CyclomaticComplexityParamete
       configs: configs,
       name: lintName,
       paramsParser: CyclomaticComplexityParameters.fromJson,
-      problemMessage: (value) => 'The maximum allowed complexity of a function is '
-          '${value.maxComplexity}. Please decrease it.',
+      problemMessage:
+          (value) =>
+              'The maximum allowed complexity of a function is '
+              '${value.maxComplexity}. Please decrease it.',
     );
 
     return CyclomaticComplexityRule._(rule);
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addBlockFunctionBody((node) {
       final visitor = CyclomaticComplexityFlowVisitor();
       node.visitChildren(visitor);
 
       if (visitor.complexityEntities.length + 1 > config.parameters.maxComplexity) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
   }
@@ -66,13 +64,10 @@ class CyclomaticComplexityParameters {
 
   static const _defaultMaxComplexity = 10;
 
-  const CyclomaticComplexityParameters({
-    required this.maxComplexity,
-  });
+  const CyclomaticComplexityParameters({required this.maxComplexity});
 
-  factory CyclomaticComplexityParameters.fromJson(Map<String, Object?> map) => CyclomaticComplexityParameters(
-        maxComplexity: map['max_complexity'] as int? ?? _defaultMaxComplexity,
-      );
+  factory CyclomaticComplexityParameters.fromJson(Map<String, Object?> map) =>
+      CyclomaticComplexityParameters(maxComplexity: map['max_complexity'] as int? ?? _defaultMaxComplexity);
 }
 
 class CyclomaticComplexityFlowVisitor extends RecursiveAstVisitor<void> {
@@ -98,10 +93,7 @@ class CyclomaticComplexityFlowVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitBlockFunctionBody(BlockFunctionBody node) {
-    _visitBlock(
-      node.block.leftBracket.next,
-      node.block.rightBracket,
-    );
+    _visitBlock(node.block.leftBracket.next, node.block.rightBracket);
 
     super.visitBlockFunctionBody(node);
   }
@@ -122,10 +114,7 @@ class CyclomaticComplexityFlowVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitExpressionFunctionBody(ExpressionFunctionBody node) {
-    _visitBlock(
-      node.expression.beginToken.previous,
-      node.expression.endToken.next,
-    );
+    _visitBlock(node.expression.beginToken.previous, node.expression.endToken.next);
 
     super.visitExpressionFunctionBody(node);
   }

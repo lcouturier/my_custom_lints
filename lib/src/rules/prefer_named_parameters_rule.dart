@@ -14,25 +14,22 @@ class PreferNamedParametersRule extends BaseLintRule<PreferNamedParameters> {
       configs: configs,
       name: 'prefer_named_parameters',
       paramsParser: PreferNamedParameters.fromJson,
-      problemMessage: (value) =>
-          "With positional parameters, it's relatively easy to pass the wrong argument to a parameter (especially after a certain number of declared parameters). This rule helps avoid such mistakes.",
+      problemMessage:
+          (value) =>
+              "With positional parameters, it's relatively easy to pass the wrong argument to a parameter (especially after a certain number of declared parameters). This rule helps avoid such mistakes.",
     );
 
     return PreferNamedParametersRule._(rule);
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addConstructorDeclaration((node) {
       final parameters = node.parameters.parameters;
       if (parameters.countBy((e) => e.isPositional) == config.parameters.maxNumber) return;
       if (parameters.every((e) => e.isNamed)) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
 
     // context.registry.addMethodDeclaration((node) {
@@ -41,7 +38,7 @@ class PreferNamedParametersRule extends BaseLintRule<PreferNamedParameters> {
     //   final map = parameters.groupBy((e) => e.declaredElement?.type);
     //   if (map.length != 1) return;
 
-    //   reporter.reportErrorForNode(code, node);
+    //   reporter.atNode(node, code);
     // });
   }
 }
@@ -55,7 +52,5 @@ class PreferNamedParameters {
     return PreferNamedParameters(maxNumber: maxNumber);
   }
 
-  PreferNamedParameters({
-    required this.maxNumber,
-  });
+  PreferNamedParameters({required this.maxNumber});
 }

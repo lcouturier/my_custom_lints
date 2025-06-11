@@ -33,7 +33,7 @@ class PreferContainsMethodRule extends DartLintRule {
       if ((expression.operator.type != TokenType.EQ_EQ) && (expression.operator.type != TokenType.BANG_EQ)) return;
       if (expression.rightOperand.toString() != '-1') return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

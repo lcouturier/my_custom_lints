@@ -26,7 +26,7 @@ class AvoidExtensionOnEnumRule extends DartLintRule {
       final isEnum = namedType.element is EnumElement;
       if (!isEnum) return;
 
-      reporter.reportErrorForNode(code, namedType);
+      reporter.atNode(namedType, code);
     });
   }
 }

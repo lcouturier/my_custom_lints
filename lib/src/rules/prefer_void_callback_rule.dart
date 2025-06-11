@@ -23,7 +23,7 @@ class PreferVoidCallbackRule extends BaseLintRule<PreferVoidCallbackParameters> 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addVoidCallback((node) {
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

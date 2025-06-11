@@ -26,7 +26,7 @@ class AvoidShadowedExtensionMethodsRule extends DartLintRule {
 
       final errors = extensionMethods.joinWhere(methods, (p0, p1) => p0.name.lexeme == p1.name, (p0, p1) => p0);
       for (final error in errors) {
-        reporter.reportErrorForToken(code, error.name);
+        reporter.atToken(error.name, code);
       }
     });
   }

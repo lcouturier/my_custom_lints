@@ -19,7 +19,7 @@ class PreferThrowExceptionOrErrorRule extends DartLintRule {
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addThrowExpression((node) {
       if (node.expression is Literal) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
         return;
       }
 
@@ -30,7 +30,7 @@ class PreferThrowExceptionOrErrorRule extends DartLintRule {
       final isError = thrownType.isSubtypeOfType('Error');
 
       if (isException || isError) return;
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
 
     context.registry.addClassDeclaration((node) {
@@ -44,12 +44,12 @@ class PreferThrowExceptionOrErrorRule extends DartLintRule {
       final className = node.name.lexeme;
       if (_rules.any((e) => e(className))) return;
 
-      reporter.reportErrorForNode(
+      reporter.atNode(
+        node,
         const LintCode(
           name: 'invalid_prefix_exception_or_error',
           problemMessage: 'Use the Exception or Error suffix in class names for clarity.',
         ),
-        node,
       );
     });
   }

@@ -18,7 +18,7 @@ class AddCubitSuffixRule extends DartLintRule {
     context.registry.addCubitClassDeclaration((node) {
       if (node.name.lexeme.endsWith('Cubit')) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

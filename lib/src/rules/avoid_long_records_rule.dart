@@ -12,27 +12,24 @@ class AvoidLongRecordsRule extends BaseLintRule<AvoidLongRecordsParameters> {
       configs: configs,
       name: lintName,
       paramsParser: AvoidLongRecordsParameters.fromJson,
-      problemMessage: (value) =>
-          'Records with high number of fields are difficult to reuse and maintain because they are usually responsible for more than one thing. Consider creating a class or splitting the record instead.',
+      problemMessage:
+          (value) =>
+              'Records with high number of fields are difficult to reuse and maintain because they are usually responsible for more than one thing. Consider creating a class or splitting the record instead.',
     );
 
     return AvoidLongRecordsRule._(rule);
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addRecordLiteral((node) {
       if (!config.enabled) return;
 
       if (node.fields.length > config.parameters.maxNumber) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
       if (node.fields.length < config.parameters.minNumber) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
   }

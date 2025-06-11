@@ -43,7 +43,7 @@ class PreferAnyOrEveryRule extends BaseLintRule<PreferAnyOrEveryParameters> {
 
         if (!iterableChecker.isAssignableFromType(targetType)) return;
 
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
   }

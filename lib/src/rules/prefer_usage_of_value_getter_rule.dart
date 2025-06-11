@@ -33,7 +33,7 @@ class PreferUsageOfValueGetterRule extends DartLintRule {
       if (f.returnType is DynamicType) return;
       if (f.returnType is VoidType) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

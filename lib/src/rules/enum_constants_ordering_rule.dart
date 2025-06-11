@@ -24,7 +24,7 @@ class EnumConstantsOrderingRule extends DartLintRule {
       final orderingValues = initialValues.sorted().toList();
       if (initialValues.equals(orderingValues)) return;
 
-      reporter.reportErrorForToken(code, node.name, [], [], node.constants);
+      reporter.atToken(node.name, code, data: node.constants);
     });
   }
 

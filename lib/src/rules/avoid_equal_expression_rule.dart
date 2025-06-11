@@ -8,19 +8,10 @@ class AvoidEqualExpressionsRule extends DartLintRule {
   static const lintName = 'avoid_equal_expressions';
 
   const AvoidEqualExpressionsRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_equal_expressions',
-            problemMessage: 'Avoid equal expressions.',
-          ),
-        );
+    : super(code: const LintCode(name: 'avoid_equal_expressions', problemMessage: 'Avoid equal expressions.'));
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context
       ..registry.addIfStatement((node) => _hasToReportError(node, reporter))
       ..registry.addVariableDeclaration((node) => _hasToReportError(node, reporter));
@@ -35,7 +26,7 @@ class AvoidEqualExpressionsRule extends DartLintRule {
 
     if (binary != null) {
       if (binary.leftOperand.toString() == binary.rightOperand.toString()) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     }
   }

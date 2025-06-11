@@ -29,7 +29,7 @@ class PreferBlocExtensionsRule extends DartLintRule {
         if (named.name.label.name != 'listen') return;
         if (named.expression is! BooleanLiteral) return;
       }
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

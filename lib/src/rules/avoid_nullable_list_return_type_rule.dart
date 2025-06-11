@@ -21,7 +21,7 @@ class AvoidNullableListReturnTypeRule extends DartLintRule {
       if (node == null) return;
       if (node.type == null) return;
       if (node.type!.isNullableList) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
   }

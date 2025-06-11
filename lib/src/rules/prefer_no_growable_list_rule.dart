@@ -25,7 +25,7 @@ class PreferNoGrowableListRule extends DartLintRule {
       if (node.argumentList.arguments.isNotEmpty) return;
 
       if (node.parent is ReturnStatement) {
-        reporter.reportErrorForNode(code, node.methodName);
+        reporter.atNode(node.methodName, code);
         return;
       }
 
@@ -47,7 +47,7 @@ class PreferNoGrowableListRule extends DartLintRule {
         }
       }
 
-      reporter.reportErrorForNode(code, node.methodName);
+      reporter.atNode(node.methodName, code);
     });
   }
 

@@ -32,7 +32,7 @@ class DoNotUseDatetimeNowRule extends DartLintRule {
       if (m == null) return;
       if (m.methodName.name != 'test') return;
 
-      reporter.reportErrorForNode(code, node.parent!);
+      reporter.atNode(node.parent!, code);
     });
   }
 }

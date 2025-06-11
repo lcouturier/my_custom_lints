@@ -39,7 +39,7 @@ class AvoidUsingBuildContextAwaitRule extends DartLintRule {
             final m = next!.expression as MethodInvocation;
             if (!m.toSource().contains(context.name?.lexeme ?? '')) return;
 
-            reporter.reportErrorForNode(code, next, [], [], (next, context));
+            reporter.atNode(next, code, data: (next, context));
           }
         }
       }

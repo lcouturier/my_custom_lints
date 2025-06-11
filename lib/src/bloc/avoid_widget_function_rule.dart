@@ -34,7 +34,7 @@ class AvoidWidgetFunctionRule extends DartLintRule {
       final namedExpression = _getNamedExpression(node) as NamedExpression?;
       if (namedExpression?.name.label.name == 'builder') return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

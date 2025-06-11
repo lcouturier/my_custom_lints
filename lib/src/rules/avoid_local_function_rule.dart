@@ -19,7 +19,7 @@ class AvoidLocalFunctionRule extends DartLintRule {
     context.registry.addBlockFunctionBody((node) {
       final statements = node.block.statements;
       for (final statement in statements.whereType<FunctionDeclarationStatement>()) {
-        reporter.reportErrorForNode(code, statement);
+        reporter.atNode(statement, code);
       }
     });
   }

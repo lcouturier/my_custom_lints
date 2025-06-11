@@ -18,7 +18,7 @@ class AvoidUselessSpreadRule extends DartLintRule {
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addUselessSpreadOperator((node, elements) {
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

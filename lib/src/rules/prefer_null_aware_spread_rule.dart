@@ -17,7 +17,7 @@ class PreferNullAwareSpreadRule extends DartLintRule {
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addLiteralSpreadItem((node, name) {
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

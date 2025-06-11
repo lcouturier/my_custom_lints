@@ -18,7 +18,7 @@ class AvoidUnnecessaryNullAssertionRule extends DartLintRule {
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addIfStatementNullAssertion((condition, node, statements) {
       if (statements.any((e) => e.toSource().contains('${node.name}!'))) {
-        reporter.reportErrorForNode(code, condition);
+        reporter.atNode(condition, code);
       }
     });
   }

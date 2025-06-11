@@ -35,10 +35,10 @@ class AvoidMutatingParametersRule extends DartLintRule {
       final leftHandSide = node.leftHandSide;
 
       if (leftHandSide is SimpleIdentifier && parameters.contains(leftHandSide.name)) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       } else {
         if (leftHandSide is PrefixedIdentifier && parameters.contains(leftHandSide.prefix.name)) {
-          reporter.reportErrorForNode(code, node);
+          reporter.atNode(node, code);
         }
       }
     });

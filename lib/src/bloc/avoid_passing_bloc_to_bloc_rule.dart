@@ -37,7 +37,7 @@ class AvoidPassingblocToBlocRule extends DartLintRule {
       );
 
       for (final item in items) {
-        reporter.reportErrorForNode(code, item);
+        reporter.atNode(item, code);
       }
     });
   }

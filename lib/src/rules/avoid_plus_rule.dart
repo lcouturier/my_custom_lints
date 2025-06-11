@@ -27,7 +27,7 @@ class AvoidPlusRule extends DartLintRule {
       final targetType = node.realTarget?.staticType;
       if (targetType == null || !stringChecker.isAssignableFromType(targetType)) return;
 
-      reporter.reportErrorForNode(code, node.function);
+      reporter.atNode(node.function, code);
     });
   }
 

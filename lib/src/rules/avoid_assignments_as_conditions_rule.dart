@@ -27,7 +27,7 @@ class AvoidAssignmentsAsConditionsRule extends DartLintRule {
     context.registry.addIfStatement((node) {
       if (node.expression is! AssignmentExpression) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

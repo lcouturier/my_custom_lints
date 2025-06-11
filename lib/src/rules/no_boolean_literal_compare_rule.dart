@@ -29,7 +29,7 @@ class NoBooleanLiteralCompareRule extends DartLintRule {
 
       if ((parent.leftOperand is BooleanLiteral && isBoolType(parent.rightOperand.staticType)) ||
           (parent.rightOperand is BooleanLiteral && isBoolType(parent.leftOperand.staticType))) {
-        reporter.reportErrorForNode(code, parent);
+        reporter.atNode(parent, code);
       }
     });
   }

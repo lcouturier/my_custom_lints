@@ -44,7 +44,7 @@ class AvoidUnsafeReduceRule extends DartLintRule {
         if ((prefix.identifier.name == 'isNotEmpty') && ((thenExpr.methodName.name == 'reduce'))) return;
       }
 
-      reporter.reportErrorForNode(code, node.methodName);
+      reporter.atNode(node.methodName, code);
     });
   }
 

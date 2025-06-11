@@ -27,7 +27,7 @@ class AvoidPositionalRecordFieldAccessRule extends DartLintRule {
       final propertyName = node.propertyName.name;
       if (!propertyName.startsWith(r'$')) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

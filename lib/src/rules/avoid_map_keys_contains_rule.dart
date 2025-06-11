@@ -29,7 +29,7 @@ class AvoidMapKeysContainsRule extends DartLintRule {
       if (target.identifier.name != 'keys') return;
       if (!((target.prefix).staticType?.isDartCoreMap ?? false)) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

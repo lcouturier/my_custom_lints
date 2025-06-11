@@ -6,24 +6,16 @@ import 'package:my_custom_lints/src/common/checker.dart';
 
 class AvoidUselessColumnRule extends DartLintRule {
   const AvoidUselessColumnRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_useless_column',
-            problemMessage: 'Avoid useless column.',
-          ),
-        );
+    : super(code: const LintCode(name: 'avoid_useless_column', problemMessage: 'Avoid useless column.'));
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addInstanceCreationExpression((node) {
       if (node.constructorName.type.name2.lexeme != 'Column') return;
       if (node.argumentList.arguments.length > 1) return;
-      final children =
-          node.argumentList.arguments.firstWhereOrNull((e) => e is NamedExpression && e.name.label.name == 'children');
+      final children = node.argumentList.arguments.firstWhereOrNull(
+        (e) => e is NamedExpression && e.name.label.name == 'children',
+      );
       if (children == null) return;
 
       final childrenList = (children as NamedExpression).expression;
@@ -33,7 +25,7 @@ class AvoidUselessColumnRule extends DartLintRule {
       final itemCount = childrenList.elements.length;
       if (itemCount > 1) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

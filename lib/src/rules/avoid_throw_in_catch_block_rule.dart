@@ -23,7 +23,7 @@ class AvoidThrowInCatchBlockRule extends DartLintRule {
     context.registry.addCatchClause((node) {
       final items = node.body.statements.whereType<ExpressionStatement>();
       for (final item in items.where((e) => e.expression is ThrowExpression)) {
-        reporter.reportErrorForNode(code, item.expression);
+        reporter.atNode(item.expression, code);
       }
     });
   }

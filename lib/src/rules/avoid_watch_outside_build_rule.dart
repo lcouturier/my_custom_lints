@@ -27,11 +27,11 @@ class AvoidWatchOutsideBuildRule extends DartLintRule {
 
       final m = node.thisOrAncestorOfType<MethodDeclaration>();
       if ((m?.name.lexeme ?? '') != 'build') {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       } else {
         final (found, _) = node.getAncestor((e) => e is NamedExpression);
         if (!found) return;
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
   }

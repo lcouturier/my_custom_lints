@@ -5,19 +5,15 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 class AvoidUselessAsyncMethodRule extends DartLintRule {
   const AvoidUselessAsyncMethodRule()
-      : super(
-          code: const LintCode(
-            name: 'avoid_useless_async_method',
-            problemMessage: "Unnecessary async method. Remove the 'async' keyword.",
-          ),
-        );
+    : super(
+        code: const LintCode(
+          name: 'avoid_useless_async_method',
+          problemMessage: "Unnecessary async method. Remove the 'async' keyword.",
+        ),
+      );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodDeclaration((node) {
       if (node.name.lexeme.startsWith('_')) return;
       if (!node.body.isAsynchronous) return;
@@ -26,7 +22,7 @@ class AvoidUselessAsyncMethodRule extends DartLintRule {
       node.visitChildren(visitor);
       if (visitor.hasAwait) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

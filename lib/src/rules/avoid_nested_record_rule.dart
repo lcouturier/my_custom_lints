@@ -24,7 +24,7 @@ class AvoidNestedRecordRule extends DartLintRule {
     context.registry.addRecordLiteral((node) {
       bool hasNestedRecord = node.fields.any((e) => e is RecordLiteral);
       if (hasNestedRecord) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
 
@@ -42,7 +42,7 @@ class AvoidNestedRecordRule extends DartLintRule {
           record.namedFields.any((e) => e.type is RecordType);
       if (!isNested) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

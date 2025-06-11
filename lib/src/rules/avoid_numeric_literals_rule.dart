@@ -37,7 +37,7 @@ class AvoidNumericLiteralsRule extends DartLintRule {
           null)
         return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

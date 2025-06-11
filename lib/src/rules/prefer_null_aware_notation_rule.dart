@@ -24,7 +24,7 @@ class PreferNullAwareNotationRule extends DartLintRule {
       final message =
           'Use ${isCheckingTrue ? '$leftOperand ?? false' : '!($leftOperand ?? false)'} instead of $condition.';
 
-      reporter.reportErrorForNode(code, node, [message]);
+      reporter.atNode(node, code);
     });
   }
 

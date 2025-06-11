@@ -27,7 +27,7 @@ class AvoidNullableBooleanRule extends BaseLintRule<AvoidNullableBooleanParamete
       if (!node.type!.isDartCoreBool) return;
       if (_hasToIgnore(node)) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 
@@ -46,12 +46,8 @@ class AvoidNullableBooleanParameters {
   final List<String> ignoredNames;
 
   factory AvoidNullableBooleanParameters.fromJson(Map<String, Object?> map) {
-    return AvoidNullableBooleanParameters(
-      ignoredNames: List<String>.from((map['ignored-names'] ?? []) as YamlList),
-    );
+    return AvoidNullableBooleanParameters(ignoredNames: List<String>.from((map['ignored-names'] ?? []) as YamlList));
   }
 
-  AvoidNullableBooleanParameters({
-    required this.ignoredNames,
-  });
+  AvoidNullableBooleanParameters({required this.ignoredNames});
 }

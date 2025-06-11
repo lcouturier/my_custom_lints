@@ -38,7 +38,7 @@ class FirstInitStateRule extends DartLintRule {
       );
       if (superInitStateStatement == null) return;
 
-      reporter.reportErrorForNode(code, superInitStateStatement);
+      reporter.atNode(superInitStateStatement, code);
     });
   }
 

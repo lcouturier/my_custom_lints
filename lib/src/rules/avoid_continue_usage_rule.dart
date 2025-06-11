@@ -16,7 +16,7 @@ class AvoidContinueUsage extends DartLintRule {
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addContinueStatement((node) {
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

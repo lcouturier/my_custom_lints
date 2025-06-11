@@ -31,7 +31,7 @@ class AvoidReadInsideBuildRule extends DartLintRule {
       final (found, _) = node.getAncestor((e) => e is NamedExpression && e.name.label.name == 'listener');
       if (found) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

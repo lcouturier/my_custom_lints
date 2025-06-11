@@ -17,29 +17,28 @@ class AvoidLongParameterListRule extends BaseLintRule<AvoidLongParameterListPara
       configs: configs,
       name: lintName,
       paramsParser: AvoidLongParameterListParameters.fromJson,
-      problemMessage: (value) => 'The maximum allowed number of parameters is ${value.maxParameters}. '
-          'Try reducing the number of parameters.',
+      problemMessage:
+          (value) =>
+              'The maximum allowed number of parameters is ${value.maxParameters}. '
+              'Try reducing the number of parameters.',
     );
 
     return AvoidLongParameterListRule._(rule);
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addMethodDeclarationWithParameters((node) {
       if (config.parameters.ignoredNames.isNotEmpty && config.parameters.ignoredNames.contains(node.name.lexeme)) {
         return;
       }
 
-      final count = config.parameters.ignoreOptional
-          ? node.parameters!.parameters.countBy((e) => !e.isOptional)
-          : node.parameters!.parameters.length;
+      final count =
+          config.parameters.ignoreOptional
+              ? node.parameters!.parameters.countBy((e) => !e.isOptional)
+              : node.parameters!.parameters.length;
       if (count > config.parameters.maxParameters) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
   }

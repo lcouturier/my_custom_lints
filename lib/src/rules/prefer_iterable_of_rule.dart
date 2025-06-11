@@ -12,19 +12,10 @@ class PreferIterableOfRule extends DartLintRule {
   static const lintName = 'prefer_iterable_of';
 
   const PreferIterableOfRule()
-      : super(
-          code: const LintCode(
-            name: lintName,
-            problemMessage: 'Use Iterable.of instead.',
-          ),
-        );
+    : super(code: const LintCode(name: lintName, problemMessage: 'Use Iterable.of instead.'));
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
+  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addInstanceCreationExpression((node) {
       if (node.staticType == null) return;
       if (!iterableChecker.isAssignableFromType(node.staticType!)) return;
@@ -43,7 +34,7 @@ class PreferIterableOfRule extends DartLintRule {
       if (argumentType.isNullable && !nodeType.isNullable) return;
       if (!argumentType.isFoundInObjectTypeHierarchy(nodeType!)) return;
 
-      reporter.reportErrorForNode(code, node.constructorName);
+      reporter.atNode(node.constructorName, code);
     });
   }
 

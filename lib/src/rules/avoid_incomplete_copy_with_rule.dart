@@ -44,7 +44,7 @@ class AvoidIncompleteCopyWithRule extends DartLintRule {
       if (body.constructorName.type.name2.lexeme != node.declaredElement?.name) return;
       if (body.argumentList.arguments.length == fields.length) return;
 
-      reporter.reportErrorForNode(code, copyWithMethod);
+      reporter.atNode(copyWithMethod, code);
     });
   }
 }

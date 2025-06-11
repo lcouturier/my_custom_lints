@@ -33,7 +33,7 @@ class AvoidNestedConditionalExpressionsRule extends BaseLintRule<AvoidNestedCond
       int count = node.depth;
       if (count <= config.parameters.maxNestingLevel) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

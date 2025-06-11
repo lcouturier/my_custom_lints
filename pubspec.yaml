@@ -7,9 +7,9 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
-  analyzer: ^7.4.5
-  analyzer_plugin: ^0.13.1
-  custom_lint_builder: ^0.7.5
+  analyzer: ^6.11.0
+  analyzer_plugin: ^0.11.0
+  custom_lint_builder: ^0.6.10
   
   flutter:
     sdk: flutter
@@ -22,7 +22,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^5.0.0
 
 
 # For information on the generic Dart part of this file, see the

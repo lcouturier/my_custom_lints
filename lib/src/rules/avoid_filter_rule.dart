@@ -27,7 +27,7 @@ class AvoidFilterRule extends DartLintRule {
 
       if (!iterableChecker.isAssignableFromType(targetType)) return;
 
-      reporter.reportErrorForNode(code, node.function);
+      reporter.atNode(node.function, code);
     });
   }
 

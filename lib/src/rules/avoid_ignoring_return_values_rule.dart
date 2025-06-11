@@ -26,20 +26,20 @@ class AvoidIgnoringReturnValuesRule extends DartLintRule {
       if (node.expression is! InvocationExpression) return;
       if (!_hasUnusedResult(node.expression.staticType)) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
     // context.registry.addMethodInvocation((node) {
     //   if (node.parent is! ExpressionStatement) return;
     //   if (!_hasUnusedResult(node.staticType)) return;
 
-    //   reporter.reportErrorForNode(code, node);
+    //   reporter.atNode(node, code);
     // });
 
     // context.registry.addPropertyAccess((node) {
     //   if (node.parent is! ExpressionStatement) return;
     //   if (!_hasUnusedResult(node.staticType)) return;
 
-    //   reporter.reportErrorForNode(code, node);
+    //   reporter.atNode(node, code);
     // });
 
     // context.registry.addPrefixedIdentifier((node) {
@@ -47,14 +47,14 @@ class AvoidIgnoringReturnValuesRule extends DartLintRule {
     //   if (node.staticElement?.kind != ElementKind.GETTER) return;
     //   if (!_hasUnusedResult(node.staticType)) return;
 
-    //   reporter.reportErrorForNode(code, node);
+    //   reporter.atNode(node, code);
     // });
 
     // context.registry.addAwaitExpression((node) {
     //   if (node.parent is! ExpressionStatement) return;
     //   if (!_hasUnusedResult(node.staticType)) return;
 
-    //   reporter.reportErrorForNode(code, node);
+    //   reporter.atNode(node, code);
     // });
   }
 

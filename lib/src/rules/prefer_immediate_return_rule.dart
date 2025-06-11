@@ -33,7 +33,7 @@ class PreferImmediateReturnRule extends DartLintRule {
       final lastVariable = variableStatement.variables.variables.last;
       if (returnIdentifier.name != lastVariable.name.lexeme) return;
 
-      reporter.reportErrorForNode(code, returnStatement, [], [], body.block);
+      reporter.atNode(returnStatement, code, data: body.block);
     });
   }
 

@@ -35,7 +35,7 @@ class AvoidDynamicRule extends DartLintRule {
     context.registry.addNamedType((node) {
       if (!_rules.any((element) => element(node))) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
 
     context.registry.addReturnType((node, parent) {

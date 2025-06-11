@@ -27,7 +27,7 @@ class PreferEnumWithSentinelValueRule extends DartLintRule {
       bool hasSentinel = node.constants.any((e) => sentinelNames.contains(e.name.lexeme));
       if (hasSentinel) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

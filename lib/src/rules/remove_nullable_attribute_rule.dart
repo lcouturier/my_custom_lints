@@ -92,13 +92,13 @@ class _Verifier extends RecursiveAstVisitor<void> {
 
     if (hasNullArgument) return;
 
-    reporter.reportErrorForNode(
+    reporter.atNode(
+      node,
       const LintCode(
         name: 'remove_nullable_attribute',
         problemMessage: 'remove nullable attribute from read method invocation',
         errorSeverity: ErrorSeverity.WARNING,
       ),
-      node,
     );
   }
 }

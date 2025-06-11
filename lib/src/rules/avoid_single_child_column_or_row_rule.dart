@@ -42,7 +42,7 @@ class AvoidSingleChildColumnOrRowRule extends BaseLintRule<AvoidSingleChildColum
       final element = (p.expression as ListLiteral).elements.first;
       if (element is SpreadElement) return;
 
-      reporter.reportErrorForNode(code, node.constructorName);
+      reporter.atNode(node.constructorName, code);
     });
   }
 }

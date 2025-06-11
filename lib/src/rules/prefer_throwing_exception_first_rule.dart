@@ -24,7 +24,7 @@ class PreferThrowingExceptionFirstRule extends DartLintRule {
           (node.elseStatement is ExpressionStatement) &&
           (node.elseStatement! as ExpressionStatement).expression is ThrowExpression;
       if (isExpression) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
 
       if (node.thenStatement is! Block) return;
@@ -37,7 +37,7 @@ class PreferThrowingExceptionFirstRule extends DartLintRule {
       if (elseStatement is! ExpressionStatement) return;
       if (elseStatement.expression is! ThrowExpression) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

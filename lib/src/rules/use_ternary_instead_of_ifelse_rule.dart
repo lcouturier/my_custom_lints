@@ -44,7 +44,7 @@ class UseTernaryInsteadOfIfElse extends DartLintRule {
                 (thenMethod.methodName.name != 'emit') &&
                 thenMethod.argumentList.arguments.length == elseMethod.argumentList.arguments.length &&
                 thenMethod.argumentList.arguments.length == 1) {
-              reporter.reportErrorForNode(code, node);
+              reporter.atNode(node, code);
             }
           }
         }

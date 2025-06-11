@@ -33,7 +33,7 @@ class AvoidInvertedBooleanChecksRule extends DartLintRule {
       if (binary.leftOperand is BinaryExpression) return;
       if (binary.rightOperand is BinaryExpression) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

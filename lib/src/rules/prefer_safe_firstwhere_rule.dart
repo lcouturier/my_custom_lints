@@ -34,7 +34,7 @@ class PreferSafeFirstWhereRule extends DartLintRule {
       if (!methods.contains(node.methodName.name)) return;
       if (node.argumentList.arguments.length == 2) return;
 
-      reporter.reportErrorForNode(code, node.methodName);
+      reporter.atNode(node.methodName, code);
     });
   }
 

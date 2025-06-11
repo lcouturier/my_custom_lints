@@ -36,7 +36,7 @@ class AvoidShrinkWrapInListRule extends DartLintRule {
       final litteral = p.expression as BooleanLiteral;
       if (!litteral.value) return;
 
-      reporter.reportErrorForNode(code, p);
+      reporter.atNode(p, code);
     });
   }
 }

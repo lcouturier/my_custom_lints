@@ -20,7 +20,7 @@ class AvoidNestedSwitchExpressionRule extends DartLintRule {
       final (found, expr) = node.cases.firstWhereOrNot((e) => e.expression is SwitchExpression);
       if (!found) return;
 
-      reporter.reportErrorForNode(code, expr!.expression as SwitchExpression);
+      reporter.atNode(expr!.expression as SwitchExpression, code);
     });
   }
 }

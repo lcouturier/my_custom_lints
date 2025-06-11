@@ -19,7 +19,7 @@ class AvoidMultiAssignmentRule extends DartLintRule {
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addAssignmentExpression((node) {
       if (node.rightHandSide is AssignmentExpression) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
   }

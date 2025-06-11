@@ -24,7 +24,7 @@ class AvoidSelfAssignmentRule extends DartLintRule {
       if (node.operator.type != TokenType.EQ) return;
       if (node.leftHandSide.toString() != node.rightHandSide.toString()) return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

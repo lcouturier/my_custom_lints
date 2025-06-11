@@ -26,7 +26,7 @@ class AvoidPrintRule extends DartLintRule {
       if (!element.library.isDartCore) return;
 
       // Report the lint error for the method invocation node.
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 

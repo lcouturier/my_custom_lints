@@ -33,7 +33,7 @@ class PreferMultiBlocProviderRule extends DartLintRule {
       final childExpression = childArgument.expression as InstanceCreationExpression;
       if (childExpression.constructorName.type.name2.lexeme != 'BlocProvider') return;
 
-      reporter.reportErrorForNode(code, node.constructorName);
+      reporter.atNode(node.constructorName, code);
     });
   }
 }

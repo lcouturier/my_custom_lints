@@ -27,7 +27,7 @@ class AvoidOnlyRethrowRule extends DartLintRule {
       if (expr is! ExpressionStatement) return;
       if (expr.expression is! RethrowExpression) return;
 
-      reporter.reportErrorForNode(code, expr.expression);
+      reporter.atNode(expr.expression, code);
     });
   }
 }

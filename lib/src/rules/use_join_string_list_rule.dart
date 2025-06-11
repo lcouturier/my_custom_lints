@@ -37,7 +37,7 @@ class UseJoinOnStringsRule extends DartLintRule {
       final typeArgument = type.typeArguments.first;
       if (typeArgument.isDartCoreString) return;
 
-      reporter.reportErrorForNode(code, node.methodName);
+      reporter.atNode(node.methodName, code);
     });
   }
 }

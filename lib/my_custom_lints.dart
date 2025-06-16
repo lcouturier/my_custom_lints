@@ -105,6 +105,7 @@ import 'package:my_custom_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_custom_lints/src/bloc/remove_empty_listener_rule.dart';
 import 'package:my_custom_lints/src/rules/remove_nullable_attribute_rule.dart';
 import 'package:my_custom_lints/src/rules/unnecessary_to_list_rule.dart';
+import 'package:my_custom_lints/src/rules/unused_fields_rule.dart';
 import 'package:my_custom_lints/src/rules/use_join_string_list_rule.dart';
 import 'package:my_custom_lints/src/rules/use_setstate_synchronously_rule.dart';
 import 'package:my_custom_lints/src/rules/use_ternary_instead_of_ifelse_rule.dart';
@@ -208,7 +209,8 @@ class _MyCustomLint extends PluginBase {
       AvoidBannedUsageRule.createRule(configs),
       PreferCorrectCallbackFieldNBameRule.createRule(configs),
       const UseSetStateSynchronouslyRule(),
-      const UnnecessaryToListRule()
+      const UnnecessaryToListRule(),
+      const UnusedFieldsRule(),
     ];
   }
 

@@ -31,9 +31,12 @@ class PreferSafeFirstWhereRule extends DartLintRule {
     context.registry.addMethodInvocation((node) {
       final targetType = node.realTarget?.staticType;
       if (targetType == null || !iterableChecker.isAssignableFromType(targetType)) return;
-      if (!methods.contains(node.methodName.name)) return;
+
+      final methodName = node.methodName.name;
+      if (!methods.contains(methodName)) return;
       if (node.argumentList.arguments.length == 2) return;
 
+      log(methodName);
       reporter.atNode(node.methodName, code);
     });
   }

@@ -34,10 +34,17 @@ class PreferSafeFirstWhereRule extends DartLintRule {
 
       final methodName = node.methodName.name;
       if (!methods.contains(methodName)) return;
-      if (node.argumentList.arguments.length == 2) return;
+      
+      final hasOrElse = node.argumentList.arguments.any((arg) {
+        if (arg is NamedExpression) {
+          return arg.name.label.name == 'orElse';
+        }
+        return false;
+      });
 
-      log(methodName);
-      reporter.atNode(node.methodName, code);
+      if (!hasOrElse) {
+        reporter.atNode(node.methodName, code);
+      }
     });
   }
 

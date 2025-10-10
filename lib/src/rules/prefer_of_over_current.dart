@@ -13,14 +13,14 @@ class PreferOfOverCurrentRule extends DartLintRule with ContextName {
   static const String goodWay = 'I18n.of(context).';
 
   const PreferOfOverCurrentRule()
-    : super(
-        code: const LintCode(
-          name: lintName,
-          problemMessage: 'Do not use anymore $badWay',
-          correctionMessage: 'Prefer {0}.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: lintName,
+            problemMessage: 'Do not use anymore $badWay',
+            correctionMessage: 'Prefer {0}.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
@@ -36,7 +36,7 @@ class PreferOfOverCurrentRule extends DartLintRule with ContextName {
       if (!hasFix) return;
 
       final replacement = node.toString().replaceFirst(badWay, 'I18n.of($name).');
-      reporter.reportErrorForNode(code, node, [node.toString().replaceFirst(badWay, replacement)]);
+      reporter.atNode(node, code, arguments: [node.toString().replaceFirst(badWay, replacement)]);
     });
     context.registry.addPropertyAccess((node) {
       final expression = node.toString();
@@ -49,7 +49,7 @@ class PreferOfOverCurrentRule extends DartLintRule with ContextName {
       if (!hasFix) return;
 
       final replacement = node.toString().replaceFirst(badWay, 'I18n.of($name).');
-      reporter.reportErrorForNode(code, node, [node.toString().replaceFirst(badWay, replacement)]);
+      reporter.atNode(node, code, arguments: [node.toString().replaceFirst(badWay, replacement)]);
     });
   }
 

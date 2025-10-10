@@ -11,18 +11,18 @@ class AlwaysCallSuperPropsRule extends DartLintRule {
   /// [AlwaysCallSuperPropsRule] constructor
 
   const AlwaysCallSuperPropsRule()
-    : super(
-        code: const LintCode(
-          name: 'always_call_super_props_when_overriding_equatable_props',
-          problemMessage: 'Dont forget to call super.props when overriding equatable props.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: 'always_call_super_props_when_overriding_equatable_props',
+            problemMessage: 'Dont forget to call super.props when overriding equatable props.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addEquatableSuperClassDeclaration((node) {
-      reporter.reportErrorForNode(code, node, ['super.props']);
+      reporter.atNode(node, code, arguments: ['super.props']);
     });
   }
 

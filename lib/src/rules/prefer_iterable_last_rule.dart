@@ -12,14 +12,14 @@ class PreferIterableLast extends DartLintRule {
   static const ruleName = 'prefer_iterable_last';
 
   const PreferIterableLast()
-    : super(
-        code: const LintCode(
-          name: ruleName,
-          problemMessage: '{0} is more verbose than iterable.last.',
-          correctionMessage: 'Consider replacing {1} with {2}.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: ruleName,
+            problemMessage: '{0} is more verbose than iterable.last.',
+            correctionMessage: 'Consider replacing {1} with {2}.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
@@ -35,15 +35,14 @@ class PreferIterableLast extends DartLintRule {
       final leftOperand = indexExpression.leftOperand;
       if (leftOperand is! PrefixedIdentifier ||
           leftOperand.prefix.name != node.realTarget.toSource() ||
-          leftOperand.identifier.name != 'length')
-        return;
+          leftOperand.identifier.name != 'length') return;
 
       final rightOperand = indexExpression.rightOperand;
       if (rightOperand is! IntegerLiteral || rightOperand.value != 1) {
         return;
       }
 
-      reporter.reportErrorForNode(code, node, [
+      reporter.atNode(node, code, arguments: [
         'list[list.length - 1]',
         node.toSource(),
         '${node.realTarget.toSource()}.last',
@@ -61,15 +60,14 @@ class PreferIterableLast extends DartLintRule {
       final leftOperand = argument.leftOperand;
       if (leftOperand is! PrefixedIdentifier ||
           leftOperand.prefix.name != node.realTarget?.toSource() ||
-          leftOperand.identifier.name != 'length')
-        return;
+          leftOperand.identifier.name != 'length') return;
 
       final rightOperand = argument.rightOperand;
       if (rightOperand is! IntegerLiteral || rightOperand.value != 1) {
         return;
       }
 
-      reporter.reportErrorForNode(code, node, [
+      reporter.atNode(node, code, arguments: [
         'list[list.length - 1]',
         node.toSource(),
         '${node.realTarget?.toSource()}.last',

@@ -9,20 +9,20 @@ class AvoidBangOperatorRule extends DartLintRule {
   static const problem = 'Avoid using "!" operator';
 
   const AvoidBangOperatorRule()
-    : super(
-        code: const LintCode(
-          name: 'avoid_bang_operator',
-          problemMessage: problem,
-          correctionMessage: problem,
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: 'avoid_bang_operator',
+            problemMessage: problem,
+            correctionMessage: problem,
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addPostfixExpression((node) {
       if (node.operator.type == TokenType.BANG) {
-        reporter.reportErrorForToken(code, node.operator);
+        reporter.atToken(node.operator, code);
       }
     });
   }

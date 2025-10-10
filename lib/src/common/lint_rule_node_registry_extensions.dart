@@ -40,7 +40,7 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
 
   void addCubitClassDeclaration(void Function(ClassDeclaration node) listener) {
     addClassDeclaration((node) {
-      final isCubit = cubitChecker.isSuperOf(node.declaredElement!);
+      final isCubit = cubitChecker.isAssignableFromType(node.declaredElement!.thisType);
       if (!isCubit) return;
 
       listener(node);
@@ -52,7 +52,7 @@ extension LintRuleNodeRegistryExtensions on LintRuleNodeRegistry {
       final parent = node.parent;
       if (parent is! ClassDeclaration) return;
 
-      final isCubit = cubitChecker.isSuperOf(parent.declaredElement!);
+      final isCubit = cubitChecker.isAssignableFromType(parent.declaredElement!.thisType);
       if (!isCubit) return;
 
       listener(node);

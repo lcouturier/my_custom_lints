@@ -7,18 +7,20 @@ import 'package:my_custom_lints/src/common/extensions.dart';
 
 class AvoidShadowedExtensionMethodsRule extends DartLintRule {
   const AvoidShadowedExtensionMethodsRule()
-    : super(
-        code: const LintCode(
-          name: 'avoid_shadowed_extension_methods',
-          problemMessage: 'Extension target already declares a member with the same name. Try renaming this method.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: 'avoid_shadowed_extension_methods',
+            problemMessage: 'Extension target already declares a member with the same name. Try renaming this method.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addExtensionDeclaration((node) {
-      final annotation = node.extendedType;
+      final annotation = node.onClause?.extendedType;
+      if (annotation == null) return;
+
       if (annotation.type?.element is! ClassElement) return;
 
       final methods = (annotation.type!.element! as ClassElement).methods;

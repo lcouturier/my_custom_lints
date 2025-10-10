@@ -10,26 +10,26 @@ import 'package:my_custom_lints/src/common/extensions.dart';
 
 class AvoidInvalidPrefixRule extends DartLintRule {
   const AvoidInvalidPrefixRule()
-    : super(
-        code: const LintCode(
-          name: 'avoid_invalid_prefix',
-          problemMessage: 'Consider remove the {0} prefix.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: 'avoid_invalid_prefix',
+            problemMessage: 'Consider remove the {0} prefix.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addEnumDeclaration((node) {
       final nameWithoutUnderscore = node.name.lexeme.startsWith('_') ? node.name.lexeme.substring(1) : node.name.lexeme;
       if (nameWithoutUnderscore.toLowerCase().contains('enum')) {
-        reporter.reportErrorForToken(code, node.beginToken.next!, ['Enum']);
+        reporter.atToken(node.beginToken.next!, code, arguments: ['Enum']);
       }
 
       final prefix = node.name.lexeme.splitOnUppercase().first.toLowerCase();
       for (var e in node.constants) {
         if (e.name.lexeme.toLowerCase().contains(prefix)) {
-          reporter.reportErrorForNode(code, e, [prefix], [], (e, prefix));
+          reporter.atNode(e, code, arguments: [prefix], data: (e, prefix));
         }
       }
     });

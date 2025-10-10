@@ -14,14 +14,14 @@ class AvoidDynamicRule extends DartLintRule {
   static const ruleName = 'avoid_dynamic';
 
   const AvoidDynamicRule()
-    : super(
-        code: const LintCode(
-          name: 'avoid_dynamic',
-          correctionMessage: 'Avoid using dynamic.',
-          errorSeverity: ErrorSeverity.WARNING,
-          problemMessage: 'Using dynamic is considered unsafe since it can easily result in runtime errors.',
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: 'avoid_dynamic',
+            correctionMessage: 'Avoid using dynamic.',
+            errorSeverity: ErrorSeverity.WARNING,
+            problemMessage: 'Using dynamic is considered unsafe since it can easily result in runtime errors.',
+          ),
+        );
 
   static final List<bool Function(NamedType node)> _rules = [
     (e) => e.type == null,
@@ -41,9 +41,9 @@ class AvoidDynamicRule extends DartLintRule {
     context.registry.addReturnType((node, parent) {
       if (node != null) return;
 
-      reporter.reportErrorForNode(
-        const LintCode(name: ruleName, errorSeverity: ErrorSeverity.WARNING, problemMessage: 'Add void type.'),
+      reporter.atNode(
         parent,
+        const LintCode(name: ruleName, errorSeverity: ErrorSeverity.WARNING, problemMessage: 'Add void type.'),
       );
     });
   }

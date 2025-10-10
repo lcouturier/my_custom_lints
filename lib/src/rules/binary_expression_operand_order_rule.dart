@@ -11,13 +11,13 @@ class BinaryExpressionOperandOrderRule extends DartLintRule {
   static const ruleName = 'binary_expression_operand_order';
 
   const BinaryExpressionOperandOrderRule()
-    : super(
-        code: const LintCode(
-          name: ruleName,
-          problemMessage: '{0} is on the left-hand side in binary expressions.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: ruleName,
+            problemMessage: '{0} is on the left-hand side in binary expressions.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   static final _operators = [
     TokenType.PLUS,
@@ -36,7 +36,7 @@ class BinaryExpressionOperandOrderRule extends DartLintRule {
       if (node.rightOperand is! Identifier) return;
       if (!_operators.contains(node.operator.type)) return;
 
-      reporter.reportErrorForNode(code, node, [node.leftOperand.toSource()]);
+      reporter.atNode(node, code, arguments: [node.leftOperand.toSource()]);
     });
   }
 

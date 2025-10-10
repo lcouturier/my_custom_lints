@@ -30,18 +30,17 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
       final checker = TypeChecker.fromName(entry.type);
       if (!checker.isAssignableFromType(node.realTarget!.staticType!)) return;
 
-      reporter.reportErrorForNode(
-        code.copyWith(
-          errorSeverity:
-              entry.severity == null
-                  ? ErrorSeverity.WARNING
-                  : ErrorSeverity.values.firstWhere(
-                    (e) => e.name == entry.severity!.toUpperCase(),
-                    orElse: () => ErrorSeverity.WARNING,
-                  ),
-        ),
+      reporter.atNode(
         node,
-        [entry.message],
+        code.copyWith(
+          errorSeverity: entry.severity == null
+              ? ErrorSeverity.WARNING
+              : ErrorSeverity.values.firstWhere(
+                  (e) => e.name == entry.severity!.toUpperCase(),
+                  orElse: () => ErrorSeverity.WARNING,
+                ),
+        ),
+        arguments: [entry.message],
       );
 
       final names = config.parameters.names.firstWhereOrNull((e) => e.name == node.methodName.name);
@@ -49,7 +48,7 @@ class AvoidBannedUsageRule extends BaseLintRule<AvoidBannedUsageParameters> {
         final element = node.methodName.staticElement;
         if (element is! FunctionElement) return;
 
-        reporter.reportErrorForNode(code, node, [names.description]);
+        reporter.atNode(node, code, arguments: [names.description]);
       }
     });
   }
@@ -62,41 +61,35 @@ class AvoidBannedUsageParameters {
   factory AvoidBannedUsageParameters.fromJson(Map<String, Object?> map) {
     final yamlEntries = (map['entries'] ?? []) as YamlList;
 
-    final entries = yamlEntries
-        .where((e) => e['type'] != null)
-        .map((e) {
-          return EntryType(
-            type: e['type'] as String,
-            namesType: [],
-            entries:
-                ((e['entries'] ?? <Entry>[]) as YamlList).map((e) {
-                  return Entry(
-                    names: List<String>.from(e['names'] as YamlList),
-                    message: e['description'] as String,
-                    severity: e['severity'] as String?,
-                  );
-                }).toList(),
+    final entries = yamlEntries.where((e) => e['type'] != null).map((e) {
+      return EntryType(
+        type: e['type'] as String,
+        namesType: [],
+        entries: ((e['entries'] ?? <Entry>[]) as YamlList).map((e) {
+          return Entry(
+            names: List<String>.from(e['names'] as YamlList),
+            message: e['description'] as String,
+            severity: e['severity'] as String?,
           );
-        })
+        }).toList(),
+      );
+    }).expand(
+      (e) => e.entries.map((item) {
+        return (type: e.type, names: item.names, message: item.message, severity: item.severity);
+      }),
+    );
+    final result = entries
         .expand(
-          (e) => e.entries.map((item) {
-            return (type: e.type, names: item.names, message: item.message, severity: item.severity);
-          }),
-        );
-    final result =
-        entries
-            .expand(
-              (e) => e.names.map(
-                (name) => FlattenEntry(type: e.type, name: name, message: e.message, severity: e.severity),
-              ),
-            )
-            .toList();
+          (e) => e.names.map(
+            (name) => FlattenEntry(type: e.type, name: name, message: e.message, severity: e.severity),
+          ),
+        )
+        .toList();
 
-    final names =
-        yamlEntries
-            .where((e) => e['name'] != null)
-            .map((e) => NameType(name: e['name'] as String, description: e['description'] as String))
-            .toList();
+    final names = yamlEntries
+        .where((e) => e['name'] != null)
+        .map((e) => NameType(name: e['name'] as String, description: e['description'] as String))
+        .toList();
 
     return AvoidBannedUsageParameters._(result, names);
   }

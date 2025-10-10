@@ -41,18 +41,17 @@ class AvoidBannedTypeRule extends BaseLintRule<AvoidBannedTypeParameters> {
         if (entry.paths.every((e) => !filePath.contains(e))) return;
       }
 
-      reporter.reportErrorForNode(
-        code.copyWith(
-          errorSeverity:
-              entry.severity == null
-                  ? ErrorSeverity.WARNING
-                  : ErrorSeverity.values.firstWhere(
-                    (e) => e.name == entry.severity!.toUpperCase(),
-                    orElse: () => ErrorSeverity.WARNING,
-                  ),
-        ),
+      reporter.atNode(
         node,
-        [entry.message],
+        code.copyWith(
+          errorSeverity: entry.severity == null
+              ? ErrorSeverity.WARNING
+              : ErrorSeverity.values.firstWhere(
+                  (e) => e.name == entry.severity!.toUpperCase(),
+                  orElse: () => ErrorSeverity.WARNING,
+                ),
+        ),
+        arguments: [entry.message],
       );
     });
   }
@@ -64,16 +63,15 @@ class AvoidBannedTypeParameters {
   factory AvoidBannedTypeParameters.fromJson(Map<String, Object?> map) {
     final yamlEntries = (map['entries'] ?? []) as YamlList;
 
-    final entries =
-        yamlEntries.map((e) {
-          return Entry(
-            paths: List<String>.from(e['paths'] as YamlList),
-            className: e['class_name'] as String,
-            package: e['package'] as String?,
-            message: e['message'] as String,
-            severity: e['severity'] as String?,
-          );
-        }).toList();
+    final entries = yamlEntries.map((e) {
+      return Entry(
+        paths: List<String>.from(e['paths'] as YamlList),
+        className: e['class_name'] as String,
+        package: e['package'] as String?,
+        message: e['message'] as String,
+        severity: e['severity'] as String?,
+      );
+    }).toList();
     return AvoidBannedTypeParameters._(entries);
   }
 

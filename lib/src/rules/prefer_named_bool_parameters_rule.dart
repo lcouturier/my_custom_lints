@@ -16,9 +16,8 @@ class PreferNamedBoolParametersRule extends BaseLintRule<PreferNamedBoolParamete
       configs: configs,
       name: 'prefer_named_bool_parameters',
       paramsParser: PreferNamedBoolParameters.fromJson,
-      problemMessage:
-          (value) =>
-              'Converting positional boolean parameters to named parameters helps you avoid situations with a wrong value passed to the parameter.',
+      problemMessage: (value) =>
+          'Converting positional boolean parameters to named parameters helps you avoid situations with a wrong value passed to the parameter.',
     );
 
     return PreferNamedBoolParametersRule._(rule);
@@ -31,7 +30,7 @@ class PreferNamedBoolParametersRule extends BaseLintRule<PreferNamedBoolParamete
 
     for (final p in parameters.parameters.whereType<SimpleFormalParameter>()) {
       if ((p.type?.type?.isDartCoreBool ?? false) && !p.isNamed) {
-        reporter.reportErrorForNode(code, p, [p.name?.lexeme ?? ''], [], parameters);
+        reporter.atNode(p, code, arguments: [p.name?.lexeme ?? ''], data: parameters);
       }
     }
   }

@@ -12,31 +12,30 @@ class RemoveEmptyListenerRule extends DartLintRule {
   static const listenerName = 'listener';
 
   const RemoveEmptyListenerRule()
-    : super(
-        code: const LintCode(
-          name: lintName,
-          problemMessage: 'Remove empty listener and replace BlocConsumer by a BlocBuilder.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: lintName,
+            problemMessage: 'Remove empty listener and replace BlocConsumer by a BlocBuilder.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
     context.registry.addInstanceCreationExpression((node) {
       if (node.constructorName.type.name2.lexeme == 'BlocConsumer') {
         final hasNoListener = node.argumentList.arguments.whereType<NamedExpression>().every(
-          (e) => e.name.label.name != listenerName,
-        );
+              (e) => e.name.label.name != listenerName,
+            );
         if (hasNoListener) return;
 
-        final listenerArgument =
-            node.argumentList.arguments.firstWhere((e) => e is NamedExpression && e.name.label.name == listenerName)
-                as NamedExpression;
+        final listenerArgument = node.argumentList.arguments
+            .firstWhere((e) => e is NamedExpression && e.name.label.name == listenerName) as NamedExpression;
         if (listenerArgument.expression is! FunctionExpression) return;
 
         final body = (listenerArgument.expression as FunctionExpression).body;
         if (body is BlockFunctionBody && body.block.statements.isEmpty) {
-          reporter.reportErrorForNode(code, listenerArgument);
+          reporter.atNode(listenerArgument, code);
         }
       }
     });
@@ -58,13 +57,12 @@ class RemoveEmptyListenerFix extends DartFix {
     context.registry.addInstanceCreationExpression((node) {
       if (node.constructorName.type.name2.lexeme == 'BlocConsumer') {
         final hasNoListener = node.argumentList.arguments.whereType<NamedExpression>().every(
-          (e) => e.name.label.name != 'listener',
-        );
+              (e) => e.name.label.name != 'listener',
+            );
         if (hasNoListener) return;
 
-        final listenerArgument =
-            node.argumentList.arguments.firstWhere((e) => e is NamedExpression && e.name.label.name == 'listener')
-                as NamedExpression;
+        final listenerArgument = node.argumentList.arguments
+            .firstWhere((e) => e is NamedExpression && e.name.label.name == 'listener') as NamedExpression;
 
         final changeBuilder = reporter.createChangeBuilder(
           message: 'Remove the listener and replace BlocConsumer by a BlocBuilder.',

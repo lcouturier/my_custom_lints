@@ -8,15 +8,15 @@ import 'package:my_custom_lints/src/common/checker.dart';
 
 class AvoidPassingbuildContextToBlocsRule extends DartLintRule {
   const AvoidPassingbuildContextToBlocsRule()
-    : super(
-        code: const LintCode(
-          name: 'avoid_passing_build_context_to_blocs',
-          problemMessage:
-              'Passing BuildContext creates unnecessary coupling between Blocs and widgets and should be avoided. Additionally, depending on BuildContext can introduce tricky bugs when context is not mounted.',
-          correctionMessage: '',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: 'avoid_passing_build_context_to_blocs',
+            problemMessage:
+                'Passing BuildContext creates unnecessary coupling between Blocs and widgets and should be avoided. Additionally, depending on BuildContext can introduce tricky bugs when context is not mounted.',
+            correctionMessage: '',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
@@ -26,7 +26,7 @@ class AvoidPassingbuildContextToBlocsRule extends DartLintRule {
       final (found, value) = node.parameters!.parameters.firstWhereOrNot((p) => p.isBuildContext);
 
       if (!found) return;
-      reporter.reportErrorForNode(code, value!);
+      reporter.atNode(value!, code);
     });
   }
 }

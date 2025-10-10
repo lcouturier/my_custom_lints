@@ -12,14 +12,14 @@ class PreferIterableFirst extends DartLintRule {
   static const ruleName = 'prefer_iterable_first';
 
   const PreferIterableFirst()
-    : super(
-        code: const LintCode(
-          name: ruleName,
-          problemMessage: '{0} is more verbose than iterable.first.',
-          correctionMessage: 'Consider replacing {1} with {2}.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: ruleName,
+            problemMessage: '{0} is more verbose than iterable.first.',
+            correctionMessage: 'Consider replacing {1} with {2}.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
@@ -30,7 +30,7 @@ class PreferIterableFirst extends DartLintRule {
       final indexExpression = node.index;
       if (indexExpression is! IntegerLiteral || indexExpression.value != 0) return;
 
-      reporter.reportErrorForNode(code, node, ['list[0]', node.toSource(), '${node.realTarget.toSource()}.first']);
+      reporter.atNode(node, code, arguments: ['list[0]', node.toSource(), '${node.realTarget.toSource()}.first']);
     });
 
     context.registry.addMethodInvocation((node) {
@@ -41,7 +41,7 @@ class PreferIterableFirst extends DartLintRule {
       final argument = node.argumentList.arguments.first;
       if (argument is! IntegerLiteral || argument.value != 0) return;
 
-      reporter.reportErrorForNode(code, node, [
+      reporter.atNode(node, code, arguments: [
         'list.elementAt(0)',
         node.toSource(),
         '${node.realTarget?.toSource()}.first',

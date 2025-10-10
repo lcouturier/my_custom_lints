@@ -12,13 +12,13 @@ import 'package:my_custom_lints/src/common/checker.dart';
 
 class AvoidIgnoringReturnValuesRule extends DartLintRule {
   const AvoidIgnoringReturnValuesRule()
-    : super(
-        code: const LintCode(
-          name: 'avoid_ignoring_return_values',
-          problemMessage: 'return value is silently ignored.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: 'avoid_ignoring_return_values',
+            problemMessage: 'return value is silently ignored.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
@@ -63,7 +63,7 @@ class AvoidIgnoringReturnValuesRule extends DartLintRule {
 
   bool _isEmptyType(DartType type) =>
       // ignore: deprecated_member_use
-      type.isBottom || type.isDartCoreNull || type.isVoid;
+      type.isBottom || type.isDartCoreNull || type is VoidType;
 
   bool _isEmptyFutureType(DartType type) =>
       type is InterfaceType && type.isDartAsyncFuture && type.typeArguments.any(_isEmptyType);

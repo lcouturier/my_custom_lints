@@ -42,7 +42,7 @@ class UnusedParameterRule extends BaseLintRule<UnusedParameters> {
           .where((e) => !simpleIdentifiers.map((i) => i.staticElement).contains(e.declaredElement));
 
       for (final p in items) {
-        reporter.reportErrorForNode(code, p, [p.name?.lexeme ?? ''], [], (p, parameters));
+        reporter.atNode(p, code, arguments: [p.name?.lexeme ?? ''], data: (p, parameters));
       }
     });
 
@@ -70,7 +70,7 @@ class UnusedParameterRule extends BaseLintRule<UnusedParameters> {
           .where((e) => !simpleIdentifiers.map((i) => i.staticElement).contains(e.declaredElement));
 
       for (final p in items) {
-        reporter.reportErrorForNode(code, p, [p.name?.lexeme ?? ''], [], (p, parameters));
+        reporter.atNode(p, code, arguments: [p.name?.lexeme ?? ''], data: (p, parameters));
       }
     });
   }

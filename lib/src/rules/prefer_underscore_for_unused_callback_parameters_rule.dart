@@ -10,14 +10,14 @@ import 'package:my_custom_lints/src/common/checker.dart';
 
 class PreferUnderscoreForUnusedCallbackParameters extends DartLintRule {
   const PreferUnderscoreForUnusedCallbackParameters()
-    : super(
-        code: const LintCode(
-          name: 'prefer_underscore_for_unused_callback_parameters',
-          problemMessage: 'The callback parameter is not used.',
-          correctionMessage: 'Consider using underscores for the unused parameter.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: 'prefer_underscore_for_unused_callback_parameters',
+            problemMessage: 'The callback parameter is not used.',
+            correctionMessage: 'Consider using underscores for the unused parameter.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
@@ -38,7 +38,7 @@ class PreferUnderscoreForUnusedCallbackParameters extends DartLintRule {
           .where((e) => !simpleIdentifiers.map((i) => i.staticElement).contains(e.declaredElement));
 
       for (final p in items) {
-        reporter.reportErrorForNode(code, p, [p.name?.lexeme ?? ''], [], p);
+        reporter.atNode(p, code, arguments: [p.name?.lexeme ?? ''], data: p);
       }
     });
   }

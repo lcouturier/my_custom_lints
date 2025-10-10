@@ -38,10 +38,10 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
       final name = node.fields.variables.first.name.lexeme;
       if (isNameValid(name)) return;
 
-      reporter.reportErrorForNode(
-        code,
+      reporter.atNode(
         node,
-        [
+        code,
+        arguments: [
           'Boolean field',
           'field',
         ],
@@ -55,10 +55,10 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
       final name = node.name.lexeme;
       if (isNameValid(name)) return;
 
-      reporter.reportErrorForNode(
-        code,
+      reporter.atNode(
         node,
-        [
+        code,
+        arguments: [
           'Boolean getter',
           'getter',
         ],
@@ -72,10 +72,10 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
       final name = parent.name.lexeme;
       if (isNameValid(name)) return;
 
-      reporter.reportErrorForToken(
-        code,
+      reporter.atToken(
         parent.name,
-        [
+        code,
+        arguments: [
           'Boolean variable',
           'variable',
         ],
@@ -91,10 +91,10 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
       final name = node.name?.lexeme ?? '';
       if (isNameValid(name)) return;
 
-      reporter.reportErrorForNode(
-        code,
+      reporter.atNode(
         node,
-        ['Method that returns a boolean', 'method'],
+        code,
+        arguments: ['Method that returns a boolean', 'method'],
       );
     });
 
@@ -111,10 +111,10 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
       final name = node.name.lexeme;
       if (isNameValid(name)) return;
 
-      reporter.reportErrorForToken(
-        code,
+      reporter.atToken(
         node.name,
-        ['Method that returns a boolean', 'method'],
+        code,
+        arguments: ['Method that returns a boolean', 'method'],
       );
     });
 
@@ -127,10 +127,10 @@ class BooleanPrefixesRule extends BaseLintRule<BooleanPrefixParameters> {
       final name = node.name.lexeme;
       if (isNameValid(name)) return;
 
-      reporter.reportErrorForToken(
-        code,
+      reporter.atToken(
         node.name,
-        ['Function that returns a boolean', 'function'],
+        code,
+        arguments: ['Function that returns a boolean', 'function'],
       );
     });
   }

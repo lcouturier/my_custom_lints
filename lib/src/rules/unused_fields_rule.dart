@@ -32,7 +32,7 @@ class UnusedFieldsRule extends DartLintRule {
         //   // Vous pouvez ajuster cette logique selon vos besoins
         // }
 
-        reporter.reportErrorForNode(code, field.node, [field.name]);
+        reporter.atNode(field.node, code, arguments: [field.name]);
       }
     }
   }

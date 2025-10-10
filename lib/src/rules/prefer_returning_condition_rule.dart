@@ -9,14 +9,14 @@ class PreferReturningConditionRule extends DartLintRule {
   static const correction = 'Prefer return condition itself.';
 
   const PreferReturningConditionRule()
-    : super(
-        code: const LintCode(
-          name: RuleNames.preferReturningCondition,
-          problemMessage: problem,
-          correctionMessage: correction,
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: RuleNames.preferReturningCondition,
+            problemMessage: problem,
+            correctionMessage: correction,
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
@@ -29,7 +29,7 @@ class PreferReturningConditionRule extends DartLintRule {
 
       if (thenExpr is BooleanLiteral && elseExpr is BooleanLiteral) {
         final inverted = !thenExpr.value && elseExpr.value;
-        reporter.reportErrorForNode(code, node, null, null, (node, inverted));
+        reporter.atNode(node, code, data: (node, inverted));
       }
     });
   }

@@ -11,14 +11,14 @@ import 'package:my_custom_lints/src/common/checker.dart';
 
 class NoLengthInIndexExpressionRule extends DartLintRule {
   const NoLengthInIndexExpressionRule()
-    : super(
-        code: const LintCode(
-          name: 'no_length_in_index_expression',
-          problemMessage: '{0} is an error.',
-          correctionMessage: 'Consider replacing {1} with {2}.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: 'no_length_in_index_expression',
+            problemMessage: '{0} is an error.',
+            correctionMessage: 'Consider replacing {1} with {2}.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) {
@@ -33,7 +33,7 @@ class NoLengthInIndexExpressionRule extends DartLintRule {
       final prefix = node.index as PrefixedIdentifier;
       if (prefix.identifier.name != 'length') return;
 
-      reporter.reportErrorForNode(code, node, [
+      reporter.atNode(node, code, arguments: [
         '${node.realTarget.toSource()}[${prefix.prefix.name}.${prefix.identifier.name}]',
         node.toSource(),
         '${node.realTarget.toSource()}.last',
@@ -48,7 +48,7 @@ class NoLengthInIndexExpressionRule extends DartLintRule {
       if (argument is! PrefixedIdentifier) return;
       if (argument.identifier.name != 'length') return;
 
-      reporter.reportErrorForNode(code, node, [
+      reporter.atNode(node, code, arguments: [
         'list.elementAt(0)',
         node.toSource(),
         '${node.realTarget?.toSource()}.last',

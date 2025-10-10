@@ -9,14 +9,15 @@ class AvoidEmptyBuildWhenRule extends DartLintRule {
   static const lintName = 'avoid_empty_build_when';
 
   const AvoidEmptyBuildWhenRule()
-    : super(
-        code: const LintCode(
-          name: lintName,
-          problemMessage: 'a BlocBuilder or BlocConsumer does not specify the buildWhen condition.',
-          correctionMessage: 'Specifying buildWhen helps avoid unnecessary rebuilds and improves overall performance.',
-          errorSeverity: ErrorSeverity.WARNING,
-        ),
-      );
+      : super(
+          code: const LintCode(
+            name: lintName,
+            problemMessage: 'a BlocBuilder or BlocConsumer does not specify the buildWhen condition.',
+            correctionMessage:
+                'Specifying buildWhen helps avoid unnecessary rebuilds and improves overall performance.',
+            errorSeverity: ErrorSeverity.WARNING,
+          ),
+        );
 
   static final _instanceNames = ['BlocBuilder', 'BlocConsumer'];
 
@@ -25,11 +26,11 @@ class AvoidEmptyBuildWhenRule extends DartLintRule {
     context.registry.addInstanceCreationExpression((node) {
       if (!_instanceNames.contains(node.constructorName.type.name2.lexeme)) return;
       final found = node.argumentList.arguments.whereType<NamedExpression>().any(
-        (e) => e.name.label.name == 'buildWhen',
-      );
+            (e) => e.name.label.name == 'buildWhen',
+          );
       if (found) return;
 
-      reporter.reportErrorForNode(code, node.constructorName);
+      reporter.atNode(node.constructorName, code);
     });
   }
 }
